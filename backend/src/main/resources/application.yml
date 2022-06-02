@@ -3,17 +3,13 @@ spring:
     url: jdbc:postgresql://localhost:8001/postgres
     username: admin
     password: 1234!
-    initialize: 'true'
+    initialize: true
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      show-sql: 'true'
-      ddl-auto: update
-  sql:
-    init:
-      mode:
-      continue-on-error: 'true'
+        ddl_auto: update
+        format_sql: true
+    show-sql: true
 server:
   port: 8002
