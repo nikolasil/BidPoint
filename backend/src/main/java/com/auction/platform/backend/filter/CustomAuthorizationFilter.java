@@ -1,5 +1,6 @@
 package com.auction.platform.backend.filter;
 
+import com.auction.platform.backend.controller.AuthController;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -30,7 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().equals("/api/login")) {
+        if (request.getServletPath().equals("/api/auth") || request.getServletPath().equals("/api/auth/refresh-token")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -56,12 +57,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             log.error("Error logging in: {}", e.getMessage());
-            response.setHeader("error", e.getMessage());
-            response.setStatus(FORBIDDEN.value());
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            response.setContentType(APPLICATION_JSON_VALUE);
-            new ObjectMapper().writeValue(response.getOutputStream(), error);
+            AuthController.forbiddenResponse(response, e);
         }
     }
 }

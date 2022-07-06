@@ -53,15 +53,52 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Role saveRole(Role role) {
         log.info("Saving new role {} to the database",role.getName());
-        return roleRepository.save(role);
+        Role foundRole = roleRepository.findByName(role.getName());
+        if(foundRole == null)
+            return roleRepository.save(role);
+        return foundRole;
     }
 
     @Override
-    public void addRoleToUser(String username, String roleName) {
+    public Role getRole(String roleName) {
+        log.info("Getting role {} from the database", roleName);
+        return roleRepository.findByName(roleName);
+    }
+
+    @Override
+    public User addRoleToUser(String username, String roleName) {
         log.info("Adding role {} to username {}", roleName, username);
         User user = userRepository.findByUsername(username);
+
+        if(user == null)
+            throw new RuntimeException("Username " + username + " not found");
+
         Role role = roleRepository.findByName(roleName);
-        user.getRoles().add(role);
+        if(role == null)
+            throw new RuntimeException("roleName " + roleName + " not found");
+
+        Collection<Role> roles = user.getRoles();
+
+        if(!roles.contains(role))
+            roles.add(role);
+
+        return user;
+    }
+
+    @Override
+    public User removeRoleFromUser(String username, String roleName) {
+        log.info("Removing role {} from username {}", roleName, username);
+        User user = userRepository.findByUsername(username);
+
+        if(user == null)
+            throw new RuntimeException("Username " + username + " not found");
+
+        Role role = roleRepository.findByName(roleName);
+        if(role == null)
+            throw new RuntimeException("roleName " + roleName + " not found");
+
+        user.getRoles().remove(role);
+        return user;
     }
 
     @Override

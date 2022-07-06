@@ -4,7 +4,7 @@ services:
 #  spring-api:
 #    image: 'docker-spring-boot-postgres:latest'
 #    build:
-#      context: .
+#      context: backend
 #    container_name: spring-api
 #    depends_on:
 #      - db
