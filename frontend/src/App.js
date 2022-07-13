@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Provider } from 'react-redux';
+import axios from 'axios';
+import store from './store';
+import { CssBaseline } from '@mui/material';
+import Landing from './components/pages/Landing/Landing';
+
+const theme = createTheme({
+  // palette: {
+  // 	mode: 'dark',
+  // }
+});
 
 function App() {
+  axios.defaults.baseURL = 'http://localhost:8002/api/';
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <CssBaseline />
+      <div className="App">
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>
+            <Landing />
+          </ThemeProvider>
+        </Provider>
+      </div>
+    </>
   );
 }
 

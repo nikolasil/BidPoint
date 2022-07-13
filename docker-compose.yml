@@ -1,18 +1,27 @@
 version: '3.8'
 
 services:
-#  spring-api:
-#    image: 'docker-spring-boot-postgres:latest'
-#    build:
-#      context: backend
-#    container_name: spring-api
-#    depends_on:
-#      - db
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
-#      - SPRING_DATASOURCE_USERNAME=admin
-#      - SPRING_DATASOURCE_PASSWORD=1234!
-#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   container_name: frontend
+  #   ports:
+  #     - "3000:80"
+  #   restart: unless-stopped
+  #   networks:
+  #     - bidpoint_net
+
+  # backend:
+  #   build:
+  #     context: ./backend
+  #   container_name: backend
+  #   ports:
+  #     - 8002:8002
+  #   depends_on:
+  #     - db
+  #   restart: unless-stopped
+  #   networks:
+  #     - bidpoint_net
 
   db:
     image: 'postgres:14.3-alpine'
@@ -21,4 +30,10 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=1234!
     ports:
-      - "8001:5432"
+      - 8001:5432
+    restart: unless-stopped
+    networks:
+      - bidpoint_net
+
+networks:
+  bidpoint_net:
