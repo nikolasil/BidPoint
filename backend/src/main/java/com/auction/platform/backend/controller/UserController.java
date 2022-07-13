@@ -46,6 +46,25 @@ public class UserController {
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
+    @GetMapping()
+    public ResponseEntity<User> getUser(@RequestParam(name = "username") String username){
+        return ResponseEntity.ok().body(userService.getUser(username));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<User> getUser(HttpServletRequest request) {
+
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+
+        String refresh_token = authorizationHeader.substring("Bearer ".length());
+        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(refresh_token);
+        String username = decodedJWT.getSubject();
+
+        return ResponseEntity.ok().body(userService.getUser(username));
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<User>> getUsers(){
         return ResponseEntity.ok().body(userService.getUsers());
