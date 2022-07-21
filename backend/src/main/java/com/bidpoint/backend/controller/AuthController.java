@@ -1,8 +1,8 @@
-package com.auction.platform.backend.controller;
+package com.bidpoint.backend.controller;
 
-import com.auction.platform.backend.entity.Role;
-import com.auction.platform.backend.entity.User;
-import com.auction.platform.backend.service.UserService;
+import com.bidpoint.backend.entity.Role;
+import com.bidpoint.backend.entity.User;
+import com.bidpoint.backend.service.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;

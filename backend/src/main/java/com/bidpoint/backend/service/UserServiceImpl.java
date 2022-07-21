@@ -1,9 +1,9 @@
-package com.auction.platform.backend.service;
+package com.bidpoint.backend.service;
 
-import com.auction.platform.backend.entity.Role;
-import com.auction.platform.backend.entity.User;
-import com.auction.platform.backend.repository.RoleRepository;
-import com.auction.platform.backend.repository.UserRepository;
+import com.bidpoint.backend.entity.Role;
+import com.bidpoint.backend.entity.User;
+import com.bidpoint.backend.repository.RoleRepository;
+import com.bidpoint.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

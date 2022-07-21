@@ -1,4 +1,4 @@
-package com.auction.platform.backend.filter;
+package com.bidpoint.backend.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

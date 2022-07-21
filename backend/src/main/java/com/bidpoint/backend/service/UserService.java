@@ -1,7 +1,7 @@
-package com.auction.platform.backend.service;
+package com.bidpoint.backend.service;
 
-import com.auction.platform.backend.entity.Role;
-import com.auction.platform.backend.entity.User;
+import com.bidpoint.backend.entity.Role;
+import com.bidpoint.backend.entity.User;
 
 import java.util.List;
 

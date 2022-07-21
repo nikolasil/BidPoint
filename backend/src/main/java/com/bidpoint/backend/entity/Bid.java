@@ -1,4 +1,4 @@
-package com.auction.platform.backend.entity;
+package com.bidpoint.backend.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +10,9 @@ import javax.persistence.*;
 //@Data
 //@NoArgsConstructor
 //@AllArgsConstructor
-public class Category {
+public class Bid {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
 }

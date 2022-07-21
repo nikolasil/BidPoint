@@ -1,4 +1,4 @@
-package com.auction.platform.backend.entity;
+package com.bidpoint.backend.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,13 +1,12 @@
-package com.auction.platform.backend.controller;
+package com.bidpoint.backend.controller;
 
-import com.auction.platform.backend.entity.Role;
-import com.auction.platform.backend.service.UserService;
+import com.bidpoint.backend.entity.Role;
+import com.bidpoint.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.annotation.security.RolesAllowed;
 import java.net.URI;
 
 @RestController

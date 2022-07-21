@@ -1,4 +1,4 @@
-package com.auction.platform.backend.security;
+package com.bidpoint.backend.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
