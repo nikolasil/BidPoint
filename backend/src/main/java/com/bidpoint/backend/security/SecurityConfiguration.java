@@ -35,27 +35,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers( "/api/auth/**").permitAll();
+        http.authorizeRequests().antMatchers( "/api/user/me").permitAll();
         http.authorizeRequests().antMatchers( "/api/user/**").hasAnyAuthority("admin");
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-
-//    // To enable CORS
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        final CorsConfiguration configuration = new CorsConfiguration();
-//
-//        configuration.setAllowedOrigins(Collections.singletonList("*")); // www - obligatory
-//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-//        configuration.setAllowCredentials(true);
-//        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-//
-//        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//
-//        return source;
-//    }
 
     @Bean
     @Override
