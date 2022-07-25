@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
   Box,
   Container,
   Avatar,
@@ -9,12 +8,14 @@ import {
   Link,
   TextField,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { loginUser } from '../../../actions/auth/auth';
-// import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../../actions/auth';
+import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
+import { loadUser } from '../../../actions/auth';
 
 const validationSchema = yup.object().shape({
   username: yup.string().required(),
@@ -23,7 +24,7 @@ const validationSchema = yup.object().shape({
 
 const Landing = () => {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const auth = useSelector((state) => state.auth);
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
@@ -34,34 +35,32 @@ const Landing = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
       setHasSubmitted(true);
-      console.log(JSON.stringify(values, null, 2));
+      console.log('onSubmit');
       dispatch(loginUser(JSON.stringify(values, null, 2)));
     },
   });
 
-  // useEffect(() => {
-  // if (!auth.isLoading && hasSubmitted) {
-  //   if (auth.isAuthenticated) {
-  //     console.log({
-  //       title: 'Επιτυχής Σύνδεση',
-  //       status: 'success',
-  //       duration: 4000,
-  //       isClosable: true,
-  //     });
-  //     navigate('/');
-  //   } else if (auth.error) {
-  //     return console.log({
-  //       title: auth.error.message || 'Προέκυψε κάποιο σφάλμα',
-  //       description: 'Παρακαλώ δοκιμάστε ξανά',
-  //       status: 'error',
-  //       duration: 4000,
-  //       isClosable: true,
-  //     });
-  //   }
-  // }
-  // }, [auth]);
+  // in first initial render, check for user in local storage
+  useEffect(() => {
+    console.log('Check for user in local storage');
+    dispatch(loadUser());
+  }, []);
+
+  // check for login user
+  useEffect(() => {
+    if (hasSubmitted && !auth.isLoading && auth.isAuthenticated) {
+      console.log('Check for user in local storage');
+      dispatch(loadUser());
+      setHasSubmitted(false);
+    } else if (!hasSubmitted && !auth.isLoading && auth.isAuthenticated) {
+      if (auth.isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/home');
+      }
+    }
+  }, [auth]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -109,14 +108,16 @@ const Landing = () => {
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
           />
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            loading={auth.isLoading}
+            loadingIndicator="Loading…"
           >
             Sign In
-          </Button>
+          </LoadingButton>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">

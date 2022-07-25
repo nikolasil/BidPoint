@@ -1,31 +1,44 @@
 import React from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Provider } from 'react-redux';
-import axios from 'axios';
-import store from './store';
-import { CssBaseline } from '@mui/material';
-import Landing from './components/pages/Landing/Landing';
 
-const theme = createTheme({
-  // palette: {
-  // 	mode: 'dark',
-  // }
-});
+import axios from 'axios';
+import PrivateRoute from './privateRoutes/PrivateRoute';
+import AdminPrivateRoute from './privateRoutes/AdminPrivateRoute';
+import Landing from './components/pages/Landing/Landing';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import setDefaultAuthHeader from './utils/setDefaultAuthHeader';
+import Admin from './Admin';
+import Customer from './Customer';
 
 function App() {
   axios.defaults.baseURL = 'http://localhost:8002/api/';
+  setDefaultAuthHeader();
 
   return (
-    <>
-      <CssBaseline />
-      <div className="App">
-        <Provider store={store}>
-          <ThemeProvider theme={theme}>
-            <Landing />
-          </ThemeProvider>
-        </Provider>
-      </div>
-    </>
+    <div className="App">
+      <Router>
+        <Routes>
+          <Route exact path="/" element={<Landing />} />
+          <Route
+            exact
+            path="*"
+            element={
+              <PrivateRoute>
+                <Customer />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/admin/*"
+            element={
+              <AdminPrivateRoute>
+                <Admin />
+              </AdminPrivateRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </div>
   );
 }
 
