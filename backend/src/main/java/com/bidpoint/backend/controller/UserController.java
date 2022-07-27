@@ -6,29 +6,42 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URI;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+@Log4j2
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<User>saveUser(@RequestBody User user) {
+    public ResponseEntity<?> saveUser(@RequestBody User userToBeSaved) {
+        userService.saveUser(userToBeSaved);
+        userService.addRoleToUser(userToBeSaved.getUsername(), "visitor");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveUser(user));
+        return ResponseEntity.created(uri).body("User singed up successfully");
     }
 
     @GetMapping()
@@ -37,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> getUser(HttpServletRequest request) {
+    public ResponseEntity<?> getUser(HttpServletRequest request) {
 
         String authorizationHeader = request.getHeader(AUTHORIZATION);
 
@@ -47,7 +60,15 @@ public class UserController {
         DecodedJWT decodedJWT = verifier.verify(refresh_token);
         String username = decodedJWT.getSubject();
 
-        return ResponseEntity.ok().body(userService.getUser(username));
+
+        Map<String,Object> response_json = new HashMap<>();
+        com.bidpoint.backend.entity.User backendUser = userService.getUser(username);
+        response_json.put("username",backendUser.getUsername());
+        response_json.put("firstname",backendUser.getFirstname());
+        response_json.put("lastname",backendUser.getLastname());
+        response_json.put("roles",backendUser.getRoles());
+
+        return ResponseEntity.ok().body(response_json);
     }
 
     @GetMapping("/all")

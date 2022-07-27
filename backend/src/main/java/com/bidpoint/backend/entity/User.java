@@ -22,9 +22,9 @@ public class User {
     @JsonIgnore
     private Long id;
 
-    private String name;
+    private String firstname;
+    private String lastname;
     private String username;
-    @JsonIgnore
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)

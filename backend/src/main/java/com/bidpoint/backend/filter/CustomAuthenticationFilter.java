@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import com.bidpoint.backend.service.UserService;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -33,8 +36,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     private final AuthenticationManager authenticationManager;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager){
+
+    private final UserService userService;
+
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager,UserService userService){
         this.authenticationManager = authenticationManager;
+        this.userService = userService;
     }
 
     @SneakyThrows
@@ -71,12 +78,17 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
-        Map<String,String> tokens = new HashMap<>();
-        tokens.put("access_token",access_token);
-        tokens.put("refresh_token",refresh_token);
+        Map<String,Object> response_json = new HashMap<>();
+        com.bidpoint.backend.entity.User backendUser = userService.getUser(user.getUsername());
+        response_json.put("access_token",access_token);
+        response_json.put("refresh_token",refresh_token);
+        response_json.put("username",backendUser.getUsername());
+        response_json.put("firstname",backendUser.getFirstname());
+        response_json.put("lastname",backendUser.getLastname());
+        response_json.put("roles",backendUser.getRoles());
 
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(),tokens);
+        new ObjectMapper().writeValue(response.getOutputStream(),response_json);
     }
 
     @Override
