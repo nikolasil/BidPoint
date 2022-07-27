@@ -10,17 +10,11 @@ import {
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { loginUser } from '../../../actions/auth';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
-import { loadUser } from '../../../actions/auth';
-
-const validationSchema = yup.object().shape({
-  username: yup.string().required(),
-  password: yup.string().required(),
-});
+import { loadUser, loginUser } from '../../../actions/auth';
 
 const Landing = () => {
   const dispatch = useDispatch();
@@ -33,11 +27,14 @@ const Landing = () => {
       username: '',
       password: '',
     },
-    validationSchema: validationSchema,
+    validationSchema: yup.object().shape({
+      username: yup.string().required(),
+      password: yup.string().required(),
+    }),
     onSubmit: (values) => {
       setHasSubmitted(true);
       console.log('onSubmit');
-      dispatch(loginUser(JSON.stringify(values, null, 2)));
+      dispatch(loginUser(JSON.stringify(values)));
     },
   });
 
@@ -50,11 +47,8 @@ const Landing = () => {
   // check for login user
   useEffect(() => {
     if (hasSubmitted && !auth.isLoading && auth.isAuthenticated) {
-      console.log('Check for user in local storage');
-      dispatch(loadUser());
-      setHasSubmitted(false);
-    } else if (!hasSubmitted && !auth.isLoading && auth.isAuthenticated) {
-      if (auth.isAdmin) {
+      console.log('Logged In!');
+      if (auth.roles.includes('admin')) {
         navigate('/admin');
       } else {
         navigate('/home');
@@ -120,12 +114,12 @@ const Landing = () => {
           </LoadingButton>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              {/* <Link href="#" variant="body2">
                 Forgot password?
-              </Link>
+              </Link> */}
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/signup" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

@@ -1,6 +1,7 @@
 import * as types from '../../types';
 import initialState from './initialState';
 import setDefaultAuthHeader from '../../utils/setDefaultAuthHeader';
+import clearDefaultAuthHeader from '../../utils/clearDefaultAuthHeader';
 
 const authReducer = (state = initialState, action) => {
   const { type, payload } = action;
@@ -18,9 +19,8 @@ const authReducer = (state = initialState, action) => {
       };
     }
 
-    case types.LOGIN_USER_SUCCESS:
-    case types.SIGNUP_USER_SUCCESS: {
-      console.log('authReducer: SIGNUP_USER_SUCCESS | LOGIN_USER_SUCCESS');
+    case types.LOGIN_USER_SUCCESS: {
+      console.log('authReducer: LOGIN_USER_SUCCESS');
       console.log('authReducer: payload = ', payload);
       localStorage.setItem('accessToken', payload.access_token);
       localStorage.setItem('refreshToken', payload.refresh_token);
@@ -29,6 +29,19 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         isAuthenticated: true,
+        hasSignedUp: false,
+        firstname: payload.firstname,
+        lastname: payload.lastname,
+        username: payload.username,
+        roles: payload.roles.map((role) => role.name),
+      };
+    }
+    case types.SIGNUP_USER_SUCCESS: {
+      console.log('authReducer: SIGNUP_USER_SUCCESS');
+      return {
+        ...state,
+        isLoading: false,
+        hasSignedUp: true,
       };
     }
     case types.LOGIN_USER_FAILURE:
@@ -45,10 +58,15 @@ const authReducer = (state = initialState, action) => {
       console.log('authReducer: LOAD_USER_FAILURE | LOGOUT');
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      clearDefaultAuthHeader();
       return {
         ...state,
         isAuthenticated: false,
         isLoading: false,
+        firstname: '',
+        lastname: '',
+        username: '',
+        roles: [],
       };
     }
     case types.LOAD_USER_SUCCESS: {
@@ -58,7 +76,10 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         isAuthenticated: true,
-        isAdmin: payload.roles.find((role) => role.name === 'admin'),
+        firstname: payload.firstname,
+        lastname: payload.lastname,
+        username: payload.username,
+        roles: payload.roles.map((role) => role.name),
       };
     }
     default: {

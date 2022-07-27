@@ -1,12 +1,22 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Container, Box, Typography } from '@mui/material';
 
 const Home = () => {
-  // const navigate = useNavigate();
   return (
-    <>
-      <div>Home</div>
-    </>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography component="h1" variant="h5">
+          Home
+        </Typography>
+      </Box>
+    </Container>
   );
 };
 

@@ -9,15 +9,49 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import Divider from '@mui/material/Divider';
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
+
+  const auth = useSelector((state) => state.auth);
   const name = 'BidPoint';
-  const pages = ['Items', 'Chat'];
-  const settings = ['Account', 'Logout'];
+
+  const pages = [
+    { name: 'Items', path: '/items' },
+    { name: 'Chat', path: '/chat' },
+  ];
+  const settings = [
+    {
+      name: (
+        <Grid container direction="row" alignItems="center">
+          <AccountCircleOutlinedIcon />
+          <Typography>Your Account: {auth.username}</Typography>
+        </Grid>
+      ),
+      path: '/account',
+      divider: true,
+    },
+    {
+      name: (
+        <Grid container direction="row" alignItems="center">
+          <LogoutOutlinedIcon />
+          <Typography>Logout</Typography>
+        </Grid>
+      ),
+      path: '/logout',
+      divider: false,
+    },
+  ];
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -41,7 +75,8 @@ const NavBar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            onClick={() => navigate('/home')}
+            cursor="pointer"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -50,6 +85,7 @@ const NavBar = () => {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+              cursor: 'pointer',
             }}
           >
             {name}
@@ -85,8 +121,16 @@ const NavBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                  <Typography
+                    textAlign="center"
+                    onClick={() => {
+                      navigate(page.path);
+                      handleCloseUserMenu();
+                    }}
+                  >
+                    {page.name}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -96,7 +140,7 @@ const NavBar = () => {
             variant="h5"
             noWrap
             component="a"
-            href=""
+            onClick={() => navigate('/home')}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -106,6 +150,7 @@ const NavBar = () => {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+              cursor: 'pointer',
             }}
           >
             {name}
@@ -113,19 +158,25 @@ const NavBar = () => {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={page.name}
+                onClick={() => {
+                  navigate(page.path);
+                  handleCloseUserMenu();
+                }}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={auth.firstname + ' ' + auth.lastname}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar>
+                  {auth.firstname.substring(0, 1) +
+                    auth.lastname.substring(0, 1)}
+                </Avatar>
               </IconButton>
             </Tooltip>
             <Menu
@@ -145,9 +196,18 @@ const NavBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
+                <>
+                  <MenuItem
+                    key={setting.name}
+                    onClick={() => {
+                      navigate(setting.path);
+                      handleCloseUserMenu();
+                    }}
+                  >
+                    {setting.name}
+                  </MenuItem>
+                  {setting.divider && <Divider />}
+                </>
               ))}
             </Menu>
           </Box>

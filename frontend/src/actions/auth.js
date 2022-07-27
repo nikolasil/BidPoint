@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as types from '../types';
 
-export const signupUser = (formData) => async (dispatch) => {
+export const singUpUser = (formData) => async (dispatch) => {
   dispatch({ type: types.SIGNUP_USER_REQUEST });
   try {
     const config = {
@@ -9,8 +9,7 @@ export const signupUser = (formData) => async (dispatch) => {
         'Content-Type': 'application/json',
       },
     };
-    console.log(axios.baseURL);
-    const res = await axios.post('auth/signup', formData, config);
+    const res = await axios.post('user', formData, config);
     dispatch({ type: types.SIGNUP_USER_SUCCESS, payload: res.data });
   } catch (error) {
     dispatch({ type: types.SIGNUP_USER_FAILURE, payload: error.response.data });
