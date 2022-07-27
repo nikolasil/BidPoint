@@ -32,6 +32,7 @@ const NavBar = () => {
   ];
   const settings = [
     {
+      id: 'setting_1',
       name: (
         <Grid container direction="row" alignItems="center">
           <AccountCircleOutlinedIcon />
@@ -42,6 +43,7 @@ const NavBar = () => {
       divider: true,
     },
     {
+      id: 'setting_2',
       name: (
         <Grid container direction="row" alignItems="center">
           <LogoutOutlinedIcon />
@@ -196,18 +198,16 @@ const NavBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <>
-                  <MenuItem
-                    key={setting.name}
-                    onClick={() => {
-                      navigate(setting.path);
-                      handleCloseUserMenu();
-                    }}
-                  >
-                    {setting.name}
-                  </MenuItem>
+                <Box
+                  key={setting.id}
+                  onClick={() => {
+                    navigate(setting.path);
+                    handleCloseUserMenu();
+                  }}
+                >
+                  <MenuItem>{setting.name}</MenuItem>
                   {setting.divider && <Divider />}
-                </>
+                </Box>
               ))}
             </Menu>
           </Box>
