@@ -45,8 +45,8 @@ public class BackendApplication {
 
             userService.saveUser(new User(null, "Nassos","Anagnostopoulos", "nassosanagn", "1234", new ArrayList<>()));
 //            userService.addRoleToUser("nassosanagn", role_admin);
-//            userService.addRoleToUser("nassosanagn", role_seller);
-//            userService.addRoleToUser("nassosanagn", role_bidder);
+            userService.addRoleToUser("nassosanagn", role_seller);
+            userService.addRoleToUser("nassosanagn", role_bidder);
             userService.addRoleToUser("nassosanagn", role_visitor);
 
             userService.saveUser(new User(null, "Michael","Volakis", "Michael-Vol", "1234", new ArrayList<>()));

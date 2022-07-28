@@ -48,7 +48,7 @@ const Landing = () => {
   useEffect(() => {
     if (hasSubmitted && !auth.isLoading && auth.isAuthenticated) {
       console.log('Logged In!');
-      if (auth.roles.includes('admin')) {
+      if (auth.user.roles.includes('admin')) {
         navigate('/admin');
       } else {
         navigate('/home');

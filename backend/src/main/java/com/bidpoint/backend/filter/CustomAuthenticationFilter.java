@@ -82,10 +82,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         com.bidpoint.backend.entity.User backendUser = userService.getUser(user.getUsername());
         response_json.put("access_token",access_token);
         response_json.put("refresh_token",refresh_token);
-        response_json.put("username",backendUser.getUsername());
-        response_json.put("firstname",backendUser.getFirstname());
-        response_json.put("lastname",backendUser.getLastname());
-        response_json.put("roles",backendUser.getRoles());
+        Map<String,Object> response_json_user = new HashMap<>();
+        response_json.put("user",response_json_user);
+        response_json_user.put("username",backendUser.getUsername());
+        response_json_user.put("firstname",backendUser.getFirstname());
+        response_json_user.put("lastname",backendUser.getLastname());
+        response_json_user.put("roles",backendUser.getRoles());
 
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(),response_json);

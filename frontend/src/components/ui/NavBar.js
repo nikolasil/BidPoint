@@ -36,7 +36,7 @@ const NavBar = () => {
       name: (
         <Grid container direction="row" alignItems="center">
           <AccountCircleOutlinedIcon />
-          <Typography>Your Account: {auth.username}</Typography>
+          <Typography>Your Account: {auth.user.username}</Typography>
         </Grid>
       ),
       path: '/account',
@@ -173,11 +173,11 @@ const NavBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title={auth.firstname + ' ' + auth.lastname}>
+            <Tooltip title={auth.user.firstname + ' ' + auth.user.lastname}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar>
-                  {auth.firstname.substring(0, 1) +
-                    auth.lastname.substring(0, 1)}
+                  {auth.user.firstname.substring(0, 1) +
+                    auth.user.lastname.substring(0, 1)}
                 </Avatar>
               </IconButton>
             </Tooltip>

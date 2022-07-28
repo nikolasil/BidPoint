@@ -60,13 +60,14 @@ public class UserController {
         DecodedJWT decodedJWT = verifier.verify(refresh_token);
         String username = decodedJWT.getSubject();
 
-
         Map<String,Object> response_json = new HashMap<>();
         com.bidpoint.backend.entity.User backendUser = userService.getUser(username);
-        response_json.put("username",backendUser.getUsername());
-        response_json.put("firstname",backendUser.getFirstname());
-        response_json.put("lastname",backendUser.getLastname());
-        response_json.put("roles",backendUser.getRoles());
+        Map<String,Object> response_json_user = new HashMap<>();
+        response_json.put("user",response_json_user);
+        response_json_user.put("username",backendUser.getUsername());
+        response_json_user.put("firstname",backendUser.getFirstname());
+        response_json_user.put("lastname",backendUser.getLastname());
+        response_json_user.put("roles",backendUser.getRoles());
 
         return ResponseEntity.ok().body(response_json);
     }

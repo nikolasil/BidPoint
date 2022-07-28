@@ -10,7 +10,7 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       console.log('You are authenticated');
-      if (auth.username === '') {
+      if (auth.user.username === '') {
         console.log('Has tokens but redux is empty (RELOAD DETECTED)');
         dispatch(loadUser());
       }

@@ -2,9 +2,6 @@ const initialState = {
   isLoading: false,
   isAuthenticated: !!localStorage.getItem('accessToken'),
   hasSignedUp: false,
-  firstname: '',
-  lastname: '',
-  username: '',
-  roles: [],
+  user: null,
 };
 export default initialState;
