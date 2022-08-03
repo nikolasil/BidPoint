@@ -1,5 +1,9 @@
 package com.bidpoint.backend.controller;
 
+import com.bidpoint.backend.converter.UserDtoInputToUserConverter;
+import com.bidpoint.backend.converter.UserToUserDtoOutputConverter;
+import com.bidpoint.backend.dto.UserDtoInput;
+import com.bidpoint.backend.dto.UserDtoOutput;
 import com.bidpoint.backend.entity.User;
 import com.bidpoint.backend.service.UserService;
 import com.auth0.jwt.JWT;
@@ -9,6 +13,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,22 +40,25 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserController {
 
     private final UserService userService;
+    private final ConversionService conversionService;
 
     @PostMapping
-    public ResponseEntity<?> saveUser(@RequestBody User userToBeSaved) {
-        userService.saveUser(userToBeSaved);
-        userService.addRoleToUser(userToBeSaved.getUsername(), "visitor");
+    public ResponseEntity<UserDtoOutput> saveUser(@RequestBody UserDtoInput userDtoInput) {
+        User user = conversionService.convert(userDtoInput,User.class);
+        assert user != null;
+        userService.saveUser(user);
+        userService.addRoleToUser(user.getUsername(), "visitor");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user").toUriString());
-        return ResponseEntity.created(uri).body("User singed up successfully");
+        return ResponseEntity.created(uri).body(conversionService.convert(userService.getUser(user.getUsername()),UserDtoOutput.class));
     }
 
     @GetMapping()
-    public ResponseEntity<User> getUser(@RequestParam(name = "username") String username){
-        return ResponseEntity.ok().body(userService.getUser(username));
+    public ResponseEntity<UserDtoOutput> getUser(@RequestParam(name = "username") String username){
+        return ResponseEntity.ok().body(conversionService.convert(userService.getUser(username),UserDtoOutput.class));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getUser(HttpServletRequest request) {
+    public ResponseEntity<UserDtoOutput> getUser(HttpServletRequest request) {
 
         String authorizationHeader = request.getHeader(AUTHORIZATION);
 
@@ -60,30 +68,22 @@ public class UserController {
         DecodedJWT decodedJWT = verifier.verify(refresh_token);
         String username = decodedJWT.getSubject();
 
-        Map<String,Object> response_json = new HashMap<>();
-        com.bidpoint.backend.entity.User backendUser = userService.getUser(username);
-        Map<String,Object> response_json_user = new HashMap<>();
-        response_json.put("user",response_json_user);
-        response_json_user.put("username",backendUser.getUsername());
-        response_json_user.put("firstname",backendUser.getFirstname());
-        response_json_user.put("lastname",backendUser.getLastname());
-        response_json_user.put("roles",backendUser.getRoles());
-
-        return ResponseEntity.ok().body(response_json);
+        return ResponseEntity.ok().body(conversionService.convert(userService.getUser(username),UserDtoOutput.class));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<User>> getUsers(){
-        return ResponseEntity.ok().body(userService.getUsers());
+    public ResponseEntity<List<UserDtoOutput>> getUsers(){
+        List<UserDtoOutput> list = userService.getUsers().stream().map(user -> conversionService.convert(user,UserDtoOutput.class)).toList();
+        return ResponseEntity.ok().body(list);
     }
 
-    @PostMapping("/add-role")
-    public ResponseEntity<?>addRoleToUser(@RequestParam(name = "username") String username, @RequestParam(name = "roleName") String roleName){
-        return ResponseEntity.ok().body(userService.addRoleToUser(username, roleName).getRoles());
+    @PostMapping("/role")
+    public ResponseEntity<UserDtoOutput>addRoleToUser(@RequestParam(name = "username") String username, @RequestParam(name = "roleName") String roleName){
+        return ResponseEntity.ok().body(conversionService.convert(userService.addRoleToUser(username, roleName),UserDtoOutput.class));
     }
 
-    @PostMapping("/remove-role")
-    public ResponseEntity<?>removeRoleFromUser(@RequestParam(name = "username",required = true) String username, @RequestParam(name = "roleName",required = true) String roleName){
-        return ResponseEntity.ok().body(userService.removeRoleFromUser(username, roleName).getRoles());
+    @DeleteMapping("/role")
+    public ResponseEntity<UserDtoOutput>removeRoleFromUser(@RequestParam(name = "username") String username, @RequestParam(name = "roleName") String roleName){
+        return ResponseEntity.ok().body(conversionService.convert(userService.removeRoleFromUser(username, roleName),UserDtoOutput.class));
     }
 }

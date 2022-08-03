@@ -2,6 +2,9 @@ package com.bidpoint.backend.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.bidpoint.backend.converter.UserToUserDtoOutputConverter;
+import com.bidpoint.backend.dto.AuthDto;
+import com.bidpoint.backend.dto.UserDtoOutput;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +12,7 @@ import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,13 +39,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-
+    private final ConversionService conversionService;
 
     private final UserService userService;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager,UserService userService){
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager,UserService userService,ConversionService conversionService){
         this.authenticationManager = authenticationManager;
         this.userService = userService;
+        this.conversionService = conversionService;
     }
 
     @SneakyThrows
@@ -78,19 +83,15 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
-        Map<String,Object> response_json = new HashMap<>();
-        com.bidpoint.backend.entity.User backendUser = userService.getUser(user.getUsername());
-        response_json.put("access_token",access_token);
-        response_json.put("refresh_token",refresh_token);
-        Map<String,Object> response_json_user = new HashMap<>();
-        response_json.put("user",response_json_user);
-        response_json_user.put("username",backendUser.getUsername());
-        response_json_user.put("firstname",backendUser.getFirstname());
-        response_json_user.put("lastname",backendUser.getLastname());
-        response_json_user.put("roles",backendUser.getRoles());
-
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(),response_json);
+        new ObjectMapper().writeValue(
+            response.getOutputStream(),
+            new AuthDto(
+                access_token,
+                refresh_token,
+                conversionService.convert(userService.getUser(user.getUsername()), UserDtoOutput.class)
+            )
+        );
     }
 
     @Override

@@ -19,7 +19,6 @@ import static javax.persistence.GenerationType.AUTO;
 public class User {
     @Id
     @GeneratedValue(strategy = AUTO)
-    @JsonIgnore
     private Long id;
 
     private String firstname;
