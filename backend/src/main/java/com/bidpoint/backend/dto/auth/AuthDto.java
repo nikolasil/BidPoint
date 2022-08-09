@@ -1,5 +1,6 @@
-package com.bidpoint.backend.dto;
+package com.bidpoint.backend.dto.auth;
 
+import com.bidpoint.backend.dto.user.UserOutputDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class AuthDto {
     private String access_token;
     private String refresh_token;
-    private UserDtoOutput user;
+    private UserOutputDto user;
 }

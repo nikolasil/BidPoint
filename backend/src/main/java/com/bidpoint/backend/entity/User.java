@@ -23,8 +23,17 @@ public class User {
 
     private String firstname;
     private String lastname;
+    @Column(unique=true)
     private String username;
     private String password;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean isApproved;
+
+    private String address;
+    private String phone;
+    private String mail;
+    private String afm;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();

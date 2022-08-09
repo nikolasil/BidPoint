@@ -1,10 +1,13 @@
 package com.bidpoint.backend.filter;
 
-import com.bidpoint.backend.controller.AuthController;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.bidpoint.backend.entity.User;
+import com.bidpoint.backend.exception.auth.SignInException;
+import com.bidpoint.backend.exception.user.UserNotApprovedException;
+import com.bidpoint.backend.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,6 +27,12 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
+    private final UserService userService;
+
+    public CustomAuthorizationFilter(UserService userService) {
+        this.userService = userService;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getServletPath().equals("/api/auth") || request.getServletPath().equals("/api/auth/refresh-token")) {
@@ -49,10 +58,14 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             });
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            User user = userService.getUser(username);
+
+            if(!user.isApproved())
+                throw new UserNotApprovedException(username);
+
             filterChain.doFilter(request, response);
         } catch (Exception e) {
-            log.error("Error logging in: {}", e.getMessage());
-            AuthController.forbiddenResponse(response, e);
+            throw new SignInException(e);
         }
     }
 }

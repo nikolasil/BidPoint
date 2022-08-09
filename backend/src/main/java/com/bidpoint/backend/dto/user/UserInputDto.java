@@ -1,19 +1,19 @@
-package com.bidpoint.backend.dto;
+package com.bidpoint.backend.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDtoInput {
+public class UserInputDto {
     private String firstname;
     private String lastname;
     private String username;
     private String password;
-    private Collection<String> roles;
+    private String address;
+    private String phone;
+    private String mail;
+    private String afm;
 }

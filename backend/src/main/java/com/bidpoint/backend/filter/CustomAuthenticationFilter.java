@@ -2,16 +2,12 @@ package com.bidpoint.backend.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.bidpoint.backend.converter.UserToUserDtoOutputConverter;
-import com.bidpoint.backend.dto.AuthDto;
-import com.bidpoint.backend.dto.UserDtoOutput;
+import com.bidpoint.backend.dto.auth.AuthDto;
+import com.bidpoint.backend.dto.user.UserOutputDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.JSONParser;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,12 +22,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
-import com.bidpoint.backend.service.UserService;
+import com.bidpoint.backend.service.user.UserService;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -69,6 +62,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         User user = (User)authentication.getPrincipal();
+
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
         String access_token = JWT.create()
@@ -89,9 +83,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             new AuthDto(
                 access_token,
                 refresh_token,
-                conversionService.convert(userService.getUser(user.getUsername()), UserDtoOutput.class)
+                conversionService.convert(userService.getUser(user.getUsername()), UserOutputDto.class)
             )
         );
+
     }
 
     @Override

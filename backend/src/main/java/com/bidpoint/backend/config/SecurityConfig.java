@@ -2,7 +2,7 @@ package com.bidpoint.backend.config;
 
 import com.bidpoint.backend.filter.CustomAuthenticationFilter;
 import com.bidpoint.backend.filter.CustomAuthorizationFilter;
-import com.bidpoint.backend.service.UserService;
+import com.bidpoint.backend.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,10 +42,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers( "/api/user").permitAll();
         http.authorizeRequests().antMatchers( "/api/user/me").hasAnyAuthority("admin","seller","visitor","bidder");
         http.authorizeRequests().antMatchers( "/api/user/**").hasAnyAuthority("admin");
+        http.authorizeRequests().antMatchers( "/api/user/role").hasAnyAuthority("admin");
+        http.authorizeRequests().antMatchers( "/api/item").permitAll();
 
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomAuthorizationFilter(userService), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

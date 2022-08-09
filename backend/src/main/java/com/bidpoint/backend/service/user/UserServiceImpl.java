@@ -1,7 +1,10 @@
-package com.bidpoint.backend.service;
+package com.bidpoint.backend.service.user;
 
 import com.bidpoint.backend.entity.Role;
 import com.bidpoint.backend.entity.User;
+import com.bidpoint.backend.exception.role.RoleAlreadyExistsException;
+import com.bidpoint.backend.exception.role.RoleNotFoundException;
+import com.bidpoint.backend.exception.user.UserNotFoundException;
 import com.bidpoint.backend.repository.RoleRepository;
 import com.bidpoint.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,13 +31,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("loadUserByUsername username={}",username);
+
         User user = userRepository.findByUsername(username);
         if(user == null){
-            log.error("User with username {} not found in the database", username);
-            throw new UsernameNotFoundException("User not found in the database");
-        } else{
-            log.info("User found in the database: {}",username);
+            log.info("User with username {} not found in the database", username);
+            throw new UserNotFoundException(username);
         }
+
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
@@ -44,38 +47,38 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User saveUser(User user) {
-        log.info("Saving new user {} to the database",user.getUsername());
+    public User createUser(User user, List<String> roles) {
+        log.info("createUser user={} roles={}",user.getUsername(), roles);
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        map the List<String> to Collection<Role>. The role names that are not present in the database are ignored
+        user.setRoles(roles.stream().map(roleRepository::findByName).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new)));
         return userRepository.save(user);
     }
 
     @Override
-    public Role saveRole(Role role) {
-        log.info("Saving new role {} to the database",role.getName());
-        Role foundRole = roleRepository.findByName(role.getName());
-        if(foundRole == null)
-            return roleRepository.save(role);
-        return foundRole;
-    }
+    public User approveUser(String username) {
+        log.info("approveUser username={}",username);
 
-    @Override
-    public Role getRole(String roleName) {
-        log.info("Getting role {} from the database", roleName);
-        return roleRepository.findByName(roleName);
+        User user = userRepository.findByUsername(username);
+        if(user == null)
+            throw new UserNotFoundException(username);
+
+        user.setApproved(true);
+        return user;
     }
 
     @Override
     public User addRoleToUser(String username, String roleName) {
-        log.info("Adding role {} to username {}", roleName, username);
-        User user = userRepository.findByUsername(username);
+        log.info("addRoleToUser username={} roleName={}", username, roleName);
 
+        User user = userRepository.findByUsername(username);
         if(user == null)
-            throw new RuntimeException("Username " + username + " not found");
+            throw new UserNotFoundException(username);
 
         Role role = roleRepository.findByName(roleName);
         if(role == null)
-            throw new RuntimeException("roleName " + roleName + " not found");
+            throw new RoleNotFoundException(roleName);
 
         Collection<Role> roles = user.getRoles();
 
@@ -87,15 +90,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User removeRoleFromUser(String username, String roleName) {
-        log.info("Removing role {} from username {}", roleName, username);
-        User user = userRepository.findByUsername(username);
+        log.info("removeRoleFromUser username={} roleName={}", username, roleName);
 
+        User user = userRepository.findByUsername(username);
         if(user == null)
-            throw new RuntimeException("Username " + username + " not found");
+            throw new UserNotFoundException("Username " + username + " not found");
 
         Role role = roleRepository.findByName(roleName);
         if(role == null)
-            throw new RuntimeException("roleName " + roleName + " not found");
+            throw new RoleNotFoundException("roleName " + roleName + " not found");
 
         user.getRoles().remove(role);
         return user;
@@ -103,13 +106,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User getUser(String username) {
-        log.info("Fetching user with username {}", username);
-        return userRepository.findByUsername(username);
+        log.info("getUser username={}", username);
+
+        User user = userRepository.findByUsername(username);
+        if(user == null)
+            throw new UserNotFoundException(username);
+        return user;
     }
 
     @Override
     public List<User> getUsers() {
-        log.info("Fetching all users");
+        log.info("getUsers");
+
         return userRepository.findAll();
     }
 
