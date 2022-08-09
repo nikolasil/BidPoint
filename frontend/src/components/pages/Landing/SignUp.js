@@ -43,40 +43,14 @@ const SignUp = () => {
     },
   });
 
-  // check for login user
+  // check for signup user
   useEffect(() => {
-    if (
-      hasSubmitted &&
-      auth.hasSignedUp &&
-      !auth.isLoading &&
-      !auth.isAuthenticated
-    ) {
-      console.log('Login user');
-      console.log(
-        JSON.stringify({
-          username: formik.values.username,
-          password: formik.values.password,
-        })
-      );
-      dispatch(
-        loginUser(
-          JSON.stringify({
-            username: formik.values.username,
-            password: formik.values.password,
-          })
-        )
-      );
-    } else if (
-      hasSubmitted &&
-      !auth.hasSignedUp &&
-      !auth.isLoading &&
-      auth.isAuthenticated
-    ) {
-      console.log('Logged In!');
+    if (hasSubmitted && !auth.isLoading && auth.isAuthenticated) {
+      console.log('Signed up!');
       if (auth.user.roles.includes('admin')) {
         navigate('/admin');
       } else {
-        navigate('/home');
+        navigate('/');
       }
     }
   }, [auth]);
@@ -85,7 +59,7 @@ const SignUp = () => {
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 10,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

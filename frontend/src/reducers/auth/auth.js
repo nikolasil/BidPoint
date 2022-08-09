@@ -14,6 +14,7 @@ const authReducer = (state = initialState, action) => {
       console.log(
         'authReducer: SIGNUP_USER_REQUEST | LOGIN_USER_REQUEST | LOAD_USER_REQUEST'
       );
+      setDefaultAuthHeader();
       return {
         ...state,
         isLoading: true,
@@ -23,24 +24,28 @@ const authReducer = (state = initialState, action) => {
     case types.LOGIN_USER_SUCCESS: {
       console.log('authReducer: LOGIN_USER_SUCCESS');
       console.log('authReducer: payload = ', payload);
-      localStorage.setItem('accessToken', payload.access_token);
+      if (payload.access_token)
+        localStorage.setItem('accessToken', payload.access_token);
       localStorage.setItem('refreshToken', payload.refresh_token);
       setDefaultAuthHeader();
-      payload.user.roles = payload.user.roles.map((role) => role.name);
       return {
         ...state,
         isLoading: false,
         isAuthenticated: true,
-        hasSignedUp: false,
         user: payload.user,
       };
     }
     case types.SIGNUP_USER_SUCCESS: {
       console.log('authReducer: SIGNUP_USER_SUCCESS');
+      console.log('authReducer: payload = ', payload);
+      localStorage.setItem('accessToken', payload.access_token);
+      localStorage.setItem('refreshToken', payload.refresh_token);
+      setDefaultAuthHeader();
       return {
         ...state,
         isLoading: false,
-        hasSignedUp: true,
+        isAuthenticated: true,
+        user: payload,
       };
     }
     case types.LOGIN_USER_FAILURE:
@@ -68,12 +73,11 @@ const authReducer = (state = initialState, action) => {
     case types.LOAD_USER_SUCCESS: {
       console.log('authReducer: LOAD_USER_SUCCESS');
       console.log('authReducer: payload = ', payload);
-      payload.user.roles = payload.user.roles.map((role) => role.name);
       return {
         ...state,
         isLoading: false,
         isAuthenticated: true,
-        user: payload.user,
+        user: payload,
       };
     }
     default: {

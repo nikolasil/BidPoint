@@ -34,7 +34,10 @@ const Account = () => {
                 <Grid item xs={12} sm={6}>
                   <Typography component="h1" variant="h6">
                     {item.title === 'Roles'
-                      ? item.value.map((value) => value + ', ')
+                      ? item.value
+                          .map((value) => ' ' + value)
+                          .toString()
+                          .trim()
                       : item.value}
                   </Typography>
                 </Grid>

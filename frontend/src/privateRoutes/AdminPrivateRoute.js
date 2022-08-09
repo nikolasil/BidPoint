@@ -8,18 +8,26 @@ const AdminPrivateRoute = ({ children }) => {
   const isLoading = useSelector((state) => state.auth.isLoading);
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      console.log('You are a authenticated admin');
-    } else if (
+    if (
       !isLoading &&
-      !isAuthenticated &&
-      !auth.roles.includes('admin')
+      isAuthenticated &&
+      auth.user.roles != null &&
+      auth.user.roles.includes('admin')
     ) {
+      console.log('You are a authenticated admin');
+    } else {
       console.log('You are NOT a authenticated admin');
     }
   }, [auth]);
 
-  return !isLoading && (isAuthenticated ? children : <Navigate to="/" />);
+  return !isLoading &&
+    isAuthenticated &&
+    auth.user.roles != null &&
+    auth.user.roles.includes('admin') ? (
+    children
+  ) : (
+    <Navigate to="/" />
+  );
 };
 
 export default AdminPrivateRoute;

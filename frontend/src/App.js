@@ -1,34 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
-import PrivateRoute from './privateRoutes/PrivateRoute';
 import AdminPrivateRoute from './privateRoutes/AdminPrivateRoute';
-import SignIn from './components/pages/Landing/SignIn';
+import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import setDefaultAuthHeader from './utils/setDefaultAuthHeader';
 import Admin from './Admin';
 import Customer from './Customer';
-import SignUp from './components/pages/Landing/SignUp';
+import { loadUser } from './actions/auth';
 
 function App() {
   axios.defaults.baseURL = 'http://localhost:8002/api/';
   setDefaultAuthHeader();
-
+  const dispatch = useDispatch();
+  // in first initial render, check for user in local storage
+  useEffect(() => {
+    console.log('Check for user in local storage');
+    dispatch(loadUser());
+  }, []);
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route exact path="/" element={<SignIn />} />
-          <Route exact path="/signup" element={<SignUp />} />
-          <Route
-            exact
-            path="*"
-            element={
-              <PrivateRoute>
-                <Customer />
-              </PrivateRoute>
-            }
-          />
+          <Route exact path="*" element={<Customer />} />
           <Route
             exact
             path="/admin/*"

@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
-import { loadUser, loginUser } from '../../../actions/auth';
+import { loginUser } from '../../../actions/auth';
 
 const Landing = () => {
   const dispatch = useDispatch();
@@ -38,12 +38,6 @@ const Landing = () => {
     },
   });
 
-  // in first initial render, check for user in local storage
-  useEffect(() => {
-    console.log('Check for user in local storage');
-    dispatch(loadUser());
-  }, []);
-
   // check for login user
   useEffect(() => {
     if (hasSubmitted && !auth.isLoading && auth.isAuthenticated) {
@@ -51,7 +45,7 @@ const Landing = () => {
       if (auth.user.roles.includes('admin')) {
         navigate('/admin');
       } else {
-        navigate('/home');
+        navigate('/');
       }
     }
   }, [auth]);
@@ -60,7 +54,7 @@ const Landing = () => {
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 10,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

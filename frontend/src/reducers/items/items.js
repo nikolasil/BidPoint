@@ -4,8 +4,8 @@ import initialState from './initialState';
 const applicationsReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
-    case types.FETCH_APPLICATION_REQUEST:
-    case types.SUBMIT_NEW_APPLICATION_REQUEST:
+    case types.FETCH_ITEM_REQUEST:
+    case types.SUBMIT_NEW_ITEM_REQUEST:
       return {
         ...state,
         application: {
@@ -16,7 +16,7 @@ const applicationsReducer = (state = initialState, action) => {
           isUploaded: false,
         },
       };
-    case types.SUBMIT_NEW_APPLICATION_SUCCESS:
+    case types.SUBMIT_NEW_ITEM_SUCCESS:
       return {
         ...state,
         application: {
@@ -28,7 +28,7 @@ const applicationsReducer = (state = initialState, action) => {
           isUploaded: true,
         },
       };
-    case types.SUBMIT_NEW_APPLICATION_FAILURE:
+    case types.SUBMIT_NEW_ITEM_FAILURE:
       return {
         ...state,
         application: {
@@ -40,7 +40,7 @@ const applicationsReducer = (state = initialState, action) => {
           isUploaded: false,
         },
       };
-    case types.GET_ALL_APPLICATIONS_REQUEST:
+    case types.GET_ALL_ITEMS_REQUEST:
       return {
         ...state,
         applications: {
@@ -51,7 +51,7 @@ const applicationsReducer = (state = initialState, action) => {
           applications: null,
         },
       };
-    case types.GET_ALL_APPLICATIONS_SUCCESS:
+    case types.GET_ALL_ITEMS_SUCCESS:
       return {
         ...state,
         applications: {
@@ -62,7 +62,7 @@ const applicationsReducer = (state = initialState, action) => {
           applications: payload.applications,
         },
       };
-    case types.GET_ALL_APPLICATIONS_FAILURE:
+    case types.GET_ALL_ITEMS_FAILURE:
       return {
         ...state,
         applications: {
@@ -73,7 +73,7 @@ const applicationsReducer = (state = initialState, action) => {
           applications: null,
         },
       };
-    case types.FETCH_APPLICATION_SUCCESS: {
+    case types.FETCH_ITEM_SUCCESS: {
       console.log('reducer', payload.application.attachments);
       return {
         ...state,
@@ -87,7 +87,7 @@ const applicationsReducer = (state = initialState, action) => {
         },
       };
     }
-    case types.FETCH_APPLICATION_FAILURE:
+    case types.FETCH_ITEM_FAILURE:
       return {
         ...state,
         application: {

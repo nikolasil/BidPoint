@@ -1,5 +1,5 @@
 const initialState = {
-  application: {
+  items: {
     isLoading: true,
     error: null,
     application: null,
@@ -7,12 +7,6 @@ const initialState = {
     isUploaded: false,
     isFetched: false,
     newId: null,
-  },
-  applications: {
-    isLoading: false,
-    error: null,
-    applications: null,
-    message: null,
-  },
+  }
 };
 export default initialState;

@@ -38,7 +38,7 @@ export const logoutUser = () => async (dispatch) => {
 export const loadUser = () => async (dispatch) => {
   dispatch({ type: types.LOAD_USER_REQUEST });
   try {
-    const res = await axios.get('user/me');
+    const res = await axios.get('auth/me');
     dispatch({ type: types.LOAD_USER_SUCCESS, payload: res.data });
   } catch (error) {
     dispatch({ type: types.LOAD_USER_FAILURE, payload: error.response.data });

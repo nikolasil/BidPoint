@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,7 +13,7 @@ import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import Divider from '@mui/material/Divider';
@@ -21,6 +21,7 @@ import Divider from '@mui/material/Divider';
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [userChanged, setUserChanged] = React.useState(false);
   const navigate = useNavigate();
 
   const auth = useSelector((state) => state.auth);
@@ -36,7 +37,9 @@ const NavBar = () => {
       name: (
         <Grid container direction="row" alignItems="center">
           <AccountCircleOutlinedIcon />
-          <Typography>Your Account: {auth.user.username}</Typography>
+          <Typography>
+            Your Account{auth.user && ': ' + auth.user.username}
+          </Typography>
         </Grid>
       ),
       path: '/account',
@@ -54,6 +57,10 @@ const NavBar = () => {
       divider: false,
     },
   ];
+  useEffect(() => {
+    console.log('userChanged');
+    setUserChanged(!userChanged);
+  }, [auth.user]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -70,14 +77,14 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
             variant="h6"
             noWrap
             component="a"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate('/')}
             cursor="pointer"
             sx={{
               mr: 2,
@@ -142,7 +149,7 @@ const NavBar = () => {
             variant="h5"
             noWrap
             component="a"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate('/')}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -171,46 +178,68 @@ const NavBar = () => {
               </Button>
             ))}
           </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title={auth.user.firstname + ' ' + auth.user.lastname}>
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar>
-                  {auth.user.firstname.substring(0, 1) +
-                    auth.user.lastname.substring(0, 1)}
-                </Avatar>
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <Box
-                  key={setting.id}
+          {!auth.isLoading && auth.isAuthenticated && auth.user ? (
+            <>
+              <Tooltip title={auth.user.firstname + ' ' + auth.user.lastname}>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar>
+                    {auth.user.firstname.substring(0, 1) +
+                      auth.user.lastname.substring(0, 1)}
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <Box
+                    key={setting.id}
+                    onClick={() => {
+                      navigate(setting.path);
+                      handleCloseUserMenu();
+                    }}
+                  >
+                    <MenuItem>{setting.name}</MenuItem>
+                    {setting.divider && <Divider />}
+                  </Box>
+                ))}
+              </Menu>
+            </>
+          ) : (
+            <>
+              <Box sx={{ flexGrow: 0, display: { xs: 'flex' } }}>
+                <Button
                   onClick={() => {
-                    navigate(setting.path);
-                    handleCloseUserMenu();
+                    navigate('/signin');
                   }}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
                 >
-                  <MenuItem>{setting.name}</MenuItem>
-                  {setting.divider && <Divider />}
-                </Box>
-              ))}
-            </Menu>
-          </Box>
+                  Sign In
+                </Button>
+                <Button
+                  onClick={() => {
+                    navigate('/signup');
+                  }}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  Sign Up
+                </Button>
+              </Box>
+            </>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
