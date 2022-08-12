@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.bidpoint.backend.dto.auth.AuthDto;
 import com.bidpoint.backend.dto.user.UserOutputDto;
+import com.bidpoint.backend.util.AuthUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +34,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     private final AuthenticationManager authenticationManager;
     private final ConversionService conversionService;
-
+    private final AuthUtil authUtil;
     private final UserService userService;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager,UserService userService,ConversionService conversionService){
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager,UserService userService,ConversionService conversionService,AuthUtil authUtil){
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.conversionService = conversionService;
+        this.authUtil = authUtil;
     }
 
     @SneakyThrows
@@ -63,26 +65,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         User user = (User)authentication.getPrincipal();
 
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-
-        String access_token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("roles",user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .sign(algorithm);
-        String refresh_token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
-                .withIssuer(request.getRequestURL().toString())
-                .sign(algorithm);
-
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(
             response.getOutputStream(),
             new AuthDto(
-                access_token,
-                refresh_token,
+                authUtil.createAccessToken(user,request),
+                authUtil.createRefreshToken(user,request),
                 conversionService.convert(userService.getUser(user.getUsername()), UserOutputDto.class)
             )
         );

@@ -1,5 +1,7 @@
 package com.bidpoint.backend.service.user;
 
+import com.bidpoint.backend.dto.user.UserInputDto;
+import com.bidpoint.backend.dto.user.UserOutputDto;
 import com.bidpoint.backend.entity.Role;
 import com.bidpoint.backend.entity.User;
 import com.bidpoint.backend.exception.role.RoleAlreadyExistsException;
@@ -9,6 +11,7 @@ import com.bidpoint.backend.repository.RoleRepository;
 import com.bidpoint.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,11 +29,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
+    private final ConversionService conversionService;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UserNotFoundException {
         log.info("loadUserByUsername username={}",username);
 
         User user = userRepository.findByUsername(username);
@@ -47,17 +51,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User createUser(User user, List<String> roles) {
+    public UserOutputDto createUser(UserInputDto userInputDto, List<String> roles) {
+        User user = conversionService.convert(userInputDto, User.class);
+
         log.info("createUser user={} roles={}",user.getUsername(), roles);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 //        map the List<String> to Collection<Role>. The role names that are not present in the database are ignored
         user.setRoles(roles.stream().map(roleRepository::findByName).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new)));
-        return userRepository.save(user);
+
+        return conversionService.convert(userRepository.save(user), UserOutputDto.class);
     }
 
     @Override
-    public User approveUser(String username) {
+    public UserOutputDto approveUser(String username) {
         log.info("approveUser username={}",username);
 
         User user = userRepository.findByUsername(username);
@@ -65,11 +72,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new UserNotFoundException(username);
 
         user.setApproved(true);
-        return user;
+        return conversionService.convert(user, UserOutputDto.class);
     }
 
     @Override
-    public User addRoleToUser(String username, String roleName) {
+    public Boolean isApproved(String username) {
+        log.info("isApproved username={}", username);
+
+        User user = userRepository.findByUsername(username);
+        if(user == null)
+            throw new UserNotFoundException(username);
+        return user.isApproved();
+    }
+
+    @Override
+    public UserOutputDto addRoleToUser(String username, String roleName) {
         log.info("addRoleToUser username={} roleName={}", username, roleName);
 
         User user = userRepository.findByUsername(username);
@@ -84,12 +101,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         if(!roles.contains(role))
             roles.add(role);
-
-        return user;
+        return conversionService.convert(user, UserOutputDto.class);
     }
 
     @Override
-    public User removeRoleFromUser(String username, String roleName) {
+    public UserOutputDto removeRoleFromUser(String username, String roleName) {
         log.info("removeRoleFromUser username={} roleName={}", username, roleName);
 
         User user = userRepository.findByUsername(username);
@@ -101,24 +117,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new RoleNotFoundException("roleName " + roleName + " not found");
 
         user.getRoles().remove(role);
-        return user;
+        return conversionService.convert(user, UserOutputDto.class);
     }
 
     @Override
-    public User getUser(String username) {
+    public UserOutputDto getUser(String username) {
         log.info("getUser username={}", username);
 
         User user = userRepository.findByUsername(username);
         if(user == null)
             throw new UserNotFoundException(username);
-        return user;
+        return conversionService.convert(user, UserOutputDto.class);
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<UserOutputDto> getUsers() {
         log.info("getUsers");
 
-        return userRepository.findAll();
+        return userRepository.findAll().stream().map(user -> conversionService.convert(user, UserOutputDto.class)).toList();
     }
 
 }

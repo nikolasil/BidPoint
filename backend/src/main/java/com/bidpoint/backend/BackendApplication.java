@@ -1,5 +1,7 @@
 package com.bidpoint.backend;
 
+import com.bidpoint.backend.dto.user.UserInputDto;
+import com.bidpoint.backend.dto.user.UserOutputDto;
 import com.bidpoint.backend.entity.Role;
 import com.bidpoint.backend.entity.User;
 import com.bidpoint.backend.service.role.RoleService;
@@ -37,35 +39,29 @@ public class BackendApplication {
             roleService.createRole(new Role(null, role_seller));
             roleService.createRole(new Role(null, role_bidder));
 
-            User nikolasil = userService.createUser(
-                new User(
-                    null,
+            UserOutputDto nikolasil = userService.createUser(
+                new UserInputDto(
                     "Nikolas",
                     "Iliopoulos",
                     "nikolasil",
                     "1234",
-                    false,
                     "",
                     "",
                     "",
-                    "",
-                    new ArrayList<>()
+                    ""
                 ), Arrays.asList("admin", "seller", "bidder")
             );
 
-            User nassosanagn = userService.createUser(
-                new User(
-                    null,
+            UserOutputDto nassosanagn = userService.createUser(
+                new UserInputDto(
                     "Nassos",
                     "Anagnostopoulos",
                     "nassosanagn",
                     "1234",
-                    true,
                     "",
                     "",
                     "",
-                    "",
-                    new ArrayList<>()
+                    ""
                 ), Arrays.asList("seller", "bidder")
             );
 

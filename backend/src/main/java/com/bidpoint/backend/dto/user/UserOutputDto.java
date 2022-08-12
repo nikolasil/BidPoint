@@ -14,4 +14,8 @@ public class UserOutputDto {
     private String lastname;
     private String username;
     private Collection<String> roles;
+    private String address;
+    private String phone;
+    private String mail;
+    private String afm;
 }

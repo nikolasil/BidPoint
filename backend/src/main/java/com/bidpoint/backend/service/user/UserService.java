@@ -1,15 +1,18 @@
 package com.bidpoint.backend.service.user;
 
+import com.bidpoint.backend.dto.user.UserInputDto;
+import com.bidpoint.backend.dto.user.UserOutputDto;
 import com.bidpoint.backend.entity.Role;
 import com.bidpoint.backend.entity.User;
 
 import java.util.List;
 
 public interface UserService {
-    User getUser(String username);
-    List<User> getUsers();
-    User createUser(User user, List<String> roles);
-    User approveUser(String username);
-    User removeRoleFromUser(String username, String roleName);
-    User addRoleToUser(String username, String roleName);
+    UserOutputDto getUser(String username);
+    List<UserOutputDto> getUsers();
+    UserOutputDto createUser(UserInputDto user, List<String> roles);
+    UserOutputDto approveUser(String username);
+    Boolean isApproved(String username);
+    UserOutputDto removeRoleFromUser(String username, String roleName);
+    UserOutputDto addRoleToUser(String username, String roleName);
 }
