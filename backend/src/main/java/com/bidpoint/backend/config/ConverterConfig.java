@@ -1,7 +1,7 @@
 package com.bidpoint.backend.config;
 
-import com.bidpoint.backend.converter.user.UserInputDtoConverter;
-import com.bidpoint.backend.converter.user.UserConverter;
+import com.bidpoint.backend.user.converter.UserInputDtoConverter;
+import com.bidpoint.backend.user.converter.UserConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

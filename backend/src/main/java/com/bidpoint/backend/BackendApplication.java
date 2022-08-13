@@ -1,24 +1,25 @@
 package com.bidpoint.backend;
 
-import com.bidpoint.backend.dto.user.UserInputDto;
-import com.bidpoint.backend.dto.user.UserOutputDto;
-import com.bidpoint.backend.entity.Role;
-import com.bidpoint.backend.entity.User;
-import com.bidpoint.backend.service.role.RoleService;
-import com.bidpoint.backend.service.user.UserService;
+import com.bidpoint.backend.user.dto.UserInputDto;
+import com.bidpoint.backend.user.entity.Role;
+import com.bidpoint.backend.user.entity.User;
+import com.bidpoint.backend.role.service.RoleService;
+import com.bidpoint.backend.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @SpringBootApplication
+@RequiredArgsConstructor
 public class BackendApplication {
-
+    private final ConversionService conversionService;
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
     }
@@ -31,6 +32,7 @@ public class BackendApplication {
     @Bean
     CommandLineRunner run(UserService userService, RoleService roleService) {
         return args -> {
+
             String role_admin = "admin";
             String role_seller = "seller";
             String role_bidder = "bidder";
@@ -39,8 +41,7 @@ public class BackendApplication {
             roleService.createRole(new Role(null, role_seller));
             roleService.createRole(new Role(null, role_bidder));
 
-            UserOutputDto nikolasil = userService.createUser(
-                new UserInputDto(
+            User nikolasil = userService.createUser(conversionService.convert(new UserInputDto(
                     "Nikolas",
                     "Iliopoulos",
                     "nikolasil",
@@ -48,12 +49,9 @@ public class BackendApplication {
                     "",
                     "",
                     "",
-                    ""
-                ), Arrays.asList("admin", "seller", "bidder")
-            );
+                    ""),User.class),Arrays.asList("seller", "bidder"));
 
-            UserOutputDto nassosanagn = userService.createUser(
-                new UserInputDto(
+            User nassosanagn = userService.createUser(conversionService.convert(new UserInputDto(
                     "Nassos",
                     "Anagnostopoulos",
                     "nassosanagn",
@@ -61,9 +59,7 @@ public class BackendApplication {
                     "",
                     "",
                     "",
-                    ""
-                ), Arrays.asList("seller", "bidder")
-            );
+                    ""),User.class),Arrays.asList("seller", "bidder"));
 
         };
     }
