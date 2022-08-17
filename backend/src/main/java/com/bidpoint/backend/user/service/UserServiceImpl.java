@@ -1,6 +1,6 @@
 package com.bidpoint.backend.user.service;
 
-import com.bidpoint.backend.user.entity.Role;
+import com.bidpoint.backend.role.entity.Role;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.role.exception.RoleNotFoundException;
 import com.bidpoint.backend.user.exception.UserNotFoundException;
@@ -50,9 +50,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("createUser user={} roles={}", user.getUsername(), roles);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        map the List<String> to Collection<Role>. The role names that are not present in the database are ignored
-        user.setRoles(roles.stream().map(roleRepository::findByName).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new)));
-
+//        map the List<String> to Set<Role>. The role names that are not present in the database are ignored
+        user.setRoles(roles.stream().map(roleRepository::findByName).filter(Objects::nonNull).collect(Collectors.toSet()));
         return userRepository.save(user);
     }
 
@@ -90,10 +89,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(role == null)
             throw new RoleNotFoundException(roleName);
 
-        Collection<Role> roles = user.getRoles();
+        Set<Role> roles = user.getRoles();
 
-        if(!roles.contains(role))
-            roles.add(role);
+        roles.add(role);
+
         return user;
     }
 

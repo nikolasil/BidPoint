@@ -1,19 +1,20 @@
 package com.bidpoint.backend.user.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.bidpoint.backend.role.entity.Role;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import static javax.persistence.GenerationType.AUTO;
 
-@Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name="application_user")
 public class User {
     @Id
@@ -35,5 +36,6 @@ public class User {
     private String afm;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    private Set<Role> roles;
+
 }

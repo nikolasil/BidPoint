@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +13,7 @@ public class UserOutputDto {
     private String firstname;
     private String lastname;
     private String username;
-    private Collection<String> roles;
+    private Set<String> roles;
     private String address;
     private String phone;
     private String mail;

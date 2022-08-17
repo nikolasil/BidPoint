@@ -4,7 +4,7 @@ import com.bidpoint.backend.user.dto.UserInputDto;
 import com.bidpoint.backend.user.entity.User;
 import org.springframework.core.convert.converter.Converter;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public class UserInputDtoConverter implements Converter<UserInputDto, User> {
     @Override
@@ -20,7 +20,7 @@ public class UserInputDtoConverter implements Converter<UserInputDto, User> {
                 source.getPhone(),
                 source.getMail(),
                 source.getAfm(),
-                new ArrayList<>()
+                new LinkedHashSet<>()
         );
     }
 

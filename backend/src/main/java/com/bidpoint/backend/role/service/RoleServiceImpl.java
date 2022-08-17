@@ -1,6 +1,6 @@
 package com.bidpoint.backend.role.service;
 
-import com.bidpoint.backend.user.entity.Role;
+import com.bidpoint.backend.role.entity.Role;
 import com.bidpoint.backend.role.exception.RoleAlreadyExistsException;
 import com.bidpoint.backend.role.exception.RoleNotFoundException;
 import com.bidpoint.backend.role.repository.RoleRepository;

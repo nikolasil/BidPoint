@@ -53,7 +53,7 @@ public class UserController {
     public ResponseEntity<UserOutputDto> getUser(HttpServletRequest request) {
         String username = authService.decodeAuthorizationHeader(request.getHeader(AUTHORIZATION)).getSubject();
         User user = userService.getUser(username);
-        return ResponseEntity.ok().body(conversionService.convert(user,UserOutputDto.class));
+        return ResponseEntity.status(HttpStatus.OK).body(conversionService.convert(user,UserOutputDto.class));
     }
 
     @PutMapping("/approve")

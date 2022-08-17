@@ -1,6 +1,6 @@
 package com.bidpoint.backend.role.repository;
 
-import com.bidpoint.backend.user.entity.Role;
+import com.bidpoint.backend.role.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleRepository extends JpaRepository<Role,Long> {
