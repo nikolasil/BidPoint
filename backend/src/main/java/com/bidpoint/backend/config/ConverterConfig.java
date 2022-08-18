@@ -1,5 +1,6 @@
 package com.bidpoint.backend.config;
 
+import com.bidpoint.backend.item.converter.BigDecimalConverter;
 import com.bidpoint.backend.item.converter.CategoryInputDtoConverter;
 import com.bidpoint.backend.item.converter.ItemConverter;
 import com.bidpoint.backend.item.converter.ItemInputDtoConverter;
@@ -22,5 +23,7 @@ public class ConverterConfig implements WebMvcConfigurer {
         registry.addConverter(new ItemConverter());
 
         registry.addConverter(new CategoryInputDtoConverter());
+
+        registry.addConverter(new BigDecimalConverter());
     }
 }

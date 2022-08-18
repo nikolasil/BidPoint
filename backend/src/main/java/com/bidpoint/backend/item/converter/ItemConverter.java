@@ -11,12 +11,14 @@ public class ItemConverter implements Converter<Item, ItemOutputDto> {
     @Override
     public ItemOutputDto convert(Item source) {
         return new ItemOutputDto(
+                source.getId(),
                 source.getName(),
                 source.getDescription(),
                 source.getStartingPrice(),
                 source.getCurrentPrice(),
                 source.getBuyPrice(),
                 source.getNumberOfBids(),
+                source.getBids(),
                 source.getCategory().getName(),
                 source.isActive(),
                 source.getDateEnds(),

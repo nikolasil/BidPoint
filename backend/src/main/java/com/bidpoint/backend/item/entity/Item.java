@@ -1,6 +1,7 @@
 package com.bidpoint.backend.item.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ public class Item {
 
     private Integer numberOfBids;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "item", orphanRemoval = true)
     private Set<Bid> bids = new LinkedHashSet<>();
 

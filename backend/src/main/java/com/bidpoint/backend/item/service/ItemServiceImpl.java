@@ -3,6 +3,7 @@ package com.bidpoint.backend.item.service;
 import com.bidpoint.backend.item.entity.Category;
 import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.item.exception.CategoryNotFoundException;
+import com.bidpoint.backend.item.repository.BidRepository;
 import com.bidpoint.backend.item.repository.CategoryRepository;
 import com.bidpoint.backend.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ItemServiceImpl implements ItemService {
    private final ItemRepository itemRepository;
+   private final BidRepository bidRepository;
    private final CategoryRepository categoryRepository;
 
     @Override

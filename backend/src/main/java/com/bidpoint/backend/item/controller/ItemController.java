@@ -50,7 +50,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ItemOutputDto>> getItem(@RequestParam(name = "searchTerm",required = true) String searchTerm) {
+    public ResponseEntity<List<ItemOutputDto>> getItems(@RequestParam(name = "searchTerm",required = true) String searchTerm) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 itemService.searchItems(searchTerm).stream().map(
                         i -> conversionService.convert(

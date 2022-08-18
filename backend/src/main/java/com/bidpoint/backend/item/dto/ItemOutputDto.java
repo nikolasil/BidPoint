@@ -1,15 +1,18 @@
 package com.bidpoint.backend.item.dto;
 
+import com.bidpoint.backend.item.entity.Bid;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 public class ItemOutputDto {
+    private Long id;
     private String name;
     private String description;
 
@@ -19,6 +22,7 @@ public class ItemOutputDto {
 
     private Integer numberOfBids;
 
+    private Set<Bid> bids;
     private String categoryName;
 
     private boolean isActive;

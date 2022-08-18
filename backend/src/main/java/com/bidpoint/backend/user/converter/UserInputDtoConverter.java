@@ -20,6 +20,7 @@ public class UserInputDtoConverter implements Converter<UserInputDto, User> {
                 source.getPhone(),
                 source.getMail(),
                 source.getAfm(),
+                new LinkedHashSet<>(),
                 new LinkedHashSet<>()
         );
     }

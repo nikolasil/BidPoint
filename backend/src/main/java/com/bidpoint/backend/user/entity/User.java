@@ -1,11 +1,14 @@
 package com.bidpoint.backend.user.entity;
 
+import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.role.entity.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.AUTO;
@@ -36,6 +39,10 @@ public class User {
     private String afm;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    private Set<Role> roles = new LinkedHashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private Set<Bid> bids = new LinkedHashSet<>();
 
 }
