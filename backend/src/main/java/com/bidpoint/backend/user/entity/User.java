@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -31,7 +29,7 @@ public class User {
     private String password;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean isApproved;
+    private boolean approved;
 
     private String address;
     private String phone;

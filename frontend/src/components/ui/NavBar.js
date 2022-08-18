@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,16 +9,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import { useSelector } from 'react-redux';
 import Divider from '@mui/material/Divider';
 
-const NavBar = () => {
+const NavBar = (props) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [userChanged, setUserChanged] = React.useState(false);
@@ -27,36 +24,10 @@ const NavBar = () => {
   const auth = useSelector((state) => state.auth);
   const name = 'BidPoint';
 
-  const pages = [
-    { name: 'Items', path: '/items' },
-    { name: 'Chat', path: '/chat' },
-  ];
-  const settings = [
-    {
-      id: 'setting_1',
-      name: (
-        <Grid container direction="row" alignItems="center">
-          <AccountCircleOutlinedIcon />
-          <Typography>
-            Your Account{auth.user && ': ' + auth.user.username}
-          </Typography>
-        </Grid>
-      ),
-      path: '/account',
-      divider: true,
-    },
-    {
-      id: 'setting_2',
-      name: (
-        <Grid container direction="row" alignItems="center">
-          <LogoutOutlinedIcon />
-          <Typography>Logout</Typography>
-        </Grid>
-      ),
-      path: '/logout',
-      divider: false,
-    },
-  ];
+  const pages = props.pages;
+  const settings = props.settings;
+  const homePagePath = props.homePagePath;
+
   useEffect(() => {
     console.log('userChanged');
     setUserChanged(!userChanged);
@@ -84,7 +55,7 @@ const NavBar = () => {
             variant="h6"
             noWrap
             component="a"
-            onClick={() => navigate('/')}
+            onClick={() => navigate(homePagePath)}
             cursor="pointer"
             sx={{
               mr: 2,
@@ -149,7 +120,7 @@ const NavBar = () => {
             variant="h5"
             noWrap
             component="a"
-            onClick={() => navigate('/')}
+            onClick={() => navigate(homePagePath)}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },

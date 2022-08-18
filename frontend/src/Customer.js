@@ -7,13 +7,49 @@ import NavBar from './components/ui/NavBar';
 import PrivateRoute from './privateRoutes/PrivateRoute';
 import SignIn from './components/pages/Landing/SignIn';
 import SignUp from './components/pages/Landing/SignUp';
-import { Box } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import Items from './components/pages/Items/Items';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import { useSelector } from 'react-redux';
 
 const Customer = () => {
+  const auth = useSelector((state) => state.auth);
   return (
     <Box>
-      <NavBar />
+      <NavBar
+        pages={[
+          { name: 'Items', path: '/items' },
+          { name: 'Chat', path: '/chat' },
+        ]}
+        settings={[
+          {
+            id: 'setting_1',
+            name: (
+              <Grid container direction="row" alignItems="center">
+                <AccountCircleOutlinedIcon />
+                <Typography>
+                  Your Account{auth.user && ': ' + auth.user.username}
+                </Typography>
+              </Grid>
+            ),
+            path: '/account',
+            divider: true,
+          },
+          {
+            id: 'setting_2',
+            name: (
+              <Grid container direction="row" alignItems="center">
+                <LogoutOutlinedIcon />
+                <Typography>Logout</Typography>
+              </Grid>
+            ),
+            path: '/logout',
+            divider: false,
+          },
+        ]}
+        homePagePath={'/'}
+      />
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="/signin" element={<SignIn />} />

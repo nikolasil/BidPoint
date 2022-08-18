@@ -58,7 +58,7 @@ public class BackendApplication {
                     "",
                     "",
                     "",
-                    ""),User.class),Arrays.asList("admin","seller", "bidder"));
+                    ""),User.class),Arrays.asList("admin", "seller", "bidder"));
 
             User nassosanagn = userService.createUser(conversionService.convert(new UserInputDto(
                     "Nassos",
