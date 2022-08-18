@@ -7,6 +7,7 @@ import java.util.List;
 public interface UserService {
     User getUser(String username);
     List<User> getUsers();
+    List<User> getUserByApproved(boolean value);
     User createUser(User user, List<String> roles);
     User approveUser(String username);
     Boolean isApproved(String username);

@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,6 +39,12 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<List<UserOutputDto>> getAllUsers(){
         List<User> listOfUsers = userService.getUsers();
+        return ResponseEntity.status(HttpStatus.OK).body(listOfUsers.stream().map(user->conversionService.convert(user,UserOutputDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/approved")
+    public ResponseEntity<List<UserOutputDto>> getNotApprovedUsers(@RequestParam(name = "value") boolean value){
+        List<User> listOfUsers = userService.getUserByApproved(value);
         return ResponseEntity.status(HttpStatus.OK).body(listOfUsers.stream().map(user->conversionService.convert(user,UserOutputDto.class)).collect(Collectors.toList()));
     }
 

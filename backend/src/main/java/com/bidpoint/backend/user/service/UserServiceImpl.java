@@ -129,4 +129,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findAll();
     }
 
+    @Override
+    public List<User> getUserByApproved(boolean value) {
+        log.info("getNotApprovedUsers");
+
+        return userRepository.findByApproved(value);
+    }
+
 }
