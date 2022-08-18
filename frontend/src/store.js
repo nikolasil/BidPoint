@@ -7,6 +7,6 @@ export default configureStore({
   reducer: {
     auth,
     items,
-    // admin,
+    admin,
   },
 });

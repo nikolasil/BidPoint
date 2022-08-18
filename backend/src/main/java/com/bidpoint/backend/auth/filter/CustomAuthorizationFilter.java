@@ -2,7 +2,7 @@ package com.bidpoint.backend.auth.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.bidpoint.backend.auth.exception.AuthorizationException;
-import com.bidpoint.backend.user.exception.UserNotApprovedException;
+import com.bidpoint.backend.auth.exception.UserNotApprovedException;
 import com.bidpoint.backend.user.service.UserService;
 import com.bidpoint.backend.auth.service.AuthServiceImpl;
 import lombok.extern.slf4j.Slf4j;

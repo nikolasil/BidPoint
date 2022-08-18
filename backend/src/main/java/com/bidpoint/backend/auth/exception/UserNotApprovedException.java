@@ -1,4 +1,4 @@
-package com.bidpoint.backend.user.exception;
+package com.bidpoint.backend.auth.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

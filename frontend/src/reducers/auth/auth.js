@@ -52,6 +52,7 @@ const authReducer = (state = initialState, action) => {
     case types.SIGNUP_USER_FAILURE: {
       console.log('authReducer: SIGNUP_USER_FAILURE | LOGIN_USER_FAILURE');
       console.log('authReducer: payload = ', payload);
+      
       return {
         ...state,
         isLoading: false,

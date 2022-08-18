@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ItemServiceImpl implements ItemService {
    private final ItemRepository itemRepository;
-   private final BidRepository bidRepository;
    private final CategoryRepository categoryRepository;
 
     @Override

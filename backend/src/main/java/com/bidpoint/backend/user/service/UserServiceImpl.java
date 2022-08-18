@@ -51,6 +51,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 //        map the List<String> to Set<Role>. The role names that are not present in the database are ignored
+        if(roles.contains("admin"))
+            user.setApproved(true);
+
         user.setRoles(roles.stream().map(roleRepository::findByName).filter(Objects::nonNull).collect(Collectors.toSet()));
         return userRepository.save(user);
     }

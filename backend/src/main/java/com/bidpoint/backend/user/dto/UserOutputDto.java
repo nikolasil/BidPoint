@@ -10,9 +10,10 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 public class UserOutputDto {
+    private String username;
     private String firstname;
     private String lastname;
-    private String username;
+    private boolean approved;
     private Set<String> roles;
     private String address;
     private String phone;

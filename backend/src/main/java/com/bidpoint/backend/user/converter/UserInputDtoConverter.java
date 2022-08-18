@@ -15,7 +15,7 @@ public class UserInputDtoConverter implements Converter<UserInputDto, User> {
                 source.getLastname(),
                 source.getUsername(),
                 source.getPassword(),
-                true,
+                false,
                 source.getAddress(),
                 source.getPhone(),
                 source.getMail(),

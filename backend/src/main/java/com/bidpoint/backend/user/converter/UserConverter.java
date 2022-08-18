@@ -13,9 +13,10 @@ public class UserConverter implements Converter<User, UserOutputDto> {
     @Override
     public UserOutputDto convert(User source) {
         return new UserOutputDto(
+                source.getUsername(),
                 source.getFirstname(),
                 source.getLastname(),
-                source.getUsername(),
+                source.isApproved(),
                 source.getRoles().stream().map(Role::getName).collect(Collectors.toSet()),
                 source.getAddress(),
                 source.getPhone(),

@@ -13,7 +13,7 @@ const Home = () => {
         }}
       >
         <Typography component="h1" variant="h5">
-          Home
+          Admin Home
         </Typography>
       </Box>
     </Container>

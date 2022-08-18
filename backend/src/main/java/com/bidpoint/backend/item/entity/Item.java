@@ -46,7 +46,7 @@ public class Item {
     private Category category;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private boolean active;
     private LocalDateTime dateEnds;
     @CreationTimestamp
     private LocalDateTime dateCreated;

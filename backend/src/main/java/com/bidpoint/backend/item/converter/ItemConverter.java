@@ -1,11 +1,8 @@
 package com.bidpoint.backend.item.converter;
 
-import com.bidpoint.backend.item.dto.ItemInputDto;
 import com.bidpoint.backend.item.dto.ItemOutputDto;
 import com.bidpoint.backend.item.entity.Item;
 import org.springframework.core.convert.converter.Converter;
-
-import java.util.LinkedHashSet;
 
 public class ItemConverter implements Converter<Item, ItemOutputDto> {
     @Override

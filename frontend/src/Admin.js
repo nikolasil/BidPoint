@@ -7,13 +7,17 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { useSelector } from 'react-redux';
 import NavBar from './components/ui/NavBar';
+import Users from './components/adminPages/Users/Users';
 
 const Admin = () => {
   const auth = useSelector((state) => state.auth);
   return (
     <Box>
       <NavBar
-        pages={[{ name: 'Items', path: '/admin/items' }]}
+        pages={[
+          { name: 'Users', path: '/admin/users' },
+          { name: 'Items', path: '/admin/items' },
+        ]}
         settings={[
           {
             id: 'setting_1',
@@ -45,6 +49,7 @@ const Admin = () => {
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="/account" element={<UnderConstruction />} />
+        <Route exact path="/users" element={<Users />} />
         <Route exact path="/items" element={<UnderConstruction />} />
       </Routes>
     </Box>
