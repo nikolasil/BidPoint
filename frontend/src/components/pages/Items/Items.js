@@ -1,19 +1,65 @@
 import React, { useEffect } from 'react';
-import { Container, Box, Typography } from '@mui/material';
+import {
+  Container,
+  Box,
+  Typography,
+  Autocomplete,
+  TextField,
+  InputAdornment,
+  OutlinedInput,
+} from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-// import { getAllItems } from '../../../actions/admin';
+import {
+  getAllItems,
+  getItemsCount,
+  getItemsSearch,
+} from '../../../actions/items';
 import ItemsTable from './ItemsTable';
 
 const Items = () => {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.items);
 
+  const [pageNumber, setPageNumber] = React.useState(0);
+  const [itemCount, setItemCount] = React.useState(10);
+  const [sortField, setSortField] = React.useState('id');
+  const [sortDirection, setSortDirection] = React.useState('asc');
+  const [searchTerm, setSearchTerm] = React.useState('');
+
   useEffect(() => {
-    // dispatch(getAllItems());
-  }, [dispatch]);
+    dispatch(getItemsCount());
+  }, []);
+
+  const handleChangePageNumber = (event, newPage) => {
+    setPageNumber(newPage);
+  };
+
+  const handleChangeItemCount = (event) => {
+    setItemCount(parseInt(event.target.value, 10));
+    setPageNumber(0);
+  };
+
+  const handleChangeSortField = (newSortField) => {
+    setSortField(newSortField);
+    setPageNumber(0);
+  };
+
+  const handleChangeSortDirection = (newSortDirection) => {
+    setSortDirection(newSortDirection);
+    setPageNumber(0);
+  };
+
+  useEffect(() => {
+    dispatch(getAllItems(pageNumber, itemCount, sortField, sortDirection));
+  }, [pageNumber, itemCount, sortField, sortDirection]);
+
+  useEffect(() => {
+    if (searchTerm != '') dispatch(getItemsSearch(searchTerm));
+    else dispatch(getAllItems(pageNumber, itemCount, sortField, sortDirection));
+  }, [searchTerm]);
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Container component="main" maxWidth="xl">
       <Box
         sx={{
           marginTop: 1,
@@ -27,8 +73,31 @@ const Items = () => {
         <Typography component="h1" variant="h5">
           Items
         </Typography>
+        <TextField
+          id="search-items"
+          value={searchTerm}
+          onChange={(event) => {
+            setSearchTerm(event.target.value);
+            setPageNumber(0);
+            setSortField('id');
+            setSortDirection('asc');
+          }}
+          label="Search Items"
+        />
+
         {!items.isLoading && items.isFetched && (
-          <ItemsTable rows={items.list} />
+          <ItemsTable
+            items={items.list}
+            count={searchTerm != '' ? items.list.length : items.itemsCount}
+            pageNumber={pageNumber}
+            itemCount={itemCount}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            handleChangePageNumber={handleChangePageNumber}
+            handleChangeItemCount={handleChangeItemCount}
+            handleChangeSortField={handleChangeSortField}
+            handleChangeSortDirection={handleChangeSortDirection}
+          />
         )}
       </Box>
     </Container>

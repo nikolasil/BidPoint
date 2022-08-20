@@ -4,58 +4,96 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import TableFooter from '@mui/material/TableFooter';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { TablePagination } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { approveUser } from '../../../actions/admin';
+import ItemsTableActions from './ItemsTableActions';
 
 export default function UsersTable(props) {
-  const rows = props.rows;
+  const {
+    items,
+    count,
+    pageNumber,
+    itemCount,
+    sortField,
+    sortDirection,
+    handleChangePageNumber,
+    handleChangeItemCount,
+    handleChangeSortField,
+    handleChangeSortDirection,
+  } = props;
+
   const dispatch = useDispatch();
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table
+        rowsPerPageOptions={[10, 20, 30, 40, 50]}
+        sx={{ minWidth: 650 }}
+        aria-label="simple table"
+      >
         <TableHead>
           <TableRow>
-            <TableCell>Username</TableCell>
-            <TableCell align="right">Firstname</TableCell>
-            <TableCell align="right">Lastname</TableCell>
-            <TableCell align="right">Approved</TableCell>
+            <TableCell>Id</TableCell>
+            <TableCell align="right">Image</TableCell>
+            <TableCell align="right">Name</TableCell>
+            <TableCell align="right">Starting Price</TableCell>
+            <TableCell align="right">Current Price</TableCell>
+            <TableCell align="right">Buy Price</TableCell>
+            <TableCell align="right">Number Of Bids</TableCell>
+            <TableCell align="right">Category</TableCell>
+            <TableCell align="right">Date Created</TableCell>
+            <TableCell align="right">Date Updated</TableCell>
+            <TableCell align="right">Date Ends</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((item) => (
-            // <TableRow
-            //   key={item.id}
-            //   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            // >
-            //   <TableCell component="th" scope="row">
-            //     {item.username}
-            //   </TableCell>
-            //   <TableCell align="right">{item.firstname}</TableCell>
-            //   <TableCell align="right">{item.lastname}</TableCell>
-            //   <TableCell align="right">
-            //     {item.approved ? (
-            //       <Button variant="outlined" disabled color="success">
-            //         Approve
-            //       </Button>
-            //     ) : (
-            //       <Button
-            //         variant="outlined"
-            //         color="success"
-            //         onClick={() => {
-            //           dispatch(approveUser(item.username));
-            //         }}
-            //       >
-            //         Approve
-            //       </Button>
-            //     )}
-            //   </TableCell>
-            // </TableRow>
-            <h1>test</h1>
+          {items.map((item) => (
+            <TableRow
+              key={item.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {item.id}
+              </TableCell>
+              <TableCell align="right">
+                <img
+                  style={{ width: '100px', height: '100px' }}
+                  src="https://www.w3schools.com/w3css/img_snowtops.jpg"
+                />
+              </TableCell>
+              <TableCell align="right">{item.name}</TableCell>
+              <TableCell align="right">{item.startingPrice}</TableCell>
+              <TableCell align="right">{item.currentPrice}</TableCell>
+              <TableCell align="right">{item.buyPrice}</TableCell>
+              <TableCell align="right">{item.numberOfBids}</TableCell>
+              <TableCell align="right">{item.categoryName}</TableCell>
+              <TableCell align="right">{item.dateCreated}</TableCell>
+              <TableCell align="right">{item.dateUpdated}</TableCell>
+              <TableCell align="right">{item.dateEnds}</TableCell>
+            </TableRow>
           ))}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              count={count}
+              rowsPerPage={itemCount}
+              page={pageNumber}
+              SelectProps={{
+                inputProps: {
+                  'aria-label': 'rows per page',
+                },
+                native: true,
+              }}
+              onPageChange={handleChangePageNumber}
+              onRowsPerPageChange={handleChangeItemCount}
+              ActionsComponent={ItemsTableActions}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );

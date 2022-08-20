@@ -43,6 +43,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Long getItemsCount() {
+        return itemRepository.count();
+    }
+
+    @Override
     public List<Item> searchItems(String searchTerm) {
         return itemRepository.searchItems(searchTerm);
     }

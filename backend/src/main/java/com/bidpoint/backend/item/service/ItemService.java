@@ -10,6 +10,7 @@ import java.util.List;
 public interface ItemService {
     Item createItemWithCategory(Item item, String categoryName);
     Item getItem(Long itemId);
+    Long getItemsCount();
     List<Item> searchItems(String query);
     Page<Item> getItemsPaginationAndSort(int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection);
 }
