@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as types from '../types';
 
-export const getAllItems = () => async (dispatch) => {
+export const getAllUsers = () => async (dispatch) => {
   try {
     dispatch({ type: types.ADMIN_FETCH_ALL_USERS_REQUEST });
     const res = await axios.get('user/all');

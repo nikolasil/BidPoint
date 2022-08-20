@@ -8,6 +8,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { useSelector } from 'react-redux';
 import NavBar from './components/ui/NavBar';
 import Users from './components/adminPages/Users/Users';
+import PageContainer from './components/ui/PageContainer';
 
 const Admin = () => {
   const auth = useSelector((state) => state.auth);
@@ -47,10 +48,22 @@ const Admin = () => {
         homePagePath={'/admin'}
       />
       <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/account" element={<UnderConstruction />} />
-        <Route exact path="/users" element={<Users />} />
-        <Route exact path="/items" element={<UnderConstruction />} />
+        <Route exact path="/" element={<PageContainer page={<Home />} />} />
+        <Route
+          exact
+          path="/account"
+          element={<PageContainer page={<UnderConstruction />} />}
+        />
+        <Route
+          exact
+          path="/users"
+          element={<PageContainer page={<Users />} />}
+        />
+        <Route
+          exact
+          path="/items"
+          element={<PageContainer page={<UnderConstruction />} />}
+        />
       </Routes>
     </Box>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Container, Box, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { getAllItems } from '../../../actions/admin';
+import { getAllUsers } from '../../../actions/admin';
 import UsersTable from './UsersTable';
 
 const Users = () => {
@@ -9,17 +9,19 @@ const Users = () => {
   const users = useSelector((state) => state.admin.users);
 
   useEffect(() => {
-    dispatch(getAllItems());
+    dispatch(getAllUsers());
   }, [dispatch]);
 
   return (
-    <Container component="main" minWidth="sm" maxWidth="lg">
+    <Container component="main" maxWidth="sm">
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 1,
+          marginBottom: 2,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          // paddingLeft: '16px',
         }}
       >
         <Typography component="h1" variant="h5">

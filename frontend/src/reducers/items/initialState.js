@@ -1,12 +1,6 @@
 const initialState = {
-  items: {
-    isLoading: true,
-    error: null,
-    application: null,
-    message: null,
-    isUploaded: false,
-    isFetched: false,
-    newId: null,
-  }
+  isLoading: true,
+  isFetched: false,
+  list: null,
 };
 export default initialState;
