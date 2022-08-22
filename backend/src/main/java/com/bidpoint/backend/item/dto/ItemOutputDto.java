@@ -23,7 +23,7 @@ public class ItemOutputDto {
     private Integer numberOfBids;
 
     private Set<Bid> bids;
-    private String categoryName;
+    private Set<String> categories;
 
     private boolean isActive;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")

@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,11 +30,19 @@ public class ItemServiceImpl implements ItemService {
    private final CategoryRepository categoryRepository;
 
     @Override
-    public Item createItemWithCategory(Item item, String categoryName) {
-        Category category = categoryRepository.findCategoryByName(categoryName);
-        if(category == null)
-            category = categoryRepository.save(new Category(null,categoryName,"",new LinkedHashSet<>()));
-        item.setCategory(category);
+    public Item createItemWithCategory(Item item, List<String> categories) {
+        itemRepository.save(item);
+        item.setCategories(categories.stream().map(categoryName->{
+            Category category = categoryRepository.findCategoryByName(categoryName);
+            if(category != null){
+                category.getItems().add(item);
+                return category;
+            }
+            Set<Item> items = new LinkedHashSet<>();
+            items.add(item);
+            return categoryRepository.save(new Category(null,categoryName,"",items));
+        }).collect(Collectors.toSet()));
+
         return itemRepository.save(item);
     }
 

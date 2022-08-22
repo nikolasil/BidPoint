@@ -34,7 +34,7 @@ public class ItemController {
                                         item,
                                         Item.class
                                 ),
-                                item.getCategoryName()
+                                item.getCategories().stream().toList()
                         ),
                         ItemOutputDto.class
                 )

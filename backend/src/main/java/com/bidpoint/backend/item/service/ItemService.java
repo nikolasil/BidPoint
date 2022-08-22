@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ItemService {
-    Item createItemWithCategory(Item item, String categoryName);
+    Item createItemWithCategory(Item item, List<String> categories);
     Item getItem(Long itemId);
     Long getItemsCount();
     List<Item> searchItems(String query);

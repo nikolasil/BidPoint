@@ -40,10 +40,8 @@ public class Item {
     @OneToMany(mappedBy = "item", orphanRemoval = true)
     private Set<Bid> bids = new LinkedHashSet<>();
 
-    @JsonBackReference
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @ManyToMany(mappedBy = "items")
+    private Set<Category> categories = new LinkedHashSet<>();
 
     @Column(nullable = false)
     private boolean active;
@@ -52,6 +50,7 @@ public class Item {
     private LocalDateTime dateCreated;
     @UpdateTimestamp
     private LocalDateTime dateUpdated;
+
 
 
 }

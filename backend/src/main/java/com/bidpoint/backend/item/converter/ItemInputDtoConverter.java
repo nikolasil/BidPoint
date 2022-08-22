@@ -19,7 +19,7 @@ public class ItemInputDtoConverter implements Converter<ItemInputDto, Item> {
                 source.getBuyPrice(),
                 0,
                 new LinkedHashSet<>(),
-                null,
+                new LinkedHashSet<>(),
                 source.isActive(),
                 source.getDateEnds(),
                 null,

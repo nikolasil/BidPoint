@@ -25,8 +25,10 @@ public class Category {
     private String name;
     private String description;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "category", orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(name = "category_items",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "items_id"))
     private Set<Item> items = new LinkedHashSet<>();
 
 }
