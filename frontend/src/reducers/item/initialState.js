@@ -1,8 +1,8 @@
 const initialState = {
   isLoading: true,
   isFetched: false,
-  list: [],
-  itemsCount: 0,
+  isCreated: false,
+  item: {},
 };
 
 export default initialState;

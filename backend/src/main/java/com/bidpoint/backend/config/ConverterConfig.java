@@ -1,10 +1,9 @@
 package com.bidpoint.backend.config;
 
 import com.bidpoint.backend.item.converter.BigDecimalConverter;
-import com.bidpoint.backend.item.converter.CategoryInputDtoConverter;
+import com.bidpoint.backend.item.converter.StringToCategoryConverter;
 import com.bidpoint.backend.item.converter.ItemConverter;
 import com.bidpoint.backend.item.converter.ItemInputDtoConverter;
-import com.bidpoint.backend.item.repository.CategoryRepository;
 import com.bidpoint.backend.user.converter.UserInputDtoConverter;
 import com.bidpoint.backend.user.converter.UserConverter;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +21,7 @@ public class ConverterConfig implements WebMvcConfigurer {
         registry.addConverter(new ItemInputDtoConverter());
         registry.addConverter(new ItemConverter());
 
-        registry.addConverter(new CategoryInputDtoConverter());
+        registry.addConverter(new StringToCategoryConverter());
 
         registry.addConverter(new BigDecimalConverter());
     }

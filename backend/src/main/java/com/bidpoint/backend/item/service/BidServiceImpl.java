@@ -32,6 +32,9 @@ public class BidServiceImpl implements BidService {
 
         User user = userRepository.findByUsername(username);
 
+        item.setNumberOfBids(item.getNumberOfBids() + 1);
+        item.setCurrentPrice(bid.getAmount());
+
         bid.setItem(item);
         bid.setUser(user);
 

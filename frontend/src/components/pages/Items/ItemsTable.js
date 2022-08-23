@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import { TablePagination } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import ItemsTableActions from './ItemsTableActions';
+import { useNavigate } from 'react-router-dom';
 
 export default function UsersTable(props) {
   const {
@@ -26,13 +27,10 @@ export default function UsersTable(props) {
   } = props;
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
-    <TableContainer component={Paper}>
-      <Table
-        rowsPerPageOptions={[10, 20, 30, 40, 50]}
-        sx={{ minWidth: 650 }}
-        aria-label="simple table"
-      >
+    <TableContainer component={Paper} style={{ maxHeight: 'calc(73vh)' }}>
+      <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Id</TableCell>
@@ -51,8 +49,12 @@ export default function UsersTable(props) {
         <TableBody>
           {items.map((item) => (
             <TableRow
+              onClick={() => navigate('/items/' + item.id)}
               key={item.id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              sx={{
+                '&:last-child td, &:last-child th': { border: 0 },
+                cursor: 'pointer',
+              }}
             >
               <TableCell component="th" scope="row">
                 {item.id}
@@ -68,7 +70,7 @@ export default function UsersTable(props) {
               <TableCell align="right">{item.currentPrice}</TableCell>
               <TableCell align="right">{item.buyPrice}</TableCell>
               <TableCell align="right">{item.numberOfBids}</TableCell>
-              <TableCell align="right">{item.categoryName}</TableCell>
+              <TableCell align="right">{item.categories}</TableCell>
               <TableCell align="right">{item.dateCreated}</TableCell>
               <TableCell align="right">{item.dateUpdated}</TableCell>
               <TableCell align="right">{item.dateEnds}</TableCell>

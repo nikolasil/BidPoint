@@ -23,7 +23,6 @@ public class Category {
 
     @Column(unique=true)
     private String name;
-    private String description;
 
     @ManyToMany
     @JoinTable(name = "category_items",

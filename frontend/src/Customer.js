@@ -13,6 +13,9 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { useSelector } from 'react-redux';
 import PageContainer from './components/ui/PageContainer';
+import CreateItem from './components/pages/Create Item/CreateItem';
+import MyItems from './components/pages/My Items/MyItems';
+import Item from './components/pages/Item/Item';
 
 const Customer = () => {
   const auth = useSelector((state) => state.auth);
@@ -21,7 +24,8 @@ const Customer = () => {
       <NavBar
         pages={[
           { name: 'Items', path: '/items' },
-          { name: 'Chat', path: '/chat' },
+          { name: 'My Items', path: '/account/items' },
+          { name: 'Create Item', path: '/account/create/item' },
         ]}
         settings={[
           {
@@ -30,7 +34,7 @@ const Customer = () => {
               <Grid container direction="row" alignItems="center">
                 <AccountCircleOutlinedIcon />
                 <Typography>
-                  Your Account{auth.user && ': ' + auth.user.username}
+                  My Account | {auth.user && auth.user.username}
                 </Typography>
               </Grid>
             ),
@@ -70,12 +74,18 @@ const Customer = () => {
         />
         <Route
           exact
+          path="/items/create"
+          element={<PageContainer page={<CreateItem />} />}
+        />
+        <Route
+          exact
+          path="/items/:id"
+          element={<PageContainer page={<Item />} />}
+        />
+        <Route
+          exact
           path="/logout"
-          element={
-            <PrivateRoute>
-              <PageContainer page={<Logout />} />
-            </PrivateRoute>
-          }
+          element={<PageContainer page={<Logout />} />}
         />
         <Route
           exact
@@ -83,6 +93,24 @@ const Customer = () => {
           element={
             <PrivateRoute>
               <PageContainer page={<Account />} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          exact
+          path="/account/create/item"
+          element={
+            <PrivateRoute>
+              <PageContainer page={<CreateItem />} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          exact
+          path="/account/items"
+          element={
+            <PrivateRoute>
+              <PageContainer page={<MyItems />} />
             </PrivateRoute>
           }
         />

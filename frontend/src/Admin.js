@@ -9,16 +9,14 @@ import { useSelector } from 'react-redux';
 import NavBar from './components/ui/NavBar';
 import Users from './components/adminPages/Users/Users';
 import PageContainer from './components/ui/PageContainer';
+import Account from './components/pages/Account/Account';
 
 const Admin = () => {
   const auth = useSelector((state) => state.auth);
   return (
     <Box>
       <NavBar
-        pages={[
-          { name: 'Users', path: '/admin/users' },
-          { name: 'Items', path: '/admin/items' },
-        ]}
+        pages={[{ name: 'Users', path: '/admin/users' }]}
         settings={[
           {
             id: 'setting_1',
@@ -52,17 +50,12 @@ const Admin = () => {
         <Route
           exact
           path="/account"
-          element={<PageContainer page={<UnderConstruction />} />}
+          element={<PageContainer page={<Account />} />}
         />
         <Route
           exact
           path="/users"
           element={<PageContainer page={<Users />} />}
-        />
-        <Route
-          exact
-          path="/items"
-          element={<PageContainer page={<UnderConstruction />} />}
         />
       </Routes>
     </Box>

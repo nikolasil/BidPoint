@@ -6,6 +6,8 @@ import store from './store';
 import { Provider } from 'react-redux';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 const theme = createTheme({
   // palette: {
@@ -19,7 +21,9 @@ root.render(
   <Provider store={store}>
     <CssBaseline />
     <ThemeProvider theme={theme}>
-      <App />
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <App />
+      </LocalizationProvider>
     </ThemeProvider>
   </Provider>
 );

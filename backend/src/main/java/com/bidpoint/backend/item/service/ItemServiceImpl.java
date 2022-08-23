@@ -40,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
             }
             Set<Item> items = new LinkedHashSet<>();
             items.add(item);
-            return categoryRepository.save(new Category(null,categoryName,"",items));
+            return categoryRepository.save(new Category(null, categoryName, items));
         }).collect(Collectors.toSet()));
 
         return itemRepository.save(item);

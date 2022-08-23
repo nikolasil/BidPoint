@@ -1,12 +1,16 @@
 import auth from './reducers/auth/auth';
-import items from './reducers/items/items';
 import admin from './reducers/admin/admin';
+import items from './reducers/items/items';
+import item from './reducers/item/item';
+import categories from './reducers/categories/categories';
 import { configureStore } from '@reduxjs/toolkit';
 
 export default configureStore({
   reducer: {
     auth,
-    items,
     admin,
+    items,
+    item,
+    categories,
   },
 });

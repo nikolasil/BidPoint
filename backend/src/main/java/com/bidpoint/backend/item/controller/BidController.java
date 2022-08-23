@@ -1,12 +1,8 @@
 package com.bidpoint.backend.item.controller;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.bidpoint.backend.auth.service.AuthService;
-import com.bidpoint.backend.item.dto.CategoryInputDto;
 import com.bidpoint.backend.item.entity.Bid;
-import com.bidpoint.backend.item.entity.Category;
 import com.bidpoint.backend.item.service.BidService;
-import com.bidpoint.backend.item.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;

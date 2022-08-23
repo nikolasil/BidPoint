@@ -7,6 +7,7 @@ import {
   TextField,
   InputAdornment,
   OutlinedInput,
+  Stack,
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -70,21 +71,27 @@ const Items = () => {
           // paddingLeft: '16px',
         }}
       >
-        <Typography component="h1" variant="h5">
-          Items
-        </Typography>
-        <TextField
-          id="search-items"
-          value={searchTerm}
-          onChange={(event) => {
-            setSearchTerm(event.target.value);
-            setPageNumber(0);
-            setSortField('id');
-            setSortDirection('asc');
-          }}
-          label="Search Items"
-        />
-
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={2}
+        >
+          <Typography component="h1" variant="h5">
+            Items
+          </Typography>
+          <TextField
+            id="search-items"
+            value={searchTerm}
+            onChange={(event) => {
+              setSearchTerm(event.target.value);
+              setPageNumber(0);
+              setSortField('id');
+              setSortDirection('asc');
+            }}
+            label="Search Items"
+          />
+        </Stack>
         {!items.isLoading && items.isFetched && (
           <ItemsTable
             items={items.list}
