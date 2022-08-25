@@ -1,13 +1,13 @@
 package com.bidpoint.backend.user.service
 
-import com.bidpoint.backend.item.entity.Bid
 import com.bidpoint.backend.role.entity.Role
 import com.bidpoint.backend.role.repository.RoleRepository
 import com.bidpoint.backend.user.entity.User
 import com.bidpoint.backend.user.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import spock.lang.Specification
-import spock.lang.Unroll
+
+import java.util.stream.Collectors
 
 class UserServiceImplTest extends Specification {
     UserRepository userRepository
@@ -25,18 +25,30 @@ class UserServiceImplTest extends Specification {
         )
     }
 
-    def "LoadUserByUsername"() {
+    def "test loadUserByUsername"() {
+//        given:
+//
+//        when:
+//        // TODO implement stimulus
+//        then:
+//        // TODO implement assertions
     }
 
-    @Unroll
-    def "CreateUser with #roles and should be approved=#approved"() {
+    def "test createUser"() {
         given:
+        Role adminRole = new Role(null,"admin",new LinkedHashSet<>())
+        Role sellerRole = new Role(null,"seller",new LinkedHashSet<>())
+        Role bidderRole = new Role(null,"bidder",new LinkedHashSet<>())
+
+        String password = "1234"
+        String hashedPassword = "hashed1234"
+
         User user = new User(
                 null,
                 "",
                 "",
                 "",
-                "1234",
+                password,
                 false,
                 "",
                 "",
@@ -45,41 +57,93 @@ class UserServiceImplTest extends Specification {
                 new LinkedHashSet<>(),
                 new LinkedHashSet<>()
         )
+
         and:
-        passwordEncoder.encode("1234") >> "7888"
+        passwordEncoder.encode("1234") >> hashedPassword
         userRepository.save(user) >> user
+        roleRepository.findByName("admin") >> adminRole
+        roleRepository.findByName("seller") >> sellerRole
+        roleRepository.findByName("bidder") >> bidderRole
+        roleRepository.findByName("") >> null
 
         when:
         User returnedUser = userService.createUser(user, roles)
 
         then:
-        returnedUser.getPassword() == "7888"
+        returnedUser.getPassword() == hashedPassword
+        returnedUser.getRoles().stream().map({ r -> r.getName() }).collect(Collectors.toList()) == roles || roles.reverse()
         returnedUser.isApproved() == approved
 
         where:
-        roles << [["admin","visitor"], ["visitor"], ["admin"], [""]]
-        approved << [true, false, true, false]
-
+        testId | roles               | approved
+        0      | ["seller", "admin"] | true
+        1      | ["admin", "seller"] | true
+        2      | ["seller"]          | false
+        3      | ["admin"]           | true
+        4      | []                  | false
+        5      | ["bidder"]          | false
     }
 
-    def "ApproveUser"() {
+    def "test approveUser"() {
+//        given:
+//
+//        when:
+//        // TODO implement stimulus
+//        then:
+//        // TODO implement assertions
     }
 
-    def "IsApproved"() {
+    def "test isApproved"() {
+//        given:
+//
+//        when:
+//        // TODO implement stimulus
+//        then:
+//        // TODO implement assertions
     }
 
-    def "AddRoleToUser"() {
+    def "test addRoleToUser"() {
+//        given:
+//
+//        when:
+//        // TODO implement stimulus
+//        then:
+//        // TODO implement assertions
     }
 
-    def "RemoveRoleFromUser"() {
+    def "test removeRoleFromUser"() {
+//        given:
+//
+//        when:
+//        // TODO implement stimulus
+//        then:
+//        // TODO implement assertions
     }
 
-    def "GetUser"() {
+    def "test getUser"() {
+//        given:
+//
+//        when:
+//        // TODO implement stimulus
+//        then:
+//        // TODO implement assertions
     }
 
-    def "GetUsers"() {
+    def "test getUsers"() {
+//        given:
+//
+//        when:
+//        // TODO implement stimulus
+//        then:
+//        // TODO implement assertions
     }
 
-    def "GetUserByApproved"() {
+    def "test getUserByApproved"() {
+//        given:
+//
+//        when:
+//        // TODO implement stimulus
+//        then:
+//        // TODO implement assertions
     }
 }
