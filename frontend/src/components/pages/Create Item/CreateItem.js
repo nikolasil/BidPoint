@@ -6,17 +6,19 @@ import {
   Autocomplete,
   Switch,
   FormControlLabel,
+  Button,
 } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { LoadingButton } from '@mui/lab';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { format, parse, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { postItem } from '../../../actions/item';
 import { getAllCategories } from '../../../actions/categories';
+
 const CreateItem = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ const CreateItem = () => {
       categories: [],
       isActive: false,
       dateEnds: Date.now(),
+      images: [],
     },
     validationSchema: yup.object().shape({
       name: yup.string().required('Name is required').nullable(),
@@ -58,7 +61,14 @@ const CreateItem = () => {
     onSubmit: (values) => {
       setHasSubmitted(true);
       console.log('onSubmit');
-      dispatch(postItem(JSON.stringify(values)));
+      var images = [];
+      Object.assign(images, values.images);
+      var itemData = values;
+      delete itemData.images;
+
+      console.log(itemData);
+      console.log(images);
+      dispatch(postItem(images, JSON.stringify(itemData)));
     },
   });
 
@@ -206,7 +216,7 @@ const CreateItem = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <DateTimePicker
+              <MobileDateTimePicker
                 id="dateEnds"
                 disablePast
                 required
@@ -244,6 +254,22 @@ const CreateItem = () => {
                 }
                 label="Activate item on creation"
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Button variant="contained" component="label">
+                Upload
+                <input
+                  hidden
+                  accept="image/*"
+                  name="images"
+                  id="images"
+                  multiple
+                  type="file"
+                  onChange={(event) => {
+                    formik.setFieldValue('images', event.currentTarget.files);
+                  }}
+                />
+              </Button>
             </Grid>
 
             <LoadingButton

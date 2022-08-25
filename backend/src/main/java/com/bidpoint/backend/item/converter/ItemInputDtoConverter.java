@@ -20,6 +20,7 @@ public class ItemInputDtoConverter implements Converter<ItemInputDto, Item> {
                 0,
                 new LinkedHashSet<>(),
                 new LinkedHashSet<>(),
+                new LinkedHashSet<>(),
                 source.isActive(),
                 source.getDateEnds(),
                 null,

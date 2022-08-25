@@ -1,8 +1,10 @@
 package com.bidpoint.backend.item.dto;
 
+import com.bidpoint.backend.item.entity.Image;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

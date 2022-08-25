@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static javax.persistence.FetchType.EAGER;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,6 +44,10 @@ public class Item {
 
     @ManyToMany(mappedBy = "items")
     private Set<Category> categories = new LinkedHashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = EAGER)
+    private Set<Image> images = new LinkedHashSet<>();
 
     @Column(nullable = false)
     private boolean active;

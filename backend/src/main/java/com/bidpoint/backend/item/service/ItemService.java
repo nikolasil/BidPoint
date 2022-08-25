@@ -3,12 +3,12 @@ package com.bidpoint.backend.item.service;
 import com.bidpoint.backend.item.entity.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface ItemService {
-    Item createItemWithCategory(Item item, List<String> categories);
+    Item createItemWithCategoryAndImages(Item item, List<String> categories, MultipartFile[] images);
     Item getItem(Long itemId);
     Long getItemsCount();
     List<Item> searchItems(String query);

@@ -1,6 +1,7 @@
 package com.bidpoint.backend.item.dto;
 
 import com.bidpoint.backend.item.entity.Bid;
+import com.bidpoint.backend.item.entity.Image;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class ItemOutputDto {
 
     private Set<Bid> bids;
     private Set<String> categories;
+    private Set<Image> images;
 
     private boolean isActive;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")

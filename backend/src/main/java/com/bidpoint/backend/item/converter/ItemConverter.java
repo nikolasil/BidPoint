@@ -20,6 +20,7 @@ public class ItemConverter implements Converter<Item, ItemOutputDto> {
                 source.getNumberOfBids(),
                 source.getBids(),
                 source.getCategories().stream().map(Category::getName).collect(Collectors.toSet()),
+                source.getImages(),
                 source.isActive(),
                 source.getDateEnds(),
                 source.getDateCreated(),

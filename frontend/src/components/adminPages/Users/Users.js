@@ -13,7 +13,7 @@ const Users = () => {
   }, [dispatch]);
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Container component="main" maxWidth="md">
       <Box
         sx={{
           marginTop: 1,

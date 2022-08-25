@@ -5,36 +5,39 @@ import com.bidpoint.backend.item.dto.ItemOutputDto;
 import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/item")
 @RequiredArgsConstructor
+@Slf4j
 public class ItemController {
 
     private final ItemService itemService;
     private final ConversionService conversionService;
 
-    @PostMapping
-    public ResponseEntity<ItemOutputDto> createItem(@RequestBody ItemInputDto item) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ItemOutputDto> createItem(@RequestPart("images") MultipartFile[] images, @RequestPart("item") ItemInputDto item) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 conversionService.convert(
-                        itemService.createItemWithCategory(
+                        itemService.createItemWithCategoryAndImages(
                                 conversionService.convert(
                                         item,
                                         Item.class
                                 ),
-                                item.getCategories().stream().toList()
+                                item.getCategories().stream().toList(),
+                                images
                         ),
                         ItemOutputDto.class
                 )
