@@ -40,6 +40,7 @@ const itemReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         isCreated: true,
+        item: payload,
       };
     case types.POST_ITEM_FAILURE:
       console.log('itemReducer: POST_ITEM_FAILURE');

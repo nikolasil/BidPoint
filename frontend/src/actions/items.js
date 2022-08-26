@@ -15,7 +15,7 @@ export const getAllItems =
     } catch (error) {
       dispatch({
         type: types.GET_ALL_ITEMS_FAILURE,
-        payload: error.response.data,
+        payload: error.response,
       });
     }
   };
@@ -31,7 +31,7 @@ export const getItemsCount = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: types.GET_ITEMS_COUNT_FAILURE,
-      payload: error.response.data,
+      payload: error.response,
     });
   }
 };
@@ -46,8 +46,7 @@ export const getItemsSearch = (searchTerm) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: types.GET_ITEMS_SEARCH_FAILURE,
-      payload: error.response.data,
+      payload: error.response,
     });
   }
 };
-

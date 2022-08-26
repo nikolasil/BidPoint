@@ -12,7 +12,7 @@ export const getAllCategories = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: types.GET_ALL_CATEGORIES_FAILURE,
-      payload: error.response.data,
+      payload: error.response,
     });
   }
 };

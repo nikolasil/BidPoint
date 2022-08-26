@@ -12,7 +12,7 @@ export const singUpUser = (formData) => async (dispatch) => {
     const res = await axios.post('user', formData, config);
     dispatch({ type: types.SIGNUP_USER_SUCCESS, payload: res.data });
   } catch (error) {
-    dispatch({ type: types.SIGNUP_USER_FAILURE, payload: error.response.data });
+    dispatch({ type: types.SIGNUP_USER_FAILURE, payload: error.response });
   }
 };
 
@@ -27,7 +27,7 @@ export const loginUser = (formData) => async (dispatch) => {
     const res = await axios.post('auth', formData, config);
     dispatch({ type: types.LOGIN_USER_SUCCESS, payload: res.data });
   } catch (error) {
-    dispatch({ type: types.LOGIN_USER_FAILURE, payload: error.response.data });
+    dispatch({ type: types.LOGIN_USER_FAILURE, payload: error.response });
   }
 };
 
@@ -41,6 +41,6 @@ export const loadUser = () => async (dispatch) => {
     const res = await axios.get('user/me');
     dispatch({ type: types.LOAD_USER_SUCCESS, payload: res.data });
   } catch (error) {
-    dispatch({ type: types.LOAD_USER_FAILURE, payload: error.response.data });
+    dispatch({ type: types.LOAD_USER_FAILURE, payload: error.response });
   }
 };

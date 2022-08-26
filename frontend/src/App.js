@@ -3,16 +3,66 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminPrivateRoute from './privateRoutes/AdminPrivateRoute';
 import { useDispatch } from 'react-redux';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import setDefaultAuthHeader from './utils/setDefaultAuthHeader';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from 'react-router-dom';
 import Admin from './Admin';
 import Customer from './Customer';
-import { loadUser } from './actions/auth';
+import { loadUser, logoutUser } from './actions/auth';
 
 function App() {
-  axios.defaults.baseURL = 'http://localhost:8002/api/';
-  setDefaultAuthHeader();
   const dispatch = useDispatch();
+
+  axios.defaults.baseURL = 'http://localhost:8002/api/';
+  // Request interceptor for API calls
+  axios.interceptors.request.use(
+    async (request) => {
+      if (
+        localStorage.getItem('accessToken') &&
+        request.url != 'auth/refresh-token'
+      )
+        request.headers = {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        };
+      return request;
+    },
+    (error) => {
+      Promise.reject(error);
+    }
+  );
+  // Response interceptor for API calls
+  axios.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    async function (error) {
+      const originalRequest = error.config;
+      if (originalRequest.url == 'auth/refresh-token') {
+        dispatch(logoutUser());
+        return Promise.reject(error);
+      }
+      if (error.response.status === 403) {
+        originalRequest._retry = true;
+        axios.defaults.headers.common['Authorization'] =
+          'Bearer ' + localStorage.getItem('refreshToken');
+        const res = await axios.get('auth/refresh-token');
+        console.log('REFRESH_TOKEN', res);
+        localStorage.setItem('accessToken', res.data['access_token']);
+        localStorage.setItem('refreshToken', res.data['refresh_token']);
+        axios.defaults.headers.common['Authorization'] =
+          'Bearer ' + res.data['access_token'];
+
+        originalRequest.headers['Authorization'] =
+          'Bearer ' + res.data['access_token'];
+        return axios(originalRequest);
+      }
+      return Promise.reject(error);
+    }
+  );
+
   // in first initial render, check for user in local storage
   useEffect(() => {
     console.log('Check for user in local storage');

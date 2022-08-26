@@ -24,6 +24,7 @@ const CreateItem = () => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth);
   const categories = useSelector((state) => state.categories);
+  const item = useSelector((state) => state.item);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [wantsBuyPrice, setWantsBuyPrice] = useState(false);
 
@@ -59,7 +60,6 @@ const CreateItem = () => {
       dateEnds: yup.date().required().nullable(),
     }),
     onSubmit: (values) => {
-      setHasSubmitted(true);
       console.log('onSubmit');
       var images = [];
       Object.assign(images, values.images);
@@ -69,8 +69,16 @@ const CreateItem = () => {
       console.log(itemData);
       console.log(images);
       dispatch(postItem(images, JSON.stringify(itemData)));
+      setHasSubmitted(true);
     },
   });
+
+  useEffect(() => {
+    console.log('check created', hasSubmitted, item.created);
+    if (hasSubmitted && item.isCreated) {
+      navigate('/item/' + item.id);
+    }
+  }, [hasSubmitted, item]);
 
   return (
     <Container component="main" maxWidth="md">
@@ -109,9 +117,9 @@ const CreateItem = () => {
               <TextField
                 margin="normal"
                 required
-                multiline
-                minRows={2}
-                maxRows={10}
+                // multiline
+                // minRows={2}
+                // maxRows={10}
                 fullWidth
                 id="description"
                 label="description"

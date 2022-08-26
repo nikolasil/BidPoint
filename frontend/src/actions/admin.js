@@ -12,7 +12,7 @@ export const getAllUsers = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: types.ADMIN_FETCH_ALL_USERS_FAILURE,
-      payload: error.response.data,
+      payload: error.response,
     });
   }
 };
