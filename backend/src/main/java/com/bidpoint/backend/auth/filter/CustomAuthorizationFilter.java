@@ -56,9 +56,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-            if(!userService.isApproved(username))
-                throw new UserNotApprovedException(username);
-
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             throw new AuthorizationException(e);

@@ -1,5 +1,6 @@
 package com.bidpoint.backend.user.service;
 
+import com.bidpoint.backend.auth.exception.UserNotApprovedException;
 import com.bidpoint.backend.role.entity.Role;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.role.exception.RoleNotFoundException;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +34,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("loadUserByUsername username={}",username);
 
         User user = userRepository.findByUsername(username);
+
         if(user == null){
             log.info("User with username {} not found in the database", username);
             throw new UserNotFoundException(username);
         }
+
+        if(!user.isApproved())
+            throw new UserNotApprovedException(username);
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {

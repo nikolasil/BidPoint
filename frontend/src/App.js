@@ -44,7 +44,7 @@ function App() {
         dispatch(logoutUser());
         return Promise.reject(error);
       }
-      if (error.response.status === 403) {
+      if (error.response.status === 403 && originalRequest.url != 'auth') {
         originalRequest._retry = true;
         axios.defaults.headers.common['Authorization'] =
           'Bearer ' + localStorage.getItem('refreshToken');
