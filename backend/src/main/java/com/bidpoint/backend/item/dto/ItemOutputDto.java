@@ -23,15 +23,14 @@ public class ItemOutputDto {
 
     private Integer numberOfBids;
 
-    private Set<Bid> bids;
     private Set<String> categories;
     private Set<Image> images;
 
     private boolean isActive;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
     private LocalDateTime dateEnds;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
     private LocalDateTime dateCreated;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
     private LocalDateTime dateUpdated;
 }

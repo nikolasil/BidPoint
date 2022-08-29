@@ -60,7 +60,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(roles.contains("admin"))
             user.setApproved(true);
 
-        user.setRoles(roles.stream().map(roleRepository::findByName).filter(Objects::nonNull).collect(Collectors.toSet()));
+        roles.stream().map(roleRepository::findByName).forEach(user::addRole);
+
         return userRepository.save(user);
     }
 
@@ -83,6 +84,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findByUsername(username);
         if(user == null)
             throw new UserNotFoundException(username);
+
         return user.isApproved();
     }
 
@@ -98,9 +100,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(role == null)
             throw new RoleNotFoundException(roleName);
 
-        Set<Role> roles = user.getRoles();
-
-        roles.add(role);
+        user.addRole(role);
 
         return user;
     }
@@ -117,7 +117,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(role == null)
             throw new RoleNotFoundException("roleName " + roleName + " not found");
 
-        user.getRoles().remove(role);
+        user.removeRole(role);
+
         return user;
     }
 

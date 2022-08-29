@@ -18,7 +18,6 @@ public class ItemConverter implements Converter<Item, ItemOutputDto> {
                 source.getCurrentPrice(),
                 source.getBuyPrice(),
                 source.getNumberOfBids(),
-                source.getBids(),
                 source.getCategories().stream().map(Category::getName).collect(Collectors.toSet()),
                 source.getImages(),
                 source.isActive(),

@@ -38,7 +38,7 @@ public class Bid {
     private User user;
 
     @CreationTimestamp
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
     private LocalDateTime dateCreated;
 
 }

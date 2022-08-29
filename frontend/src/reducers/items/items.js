@@ -54,27 +54,6 @@ const itemsReducer = (state = initialState, action) => {
         ...state,
         itemsCount: 0,
       };
-    case types.POST_ITEM_REQUEST:
-      console.log('itemsReducer: POST_ITEM_REQUEST');
-      return {
-        ...state,
-        isLoading: true,
-        isCreated: false,
-      };
-    case types.POST_ITEM_SUCCESS:
-      console.log('itemsReducer: POST_ITEM_SUCCESS');
-      return {
-        ...state,
-        isLoading: false,
-        isCreated: true,
-      };
-    case types.POST_ITEM_FAILURE:
-      console.log('itemsReducer: POST_ITEM_FAILURE');
-      return {
-        ...state,
-        isLoading: false,
-        isCreated: false,
-      };
     default:
       return state;
   }

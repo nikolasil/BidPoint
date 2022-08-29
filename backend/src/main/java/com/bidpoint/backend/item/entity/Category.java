@@ -30,4 +30,7 @@ public class Category {
             inverseJoinColumns = @JoinColumn(name = "items_id"))
     private Set<Item> items = new LinkedHashSet<>();
 
+    public void addItem(Item item) {
+        this.items.add(item);
+    }
 }

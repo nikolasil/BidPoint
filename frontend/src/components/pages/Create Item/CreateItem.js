@@ -40,7 +40,7 @@ const CreateItem = () => {
       buyPrice: 0,
       categories: [],
       isActive: false,
-      dateEnds: Date.now(),
+      dateEnds: '',
       images: [],
     },
     validationSchema: yup.object().shape({
@@ -57,7 +57,7 @@ const CreateItem = () => {
         .of(yup.string())
         .required('Please provide at least one category'),
       isActive: yup.boolean().required('Is Active is required').nullable(),
-      dateEnds: yup.date().required().nullable(),
+      dateEnds: yup.string().required().nullable(),
     }),
     onSubmit: (values) => {
       console.log('onSubmit');
@@ -74,9 +74,9 @@ const CreateItem = () => {
   });
 
   useEffect(() => {
-    console.log('check created', hasSubmitted, item.created);
+    console.log('check created', hasSubmitted, item.isCreated, item.item.id);
     if (hasSubmitted && item.isCreated) {
-      navigate('/item/' + item.id);
+      navigate('/items/' + item.item.id);
     }
   }, [hasSubmitted, item]);
 
@@ -285,7 +285,7 @@ const CreateItem = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              loading={auth.isLoading}
+              loading={item.isLoading}
               loadingIndicator="Loading…"
             >
               Submit

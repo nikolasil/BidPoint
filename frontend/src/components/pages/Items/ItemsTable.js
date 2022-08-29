@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TablePagination } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import ItemsTableActions from './ItemsTableActions';
+import TableActions from '../../ui/TableActions';
 import { useNavigate } from 'react-router-dom';
 
 export default function UsersTable(props) {
@@ -92,7 +92,7 @@ export default function UsersTable(props) {
               }}
               onPageChange={handleChangePageNumber}
               onRowsPerPageChange={handleChangeItemCount}
-              ActionsComponent={ItemsTableActions}
+              ActionsComponent={TableActions}
             />
           </TableRow>
         </TableFooter>

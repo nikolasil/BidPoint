@@ -35,25 +35,43 @@ public class ItemServiceImpl implements ItemService {
     public Item createItemWithCategoryAndImages(Item item, List<String> categories, MultipartFile[] images) {
         itemRepository.save(item);
 
-        item.setCategories(categories.stream().map(categoryName->{
+        categories.forEach(categoryName->{
             Category category = categoryRepository.findCategoryByName(categoryName);
-            if(category != null){
-                category.getItems().add(item);
-                return category;
-            }
-            Set<Item> items = new LinkedHashSet<>();
-            items.add(item);
-            return categoryRepository.save(new Category(null, categoryName, items));
-        }).collect(Collectors.toSet()));
 
-        item.setImages(Arrays.stream(images).map(image->{
+            if(category != null){
+                category.addItem(item);
+                item.addCategory(category);
+                return;
+            }
+
+            category = new Category(
+                    null,
+                    categoryName,
+                    new LinkedHashSet<>()
+            );
+            category.addItem(item);
+            item.addCategory(categoryRepository.save(category));
+
+        });
+
+        Arrays.stream(images).forEach(image->{
+            Image imageEntity = null;
             try {
-                return imageRepository.save(new Image(null,image.getOriginalFilename(),image.getContentType(),image.getBytes(),"",item));
+                imageEntity = imageRepository.save(
+                        new Image(
+                                null,
+                                image.getOriginalFilename(),
+                                image.getContentType(),
+                                image.getBytes(),
+                                "",
+                                item
+                        )
+                );
             } catch (IOException e) {
                 e.printStackTrace();
-                return null;
             }
-        }).filter(Objects::nonNull).collect(Collectors.toSet()));
+            item.addImage(imageEntity);
+        });
 
         return itemRepository.save(item);
     }

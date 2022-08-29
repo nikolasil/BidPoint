@@ -39,8 +39,23 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new LinkedHashSet<>();
 
+    public void addRole(Role role){
+        this.roles.add(role);
+    }
+
+    public void removeRole(Role role){
+        this.roles.remove(role);
+    }
+
     @JsonManagedReference
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Bid> bids = new LinkedHashSet<>();
 
+    public void addBid(Bid bid){
+        this.bids.add(bid);
+    }
+
+    public void removeBid(Bid bid){
+        this.bids.remove(bid);
+    }
 }

@@ -39,3 +39,23 @@ export const getItem = (id) => async (dispatch) => {
     dispatch({ type: types.GET_ITEM_FAILURE, payload: error.response });
   }
 };
+
+export const bidItem = (id, amount) => async (dispatch) => {
+  dispatch({ type: types.CREATE_BID_ITEM_REQUEST });
+  try {
+    const res = await axios.post(`bid?itemId=${id}&amount=${amount}`);
+    dispatch({ type: types.CREATE_BID_ITEM_SUCCESS, payload: res.data });
+  } catch (error) {
+    dispatch({ type: types.CREATE_BID_ITEM_FAILURE, payload: error.response });
+  }
+};
+
+export const getBidsOfItem = (id) => async (dispatch) => {
+  dispatch({ type: types.GET_BIDS_ITEM_REQUEST });
+  try {
+    const res = await axios.get(`bid/all?itemId=${id}`);
+    dispatch({ type: types.GET_BIDS_ITEM_SUCCESS, payload: res.data });
+  } catch (error) {
+    dispatch({ type: types.GET_BIDS_ITEM_FAILURE, payload: error.response });
+  }
+};

@@ -1,8 +1,9 @@
 const initialState = {
-  isLoading: true,
+  isLoading: false,
   isFetched: false,
   isCreated: false,
   item: {},
+  bids: [],
 };
 
 export default initialState;

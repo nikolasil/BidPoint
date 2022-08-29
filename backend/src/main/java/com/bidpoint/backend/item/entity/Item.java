@@ -12,7 +12,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.FetchType.EAGER;
@@ -39,7 +41,7 @@ public class Item {
     private Integer numberOfBids;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "item", orphanRemoval = true)
+    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = EAGER)
     private Set<Bid> bids = new LinkedHashSet<>();
 
     @ManyToMany(mappedBy = "items")
@@ -58,5 +60,19 @@ public class Item {
     private LocalDateTime dateUpdated;
 
 
+    public void addBid(Bid bid) {
+        this.bids.add(bid);
+    }
 
+    public void addImage(Image image) {
+        this.images.add(image);
+    }
+
+    public void addCategory(Category category) {
+        this.categories.add(category);
+    }
+
+    public List<Bid> getSortedBids(){
+        return this.bids.stream().sorted(Comparator.comparing(Bid::getDateCreated).reversed()).toList();
+    }
 }

@@ -28,4 +28,11 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new LinkedHashSet<>();
 
+    public void addUser(User user){
+        this.users.add(user);
+    }
+
+    public void removeUser(User user){
+        this.users.remove(user);
+    }
 }

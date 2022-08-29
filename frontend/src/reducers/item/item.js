@@ -49,6 +49,47 @@ const itemReducer = (state = initialState, action) => {
         isLoading: false,
         isCreated: false,
       };
+    case types.CREATE_BID_ITEM_REQUEST:
+      console.log('itemReducer: CREATE_BID_ITEM_REQUEST');
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case types.CREATE_BID_ITEM_SUCCESS:
+      console.log('itemReducer: CREATE_BID_ITEM_SUCCESS');
+      console.log('payload: ', payload);
+      return {
+        ...state,
+        isLoading: false,
+        bids: payload,
+      };
+    case types.CREATE_BID_ITEM_FAILURE:
+      console.log('itemReducer: CREATE_BID_ITEM_FAILURE');
+      return {
+        ...state,
+        isLoading: false,
+      };
+    case types.GET_BIDS_ITEM_REQUEST:
+      console.log('itemReducer: GET_BIDS_ITEM_REQUEST');
+      return {
+        ...state,
+        isLoading: true,
+      };
+
+    case types.GET_BIDS_ITEM_SUCCESS:
+      console.log('itemReducer: GET_BIDS_ITEM_SUCCESS');
+      return {
+        ...state,
+        isLoading: false,
+        bids: payload,
+      };
+    case types.GET_BIDS_ITEM_FAILURE:
+      console.log('itemReducer: GET_BIDS_ITEM_FAILURE');
+      return {
+        ...state,
+        isLoading: false,
+      };
+
     default:
       return state;
   }
