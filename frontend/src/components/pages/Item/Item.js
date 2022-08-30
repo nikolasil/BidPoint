@@ -108,6 +108,56 @@ const Item = (props) => {
               }}
               sx={{ width: '100%' }}
             >
+              <Stack
+                direction="row"
+                justifyContent="flex-end"
+                alignItems="center"
+                spacing={0}
+                fullWidth
+              >
+                <div></div>
+                <Countdown
+                  date={moment.utc(item.item.dateEnds).toString()}
+                  intervalDelay={0}
+                  precision={1}
+                  renderer={({
+                    days,
+                    hours,
+                    minutes,
+                    seconds,
+                    milliseconds,
+                    completed,
+                  }) => {
+                    if (completed) {
+                      // Render a completed state
+                      return (
+                        <Typography variant="h5">Auction ended</Typography>
+                      );
+                    } else {
+                      // Render a countdown
+                      return (
+                        <>
+                          <Typography variant="h7" paddingRight={1}>
+                            Auction ends in:
+                          </Typography>
+                          <Typography variant="h7">
+                            {String(days).padStart(3, '0') +
+                              'd ' +
+                              String(hours).padStart(2, '0') +
+                              'h ' +
+                              String(minutes).padStart(2, '0') +
+                              'm ' +
+                              String(seconds).padStart(2, '0') +
+                              '.' +
+                              milliseconds / 100 +
+                              's'}
+                          </Typography>
+                        </>
+                      );
+                    }
+                  }}
+                />
+              </Stack>
               <Grid container>
                 <Grid item xs={12} md={4}>
                   {item.item.images && <Carousel images={item.item.images} />}
@@ -121,33 +171,6 @@ const Item = (props) => {
                     <Typography variant="h5">
                       Starting Price: {item.item.startingPrice}
                     </Typography>
-
-                    <Countdown
-                      date={moment.utc(item.item.dateEnds).toString()}
-                      intervalDelay={0}
-                      precision={3}
-                      renderer={({
-                        days,
-                        hours,
-                        minutes,
-                        seconds,
-                        milliseconds,
-                        completed,
-                      }) => {
-                        if (completed) {
-                          // Render a completed state
-                          return 'Completed';
-                        } else {
-                          // Render a countdown
-                          return (
-                            <span>
-                              D:{days} H:{hours} M:{minutes} S:
-                              {seconds},{milliseconds}
-                            </span>
-                          );
-                        }
-                      }}
-                    />
                     <Typography variant="h5">
                       Current Price: {item.item.currentPrice}
                     </Typography>
