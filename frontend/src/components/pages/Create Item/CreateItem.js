@@ -18,6 +18,7 @@ import { format, parse, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { postItem } from '../../../actions/item';
 import { getAllCategories } from '../../../actions/categories';
+import moment from 'moment';
 
 const CreateItem = () => {
   const dispatch = useDispatch();
@@ -228,10 +229,8 @@ const CreateItem = () => {
                 id="dateEnds"
                 disablePast
                 required
-                inputFormat="dd/MM/yyyy' 'HH:mm:ss"
                 onChange={(value) => {
-                  formik.setFieldValue('dateEnds', value);
-                  console.log(value);
+                  formik.setFieldValue('dateEnds', value.toISOString());
                 }}
                 value={formik.values.dateEnds}
                 renderInput={(params) => (

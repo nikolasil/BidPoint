@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableFooter from '@mui/material/TableFooter';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { TablePagination } from '@mui/material';
+import { Chip, TablePagination } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import TableActions from '../../ui/TableActions';
 import { useNavigate } from 'react-router-dom';
@@ -70,7 +70,11 @@ export default function UsersTable(props) {
               <TableCell align="right">{item.currentPrice}</TableCell>
               <TableCell align="right">{item.buyPrice}</TableCell>
               <TableCell align="right">{item.numberOfBids}</TableCell>
-              <TableCell align="right">{item.categories}</TableCell>
+              <TableCell align="right">
+                {item.categories.map((category) => (
+                  <Chip key={category} label={category} />
+                ))}
+              </TableCell>
               <TableCell align="right">{item.dateCreated}</TableCell>
               <TableCell align="right">{item.dateUpdated}</TableCell>
               <TableCell align="right">{item.dateEnds}</TableCell>

@@ -29,6 +29,7 @@ public class ItemController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ItemOutputDto> createItem(@RequestPart("images") MultipartFile[] images, @RequestPart("item") ItemInputDto item) {
+        log.info(item.getDateEnds().toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 conversionService.convert(
                         itemService.createItemWithCategoryAndImages(

@@ -25,7 +25,7 @@ export default function BidsTable(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   return (
-    <TableContainer component={Paper} style={{ maxHeight: '350px' }}>
+    <TableContainer component={Paper} style={{ maxHeight: '380px' }}>
       <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>

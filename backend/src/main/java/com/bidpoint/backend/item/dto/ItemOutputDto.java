@@ -27,10 +27,7 @@ public class ItemOutputDto {
     private Set<Image> images;
 
     private boolean isActive;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
     private LocalDateTime dateEnds;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
     private LocalDateTime dateCreated;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
     private LocalDateTime dateUpdated;
 }

@@ -19,6 +19,6 @@ public class ItemInputDto {
     private BigDecimal buyPrice;
     private Set<String> categories;
     private boolean isActive;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
+
     private LocalDateTime dateEnds;
 }

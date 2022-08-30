@@ -19,6 +19,7 @@ import BidsTable from './BidsTable';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Countdown from 'react-countdown';
+import moment from 'moment';
 
 const Item = (props) => {
   const item = useSelector((state) => state.item);
@@ -122,10 +123,17 @@ const Item = (props) => {
                     </Typography>
 
                     <Countdown
-                      date={Date.parse(item.item.dateEnds.replace(' ', 'T'))}
+                      date={moment.utc(item.item.dateEnds).toString()}
                       intervalDelay={0}
                       precision={3}
-                      renderer={({ hours, minutes, seconds, completed }) => {
+                      renderer={({
+                        days,
+                        hours,
+                        minutes,
+                        seconds,
+                        milliseconds,
+                        completed,
+                      }) => {
                         if (completed) {
                           // Render a completed state
                           return 'Completed';
@@ -133,7 +141,8 @@ const Item = (props) => {
                           // Render a countdown
                           return (
                             <span>
-                              {hours}:{minutes}:{seconds}
+                              D:{days} H:{hours} M:{minutes} S:
+                              {seconds},{milliseconds}
                             </span>
                           );
                         }
@@ -151,7 +160,7 @@ const Item = (props) => {
                       Categories:
                       {item.item &&
                         item.item.categories.map((category) => (
-                          <Chip label={category} />
+                          <Chip key={category} label={category} />
                         ))}
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>
