@@ -160,7 +160,13 @@ const Item = (props) => {
               </Stack>
               <Grid container>
                 <Grid item xs={12} md={4}>
-                  {item.item.images && <Carousel images={item.item.images} />}
+                  {item.item.images && (
+                    <Carousel
+                      height={'320px'}
+                      width={'320px'}
+                      images={item.item.images}
+                    />
+                  )}
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <Stack

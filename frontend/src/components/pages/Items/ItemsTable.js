@@ -11,6 +11,7 @@ import { Chip, TablePagination } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import TableActions from '../../ui/TableActions';
 import { useNavigate } from 'react-router-dom';
+import Carousel from '../Item/Carousel';
 
 export default function UsersTable(props) {
   const {
@@ -60,11 +61,11 @@ export default function UsersTable(props) {
                 {item.id}
               </TableCell>
               <TableCell align="right">
-                <img
-                  style={{ width: '100px', height: '100px' }}
-                  src="https://www.w3schools.com/w3css/img_snowtops.jpg"
-                />
+                {item.images && (
+                  <Carousel height="100px" width="100px" images={item.images} />
+                )}
               </TableCell>
+
               <TableCell align="right">{item.name}</TableCell>
               <TableCell align="right">{item.startingPrice}</TableCell>
               <TableCell align="right">{item.currentPrice}</TableCell>

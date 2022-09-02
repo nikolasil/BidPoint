@@ -1,14 +1,32 @@
 import { Button, Stack } from '@mui/material';
 import React, { useState } from 'react';
-
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 const Carousel = (props) => {
   const [index, setIndex] = useState(0);
 
   return (
-    <Stack direction="column">
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      maxWidth={props.width}
+    >
+      <NavigateBeforeIcon
+        sx={{ '&:hover': { color: 'blue', cursor: 'pointer' } }}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (index != 0) {
+            setIndex(index - 1);
+          } else setIndex(props.images.length - 1);
+          console.log(index);
+        }}
+      >
+        Back
+      </NavigateBeforeIcon>
       <img
-        width="320px"
-        height="320px"
+        width={props.width}
+        height={props.height}
         src={
           'data:' +
           props.images[index].fileType +
@@ -16,33 +34,18 @@ const Carousel = (props) => {
           props.images[index].fileData
         }
       />
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        maxWidth="320px"
+      <NavigateNextIcon
+        sx={{ '&:hover': { color: 'blue', cursor: 'pointer' } }}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (index < props.images.length - 1) {
+            setIndex(index + 1);
+          } else setIndex(0);
+          console.log(index);
+        }}
       >
-        <Button
-          onClick={() => {
-            if (index != 0) {
-              setIndex(index - 1);
-            } else setIndex(props.images.length - 1);
-            console.log(index);
-          }}
-        >
-          Back
-        </Button>
-        <Button
-          onClick={() => {
-            if (index < props.images.length - 1) {
-              setIndex(index + 1);
-            } else setIndex(0);
-            console.log(index);
-          }}
-        >
-          Next
-        </Button>
-      </Stack>
+        Next
+      </NavigateNextIcon>
     </Stack>
   );
 };
