@@ -27,6 +27,7 @@ public class ItemOutputDto {
     private Set<Image> images;
 
     private boolean isActive;
+    private boolean ended;
     private LocalDateTime dateEnds;
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;

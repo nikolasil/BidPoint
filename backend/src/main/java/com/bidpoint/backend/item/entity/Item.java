@@ -12,10 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static javax.persistence.FetchType.EAGER;
 
@@ -53,12 +50,14 @@ public class Item {
 
     @Column(nullable = false)
     private boolean active;
+
     private LocalDateTime dateEnds;
     @CreationTimestamp
     private LocalDateTime dateCreated;
     @UpdateTimestamp
     private LocalDateTime dateUpdated;
 
+    public boolean isEnded() { return LocalDateTime.now().isAfter(this.dateEnds);}
 
     public void addBid(Bid bid) {
         this.bids.add(bid);

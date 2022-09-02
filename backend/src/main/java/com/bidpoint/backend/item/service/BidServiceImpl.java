@@ -2,6 +2,8 @@ package com.bidpoint.backend.item.service;
 
 import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Item;
+import com.bidpoint.backend.item.exception.ItemHasEndedException;
+import com.bidpoint.backend.item.exception.ItemNotActiveException;
 import com.bidpoint.backend.item.exception.ItemNotFoundException;
 import com.bidpoint.backend.item.repository.BidRepository;
 import com.bidpoint.backend.item.repository.ItemRepository;
@@ -29,6 +31,10 @@ public class BidServiceImpl implements BidService {
         Item item = itemRepository.findItemById(itemId);
         if(item == null)
             throw new ItemNotFoundException(itemId.toString());
+        if(item.isEnded())
+            throw new ItemHasEndedException(itemId.toString());
+        if(!item.isActive())
+            throw new ItemNotActiveException(itemId.toString());
 
         User user = userRepository.findByUsername(username);
 

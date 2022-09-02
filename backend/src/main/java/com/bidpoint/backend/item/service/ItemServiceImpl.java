@@ -87,8 +87,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Long getItemsCountByActive(boolean active) {
+        return itemRepository.countAllByActive(active);
+    }
+
+    @Override
     public List<Item> searchItems(String searchTerm) {
         return itemRepository.searchItems(searchTerm);
+    }
+
+    @Override
+    public List<Item> searchItemsByActive(boolean active, String searchTerm) {
+        return itemRepository.searchItemsByActive(active, searchTerm);
     }
 
     @Override
@@ -103,6 +113,22 @@ public class ItemServiceImpl implements ItemService {
                                 sortField
                         )
                 )
+        );
+    }
+
+    @Override
+    public Page<Item> getItemsPaginationAndSortByActive(boolean active, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+        return itemRepository.findAllByActive(
+                active,
+                PageRequest.of(
+                        pageNumber,
+                        itemCount
+                ).withSort(
+                        Sort.by(
+                                sortDirection,
+                                sortField
+                        )
+            )
         );
     }
 }

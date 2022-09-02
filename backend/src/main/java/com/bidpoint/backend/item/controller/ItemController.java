@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,8 +29,8 @@ public class ItemController {
     private final ConversionService conversionService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ItemOutputDto> createItem(@RequestPart("images") MultipartFile[] images, @RequestPart("item") ItemInputDto item) {
-        log.info(item.getDateEnds().toString());
+    public ResponseEntity<ItemOutputDto> createItem(@RequestPart("images") MultipartFile[] images,
+                                                    @RequestPart("item") ItemInputDto item) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 conversionService.convert(
                         itemService.createItemWithCategoryAndImages(
@@ -59,30 +60,43 @@ public class ItemController {
     public ResponseEntity<List<ItemOutputDto>> getItemsPaginationAndSorting(@RequestParam(name = "pageNumber",required = true) int pageNumber,
                                                                       @RequestParam(name = "itemCount",required = true) int itemCount,
                                                                       @RequestParam(name = "sortField",required = true) String sortField,
-                                                                      @RequestParam(name = "sortDirection",required = true) String sortDirection) {
-        Page<Item> items = itemService.getItemsPaginationAndSort(
-                pageNumber,
-                itemCount,
-                sortField,
-                Sort.Direction.fromString(sortDirection));
+                                                                      @RequestParam(name = "sortDirection",required = true) String sortDirection,
+                                                                      @RequestParam(name = "active") Optional<Boolean> active) {
+        Page<Item> items = active.isEmpty() ?
+            itemService.getItemsPaginationAndSort(
+                    pageNumber,
+                    itemCount,
+                    sortField,
+                    Sort.Direction.fromString(sortDirection)) :
+            itemService.getItemsPaginationAndSortByActive(
+                    active.get(),
+                    pageNumber,
+                    itemCount,
+                    sortField,
+                    Sort.Direction.fromString(sortDirection));
 
         return ResponseEntity.status(HttpStatus.OK).body(items.stream().map(i -> conversionService.convert(i,ItemOutputDto.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Long> getItemsCount() {
-        return ResponseEntity.status(HttpStatus.OK).body(itemService.getItemsCount());
+    public ResponseEntity<Long> getItemsCount(@RequestParam(name = "active") Optional<Boolean> active) {
+        Long count = active.isEmpty() ?
+                itemService.getItemsCount() :
+                itemService.getItemsCountByActive(active.get());
+
+        return ResponseEntity.status(HttpStatus.OK).body(count);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ItemOutputDto>> getItems(@RequestParam(name = "searchTerm",required = true) String searchTerm) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                itemService.searchItems(searchTerm).stream().map(
-                        i -> conversionService.convert(
-                                i,
-                                ItemOutputDto.class
-                        )
-                ).collect(Collectors.toList())
+    public ResponseEntity<List<ItemOutputDto>> getItems(@RequestParam(name = "active") Optional<Boolean> active,
+                                                        @RequestParam(name = "searchTerm",required = true) String searchTerm) {
+        List<Item> items = active.isEmpty() ?
+                itemService.searchItems(searchTerm) :
+                itemService.searchItemsByActive(active.get(), searchTerm);
+
+        return ResponseEntity.
+                status(HttpStatus.OK).
+                body(items.stream().map(i -> conversionService.convert(i,ItemOutputDto.class)).toList()
         );
     }
 }
