@@ -14,7 +14,7 @@ import { LoadingButton } from '@mui/lab';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getItem, bidItem, getBidsOfItem } from '../../../actions/item';
-import Carousel from './Carousel';
+import Carousel from '../../ui/Carousel';
 import BidsTable from './BidsTable';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -165,6 +165,7 @@ const Item = (props) => {
                       height={'320px'}
                       width={'320px'}
                       images={item.item.images}
+                      isBase64={true}
                     />
                   )}
                 </Grid>

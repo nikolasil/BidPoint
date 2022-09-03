@@ -11,7 +11,7 @@ import { Chip, TablePagination } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import TableActions from '../../ui/TableActions';
 import { useNavigate } from 'react-router-dom';
-import Carousel from '../Item/Carousel';
+import Carousel from '../../ui/Carousel';
 
 export default function UsersTable(props) {
   const {
@@ -62,7 +62,12 @@ export default function UsersTable(props) {
               </TableCell>
               <TableCell align="right">
                 {item.images && (
-                  <Carousel height="100px" width="100px" images={item.images} />
+                  <Carousel
+                    height="100px"
+                    width="100px"
+                    images={item.images}
+                    isBase64={true}
+                  />
                 )}
               </TableCell>
 

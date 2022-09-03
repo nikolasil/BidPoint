@@ -7,6 +7,7 @@ import {
   Switch,
   FormControlLabel,
   Button,
+  Stack,
 } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { postItem } from '../../../actions/item';
 import { getAllCategories } from '../../../actions/categories';
 import moment from 'moment';
+import Carousel from '../../ui/Carousel';
 
 const CreateItem = () => {
   const dispatch = useDispatch();
@@ -263,20 +265,40 @@ const CreateItem = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Button variant="contained" component="label">
-                Upload
-                <input
-                  hidden
-                  accept="image/*"
-                  name="images"
-                  id="images"
-                  multiple
-                  type="file"
-                  onChange={(event) => {
-                    formik.setFieldValue('images', event.currentTarget.files);
-                  }}
+              <Stack
+                direction="column"
+                spacing={2}
+                justifyContent="center"
+                alignItems="flex-start"
+              >
+                <Button variant="contained" component="label">
+                  Upload Images
+                  <input
+                    hidden
+                    accept="image/*"
+                    name="images"
+                    id="images"
+                    multiple
+                    type="file"
+                    onChange={(event) => {
+                      console.log(event.target.files);
+                      formik.setFieldValue('images', event.currentTarget.files);
+                    }}
+                  />
+                </Button>
+                <Carousel
+                  images={
+                    formik.values.images &&
+                    Array.from(formik.values.images).map((image) => {
+                      console.log(URL.createObjectURL(image));
+                      return URL.createObjectURL(image);
+                    })
+                  }
+                  isBase64={false}
+                  height={'200px'}
+                  width={'200px'}
                 />
-              </Button>
+              </Stack>
             </Grid>
 
             <LoadingButton
