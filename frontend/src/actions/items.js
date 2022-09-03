@@ -1,12 +1,13 @@
 import * as types from '../types';
 import axios from 'axios';
 
-export const getAllItems =
-  (pageNumber, itemCount, sortField, sortDirection) => async (dispatch) => {
+export const getAllItemsByActive =
+  (active, pageNumber, itemCount, sortField, sortDirection) =>
+  async (dispatch) => {
     try {
       dispatch({ type: types.GET_ALL_ITEMS_REQUEST });
       const response = await axios.get(
-        `item/all?pageNumber=${pageNumber}&itemCount=${itemCount}&sortField=${sortField}&sortDirection=${sortDirection}`
+        `item/all?active=${active}&pageNumber=${pageNumber}&itemCount=${itemCount}&sortField=${sortField}&sortDirection=${sortDirection}`
       );
       dispatch({
         type: types.GET_ALL_ITEMS_SUCCESS,
@@ -20,10 +21,10 @@ export const getAllItems =
     }
   };
 
-export const getItemsCount = () => async (dispatch) => {
+export const getAllItemsCountByActive = (active) => async (dispatch) => {
   try {
     dispatch({ type: types.GET_ITEMS_COUNT_REQUEST });
-    const response = await axios.get('item/count');
+    const response = await axios.get(`item/count?active=${active}`);
     dispatch({
       type: types.GET_ITEMS_COUNT_SUCCESS,
       payload: response.data,

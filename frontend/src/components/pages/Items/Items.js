@@ -11,8 +11,8 @@ import {
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  getAllItems,
-  getItemsCount,
+  getAllItemsByActive,
+  getAllItemsCountByActive,
   getItemsSearch,
 } from '../../../actions/items';
 import ItemsTable from './ItemsTable';
@@ -28,7 +28,7 @@ const Items = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
 
   useEffect(() => {
-    dispatch(getItemsCount());
+    dispatch(getAllItemsCountByActive(true));
   }, []);
 
   const handleChangePageNumber = (event, newPage) => {
@@ -51,12 +51,23 @@ const Items = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllItems(pageNumber, itemCount, sortField, sortDirection));
+    dispatch(
+      getAllItemsByActive(true, pageNumber, itemCount, sortField, sortDirection)
+    );
   }, [pageNumber, itemCount, sortField, sortDirection]);
 
   useEffect(() => {
     if (searchTerm != '') dispatch(getItemsSearch(searchTerm));
-    else dispatch(getAllItems(pageNumber, itemCount, sortField, sortDirection));
+    else
+      dispatch(
+        getAllItemsByActive(
+          true,
+          pageNumber,
+          itemCount,
+          sortField,
+          sortDirection
+        )
+      );
   }, [searchTerm]);
 
   return (
