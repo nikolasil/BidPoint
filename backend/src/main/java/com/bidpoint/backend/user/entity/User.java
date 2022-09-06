@@ -1,6 +1,7 @@
 package com.bidpoint.backend.user.entity;
 
 import com.bidpoint.backend.item.entity.Bid;
+import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.role.entity.Role;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -38,6 +39,10 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new LinkedHashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private Set<Item> items = new LinkedHashSet<>();
 
     public void addRole(Role role){
         this.roles.add(role);

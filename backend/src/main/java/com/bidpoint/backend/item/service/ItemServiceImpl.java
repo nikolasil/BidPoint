@@ -8,6 +8,9 @@ import com.bidpoint.backend.item.repository.BidRepository;
 import com.bidpoint.backend.item.repository.CategoryRepository;
 import com.bidpoint.backend.item.repository.ImageRepository;
 import com.bidpoint.backend.item.repository.ItemRepository;
+import com.bidpoint.backend.user.entity.User;
+import com.bidpoint.backend.user.exception.UserNotFoundException;
+import com.bidpoint.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,12 +31,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
 
     @Override
-    public Item createItemWithCategoryAndImages(Item item, List<String> categories, MultipartFile[] images) {
+    public Item createItemWithCategoryAndImages(String username, Item item, List<String> categories, MultipartFile[] images) {
+        User user = userRepository.findByUsername(username);
+        if(user== null)
+            throw new UserNotFoundException(username);
+
         itemRepository.save(item);
+        item.setUser(user);
 
         categories.forEach(categoryName->{
             Category category = categoryRepository.findCategoryByName(categoryName);
@@ -92,13 +101,29 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> searchItems(String searchTerm) {
-        return itemRepository.searchItems(searchTerm);
+    public Page<Item> searchItems(String searchTerm,int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+        return itemRepository.searchItems(searchTerm,PageRequest.of(
+                pageNumber,
+                itemCount
+        ).withSort(
+                Sort.by(
+                        sortDirection,
+                        sortField
+                )
+        ));
     }
 
     @Override
-    public List<Item> searchItemsByActive(boolean active, String searchTerm) {
-        return itemRepository.searchItemsByActive(active, searchTerm);
+    public Page<Item> searchItemsByActive(boolean active, String searchTerm,int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+        return itemRepository.searchItemsByActive(active, searchTerm,PageRequest.of(
+                pageNumber,
+                itemCount
+        ).withSort(
+                Sort.by(
+                        sortDirection,
+                        sortField
+                )
+        ));
     }
 
     @Override

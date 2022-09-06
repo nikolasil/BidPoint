@@ -8,12 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ItemService {
-    Item createItemWithCategoryAndImages(Item item, List<String> categories, MultipartFile[] images);
+    Item createItemWithCategoryAndImages(String username, Item item, List<String> categories, MultipartFile[] images);
     Item getItem(Long itemId);
     Long getItemsCount();
     Long getItemsCountByActive(boolean active);
-    List<Item> searchItems(String query);
-    List<Item> searchItemsByActive(boolean active, String query);
+    Page<Item> searchItems(String query, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection);
+    Page<Item> searchItemsByActive(boolean active, String query, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection);
     Page<Item> getItemsPaginationAndSort(int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection);
     Page<Item> getItemsPaginationAndSortByActive(boolean active, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection);
 }

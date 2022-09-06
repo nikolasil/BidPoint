@@ -32,7 +32,7 @@ public class AuthController {
     private final ConversionService conversionService;
 
     @GetMapping("/refresh-token")
-    public ResponseEntity<AuthOutputDto> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<AuthOutputDto> refreshToken(HttpServletRequest request) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (!authService.hasAuthorizationHeader(authorizationHeader))
             throw new TokenIsMissingException();

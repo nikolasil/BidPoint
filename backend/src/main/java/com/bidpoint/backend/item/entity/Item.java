@@ -1,5 +1,6 @@
 package com.bidpoint.backend.item.entity;
 
+import com.bidpoint.backend.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
@@ -41,12 +42,19 @@ public class Item {
     @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = EAGER)
     private Set<Bid> bids = new LinkedHashSet<>();
 
+
+
     @ManyToMany(mappedBy = "items")
     private Set<Category> categories = new LinkedHashSet<>();
 
     @JsonManagedReference
     @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = EAGER)
     private Set<Image> images = new LinkedHashSet<>();
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(nullable = false)
     private boolean active;
@@ -56,6 +64,7 @@ public class Item {
     private LocalDateTime dateCreated;
     @UpdateTimestamp
     private LocalDateTime dateUpdated;
+
 
     public boolean isEnded() { return LocalDateTime.now().isAfter(this.dateEnds);}
 

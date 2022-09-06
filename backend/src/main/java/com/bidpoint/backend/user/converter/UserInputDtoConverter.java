@@ -21,6 +21,7 @@ public class UserInputDtoConverter implements Converter<UserInputDto, User> {
                 source.getMail(),
                 source.getAfm(),
                 new LinkedHashSet<>(),
+                new LinkedHashSet<>(),
                 new LinkedHashSet<>()
         );
     }
