@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -28,8 +29,7 @@ public class Bid {
     private BigDecimal amount;
 
     @CreationTimestamp
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
-    private LocalDateTime dateCreated;
+    private ZonedDateTime dateCreated;
 
     @JsonBackReference
     @ManyToOne(optional = false)

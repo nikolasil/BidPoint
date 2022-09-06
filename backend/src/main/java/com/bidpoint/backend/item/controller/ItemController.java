@@ -87,36 +87,15 @@ public class ItemController {
                                                                       @RequestParam(name = "sortField",required = true) String sortField,
                                                                       @RequestParam(name = "sortDirection",required = true) String sortDirection,
                                                                       @RequestParam(name = "active") Optional<Boolean> active,
+                                                                      @RequestParam(name = "dateEnds") Optional<Boolean> dateEnds,
                                                                       @RequestParam(name = "username") Optional<String> username) {
-        Page<Item> items;
-        Long totalCount;
-        if(active.isEmpty())
-            if(username.isEmpty()) {
-                items = itemService.getItemsPaginationAndSort(pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-                totalCount = itemService.getItemsCount();
-            } else {
-                items = itemService.getItemsPaginationAndSortByUser(username.get(), pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-                totalCount = itemService.getItemsCountByUser(username.get());
-            }
-        else {
-//            if(username.isEmpty()) {
-                items = itemService.getItemsPaginationAndSortByActive(active.get(), pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-                totalCount = itemService.getItemsCountByActive(active.get());
-//            }
-        }
+
+        Page<Item> items = itemService.getItemsPageable(active, username, dateEnds, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
+        Long totalCount = itemService.getItemsCount(active, username, dateEnds);
 
         List<ItemOutputDto> itemsList = items.stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(new PageItemsOutputDto(totalCount, itemsList));
-    }
-
-    @GetMapping("/count")
-    public ResponseEntity<Long> getItemsCount(@RequestParam(name = "active") Optional<Boolean> active) {
-        Long count = active.isEmpty() ?
-                itemService.getItemsCount() :
-                itemService.getItemsCountByActive(active.get());
-
-        return ResponseEntity.status(HttpStatus.OK).body(count);
     }
 
     @GetMapping("/search")
@@ -127,23 +106,11 @@ public class ItemController {
                                                         @RequestParam(name = "sortField",required = true) String sortField,
                                                         @RequestParam(name = "sortDirection",required = true) String sortDirection,
                                                         @RequestParam(name = "active") Optional<Boolean> active,
+                                                        @RequestParam(name = "dateEnds") Optional<Boolean> dateEnds,
                                                         @RequestParam(name = "username") Optional<String> username) {
-        Page<Item> items;
-        Long totalCount;
-        if(active.isEmpty())
-            if(username.isEmpty()) {
-                items = itemService.searchItems(searchTerm, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-                totalCount = itemService.countSearchItems(searchTerm);
-            } else {
-                items = itemService.searchItemsByUser(username.get(), searchTerm, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-                totalCount = itemService.countSearchItemsByUser(searchTerm, username.get());
-            }
-        else {
-//            if(username.isEmpty()) {
-            items = itemService.searchItemsByActive(active.get(), searchTerm, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-            totalCount = itemService.countSearchItemsByActive(searchTerm, active.get());
-//            }
-        }
+
+        Page<Item> items = itemService.getItemsSearchPageable(searchTerm, active, username, dateEnds, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
+        Long totalCount = itemService.getItemsSearchCount(searchTerm, active, username, dateEnds);
 
         List<ItemOutputDto> itemsList = items.stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 

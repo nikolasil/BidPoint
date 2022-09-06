@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 @Data
@@ -20,5 +21,5 @@ public class ItemInputDto {
     private Set<String> categories;
     private boolean isActive;
 
-    private LocalDateTime dateEnds;
+    private ZonedDateTime dateEnds;
 }

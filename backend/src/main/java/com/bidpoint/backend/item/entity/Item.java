@@ -2,6 +2,7 @@ package com.bidpoint.backend.item.entity;
 
 import com.bidpoint.backend.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +10,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.ZonedDateTimeType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.*;
 
+import static java.time.ZoneOffset.UTC;
 import static javax.persistence.FetchType.EAGER;
 
 @Getter
@@ -44,14 +49,15 @@ public class Item {
     @Column(nullable = false)
     private boolean active;
 
-    private LocalDateTime dateEnds;
-    public boolean isEnded() { return LocalDateTime.now().isAfter(this.dateEnds);}
+    private ZonedDateTime dateEnds;
+    public boolean isEnded() { return ZonedDateTime.now(UTC).isAfter(this.dateEnds);}
 
     @CreationTimestamp
-    private LocalDateTime dateCreated;
+    @Column(updatable = false)
+    private ZonedDateTime dateCreated = ZonedDateTime.now();
 
     @UpdateTimestamp
-    private LocalDateTime dateUpdated;
+    private ZonedDateTime dateUpdated;
 
     @JsonBackReference
     @ManyToOne

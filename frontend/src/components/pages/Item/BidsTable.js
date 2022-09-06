@@ -11,6 +11,7 @@ import { TablePagination } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import TableActions from '../../ui/TableActions';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 export default function BidsTable(props) {
   const {
@@ -48,7 +49,13 @@ export default function BidsTable(props) {
                   {bid.amount}
                 </TableCell>
                 <TableCell align="right">{bid.username}</TableCell>
-                <TableCell align="right">{bid.dateCreated}</TableCell>
+                <TableCell align="right">
+                  {moment
+                    .utc(bid.dateCreated)
+                    .local()
+                    .format('DD/MM/YYYY HH:mm:ss')
+                    .toString()}
+                </TableCell>
               </TableRow>
             ))}
         </TableBody>

@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import TableActions from '../../ui/TableActions';
 import { useNavigate } from 'react-router-dom';
 import Carousel from '../../ui/Carousel';
+import moment from 'moment';
 
 export default function UsersTable(props) {
   const {
@@ -81,9 +82,27 @@ export default function UsersTable(props) {
                   <Chip key={category} label={category} />
                 ))}
               </TableCell>
-              <TableCell align="right">{item.dateCreated}</TableCell>
-              <TableCell align="right">{item.dateUpdated}</TableCell>
-              <TableCell align="right">{item.dateEnds}</TableCell>
+              <TableCell align="right">
+                {moment
+                  .utc(item.dateCreated)
+                  .local()
+                  .format('DD/MM/YYYY HH:mm:ss')
+                  .toString()}
+              </TableCell>
+              <TableCell align="right">
+                {moment
+                  .utc(item.dateUpdated)
+                  .local()
+                  .format('DD/MM/YYYY HH:mm:ss')
+                  .toString()}
+              </TableCell>
+              <TableCell align="right">
+                {moment
+                  .utc(item.dateEnds)
+                  .local()
+                  .format('DD/MM/YYYY HH:mm:ss')
+                  .toString()}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

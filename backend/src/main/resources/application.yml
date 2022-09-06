@@ -12,11 +12,16 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
     hibernate:
       ddl-auto: create-drop
   sql:
     init:
       continue-on-error: true
+  jackson:
+    deserialization:
+      ADJUST_DATES_TO_CONTEXT_TIME_ZONE: false
 server:
   port: 8002
   error:

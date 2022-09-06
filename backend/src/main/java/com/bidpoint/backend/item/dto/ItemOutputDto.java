@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 @Data
@@ -29,11 +30,11 @@ public class ItemOutputDto {
 
     private boolean active;
 
-    private LocalDateTime dateEnds;
+    private ZonedDateTime dateEnds;
 
-    private LocalDateTime dateCreated;
+    private ZonedDateTime dateCreated;
 
-    private LocalDateTime dateUpdated;
+    private ZonedDateTime dateUpdated;
 
     private String username;
 
