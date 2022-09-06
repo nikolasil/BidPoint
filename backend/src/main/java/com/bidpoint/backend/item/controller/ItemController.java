@@ -87,17 +87,8 @@ public class ItemController {
                                                                       @RequestParam(name = "sortDirection",required = true) String sortDirection,
                                                                       @RequestParam(name = "active") Optional<Boolean> active) {
         Page<Item> items = active.isEmpty() ?
-            itemService.getItemsPaginationAndSort(
-                    pageNumber,
-                    itemCount,
-                    sortField,
-                    Sort.Direction.fromString(sortDirection)) :
-            itemService.getItemsPaginationAndSortByActive(
-                    active.get(),
-                    pageNumber,
-                    itemCount,
-                    sortField,
-                    Sort.Direction.fromString(sortDirection));
+            itemService.getItemsPaginationAndSort(pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection)) :
+            itemService.getItemsPaginationAndSortByActive(active.get(), pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
 
         return ResponseEntity.status(HttpStatus.OK).body(items.stream().map(i -> conversionService.convert(i,ItemOutputDto.class)).collect(Collectors.toList()));
     }
@@ -119,8 +110,8 @@ public class ItemController {
                                                         @RequestParam(name = "sortField",required = true) String sortField,
                                                         @RequestParam(name = "sortDirection",required = true) String sortDirection) {
         Page<Item> items = active.isEmpty() ?
-                itemService.searchItems(searchTerm, pageNumber, itemCount, sortField, Sort.Direction.valueOf(sortDirection)) :
-                itemService.searchItemsByActive(active.get(), searchTerm, pageNumber, itemCount, sortField, Sort.Direction.valueOf(sortDirection));
+                itemService.searchItems(searchTerm, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection)) :
+                itemService.searchItemsByActive(active.get(), searchTerm, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
 
         return ResponseEntity.
                 status(HttpStatus.OK).
