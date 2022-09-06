@@ -22,6 +22,7 @@ const Customer = () => {
   return (
     <Box>
       <NavBar
+        title="BidPoint"
         pages={[
           { name: 'Items', path: '/items' },
           { name: 'My Items', path: '/account/items' },

@@ -22,8 +22,7 @@ const NavBar = (props) => {
   const navigate = useNavigate();
 
   const auth = useSelector((state) => state.auth);
-  const name = 'BidPoint';
-
+  const title = props.title;
   const pages = props.pages;
   const settings = props.settings;
   const homePagePath = props.homePagePath;
@@ -68,7 +67,7 @@ const NavBar = (props) => {
               cursor: 'pointer',
             }}
           >
-            {name}
+            {title}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -133,7 +132,7 @@ const NavBar = (props) => {
               cursor: 'pointer',
             }}
           >
-            {name}
+            {title}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (

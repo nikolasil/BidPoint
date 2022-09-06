@@ -16,7 +16,11 @@ const Admin = () => {
   return (
     <Box>
       <NavBar
-        pages={[{ name: 'Users', path: '/admin/users' }]}
+        title="AdminPanel"
+        pages={[
+          { name: 'Website', path: '/' },
+          { name: 'Users', path: '/admin/users' },
+        ]}
         settings={[
           {
             id: 'setting_1',
