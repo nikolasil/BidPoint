@@ -101,6 +101,33 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Page<Item> getItemsPaginationAndSortByUser(String username, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+        User user = userRepository.findByUsername(username);
+        if(user== null)
+            throw new UserNotFoundException(username);
+        return itemRepository.findAllByUser(
+                user,
+                PageRequest.of(
+                        pageNumber,
+                        itemCount
+                ).withSort(
+                        Sort.by(
+                                sortDirection,
+                                sortField
+                        )
+                )
+        );
+    }
+
+    @Override
+    public Long getItemsCountByUser(String username) {
+        User user = userRepository.findByUsername(username);
+        if(user== null)
+            throw new UserNotFoundException(username);
+        return itemRepository.countAllByUser(user);
+    }
+
+    @Override
     public Page<Item> searchItems(String searchTerm,int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
         return itemRepository.searchItems(searchTerm,PageRequest.of(
                 pageNumber,
@@ -134,6 +161,30 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Long countSearchItemsByActive(String query, boolean active) {
         return itemRepository.countSearchItemsByActive(query, active);
+    }
+
+    @Override
+    public Page<Item> searchItemsByUser(String username, String query, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+        User user = userRepository.findByUsername(username);
+        if(user== null)
+            throw new UserNotFoundException(username);
+        return itemRepository.searchItemsByUser(query, user, PageRequest.of(
+                pageNumber,
+                itemCount
+        ).withSort(
+                Sort.by(
+                        sortDirection,
+                        sortField
+                )
+        ));
+    }
+
+    @Override
+    public Long countSearchItemsByUser(String query, String username) {
+        User user = userRepository.findByUsername(username);
+        if(user== null)
+            throw new UserNotFoundException(username);
+        return itemRepository.countSearchItemsByUser(query, user);
     }
 
     @Override

@@ -29,11 +29,17 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
             "i.name LIKE CONCAT('%', :searchTerm, '%')" +
             "OR i.description LIKE CONCAT('%', :searchTerm, '%')")
     Page<Item> searchItems(String searchTerm, Pageable pageable);
+
     @Query( value = "SELECT i FROM Item i WHERE " +
             "i.active = :active AND (" +
             "i.name LIKE CONCAT('%', :searchTerm, '%')" +
             "OR i.description LIKE CONCAT('%', :searchTerm, '%'))")
     Page<Item> searchItemsByActive(String searchTerm, boolean active, Pageable pageable);
+    @Query( value = "SELECT i FROM Item i WHERE " +
+            "i.user = :user AND (" +
+            "i.name LIKE CONCAT('%', :searchTerm, '%')" +
+            "OR i.description LIKE CONCAT('%', :searchTerm, '%'))")
+    Page<Item> searchItemsByUser(String searchTerm, User user, Pageable pageable);
 
     Long countAllByActive(boolean active);
     Long countAllByUser(User user);
@@ -54,4 +60,9 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
             "i.name LIKE CONCAT('%', :searchTerm, '%')" +
             "OR i.description LIKE CONCAT('%', :searchTerm, '%'))")
     Long countSearchItemsByActive(String searchTerm, boolean active);
+    @Query( value = "SELECT COUNT(DISTINCT i) FROM Item i WHERE " +
+            "i.user = :user AND (" +
+            "i.name LIKE CONCAT('%', :searchTerm, '%')" +
+            "OR i.description LIKE CONCAT('%', :searchTerm, '%'))")
+    Long countSearchItemsByUser(String searchTerm, User user);
 }
