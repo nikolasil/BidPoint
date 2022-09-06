@@ -25,6 +25,16 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 
     Page<Item> findAllByActiveAndDateEndsAfterAndUser(boolean active, LocalDateTime min, User user, Pageable pageable);
 
+    @Query( "SELECT i FROM Item i WHERE " +
+            "i.name LIKE CONCAT('%', :searchTerm, '%')" +
+            "OR i.description LIKE CONCAT('%', :searchTerm, '%')")
+    Page<Item> searchItems(String searchTerm, Pageable pageable);
+    @Query( value = "SELECT i FROM Item i WHERE " +
+            "i.active = :active AND (" +
+            "i.name LIKE CONCAT('%', :searchTerm, '%')" +
+            "OR i.description LIKE CONCAT('%', :searchTerm, '%'))")
+    Page<Item> searchItemsByActive(String searchTerm, boolean active, Pageable pageable);
+
     Long countAllByActive(boolean active);
     Long countAllByUser(User user);
     Long countAllByDateEndsAfter(LocalDateTime min);
@@ -35,13 +45,13 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 
     Long countAllByActiveAndDateCreatedAfterAndUser(boolean active, LocalDateTime min, User user);
 
-    @Query( "SELECT i FROM Item i WHERE " +
+    @Query( "SELECT COUNT(DISTINCT i) FROM Item i WHERE " +
             "i.name LIKE CONCAT('%', :searchTerm, '%')" +
             "OR i.description LIKE CONCAT('%', :searchTerm, '%')")
-    Page<Item> searchItems(String searchTerm, Pageable pageable);
-    @Query( value = "SELECT i FROM Item i WHERE " +
+    Long countSearchItems(String searchTerm);
+    @Query( value = "SELECT COUNT(DISTINCT i) FROM Item i WHERE " +
             "i.active = :active AND (" +
             "i.name LIKE CONCAT('%', :searchTerm, '%')" +
             "OR i.description LIKE CONCAT('%', :searchTerm, '%'))")
-    Page<Item> searchItemsByActive(boolean active, String searchTerm, Pageable pageable);
+    Long countSearchItemsByActive(String searchTerm, boolean active);
 }

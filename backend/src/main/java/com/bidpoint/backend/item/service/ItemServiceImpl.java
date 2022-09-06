@@ -114,8 +114,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Long countSearchItems(String query) {
+        return itemRepository.countSearchItems(query);
+    }
+
+    @Override
     public Page<Item> searchItemsByActive(boolean active, String searchTerm,int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
-        return itemRepository.searchItemsByActive(active, searchTerm,PageRequest.of(
+        return itemRepository.searchItemsByActive(searchTerm, active, PageRequest.of(
                 pageNumber,
                 itemCount
         ).withSort(
@@ -124,6 +129,11 @@ public class ItemServiceImpl implements ItemService {
                         sortField
                 )
         ));
+    }
+
+    @Override
+    public Long countSearchItemsByActive(String query, boolean active) {
+        return itemRepository.countSearchItemsByActive(query, active);
     }
 
     @Override

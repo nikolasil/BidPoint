@@ -23,7 +23,8 @@ const itemsReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         isFetched: true,
-        list: payload,
+        list: payload.items,
+        itemsCount: payload.totalItems,
       };
     case types.GET_ALL_ITEMS_FAILURE:
     case types.GET_ITEMS_SEARCH_FAILURE:
@@ -35,24 +36,6 @@ const itemsReducer = (state = initialState, action) => {
         isLoading: false,
         isFetched: false,
         list: [],
-      };
-    case types.GET_ITEMS_COUNT_REQUEST:
-      console.log('itemsReducer: GET_ITEMS_COUNT_REQUEST');
-      return {
-        ...state,
-        itemsCount: 0,
-      };
-    case types.GET_ITEMS_COUNT_SUCCESS:
-      console.log('itemsReducer: GET_ITEMS_COUNT_SUCCESS');
-      return {
-        ...state,
-        itemsCount: payload,
-      };
-    case types.GET_ITEMS_COUNT_FAILURE:
-      console.log('itemsReducer: GET_ITEMS_COUNT_FAILURE');
-      return {
-        ...state,
-        itemsCount: 0,
       };
     default:
       return state;

@@ -12,71 +12,73 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import {
   getAllItemsByActive,
-  getAllItemsCountByActive,
-  getItemsSearch,
+  getAllItemsSearchByActive,
 } from '../../../actions/items';
 import ItemsTable from './ItemsTable';
 
 const Items = () => {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.items);
-
-  const [pageNumber, setPageNumber] = React.useState(0);
-  const [itemCount, setItemCount] = React.useState(10);
-  const [sortField, setSortField] = React.useState('id');
-  const [sortDirection, setSortDirection] = React.useState('asc');
-  const [searchTerm, setSearchTerm] = React.useState('');
-
-  useEffect(() => {
-    dispatch(getAllItemsCountByActive(true));
-  }, []);
+  const [searchState, setSearchState] = React.useState({
+    pageNumber: 0,
+    itemCount: 10,
+    sortField: 'id',
+    sortDirection: 'asc',
+    searchTerm: '',
+  });
 
   const handleChangePageNumber = (event, newPage) => {
-    setPageNumber(newPage);
+    setSearchState((old) => ({ ...old, pageNumber: newPage }));
   };
 
   const handleChangeItemCount = (event) => {
-    setItemCount(parseInt(event.target.value, 10));
-    setPageNumber(0);
+    setSearchState((old) => ({
+      ...old,
+      itemCount: parseInt(event.target.value, 10),
+      pageNumber: 0,
+    }));
   };
 
   const handleChangeSortField = (newSortField) => {
-    setSortField(newSortField);
-    setPageNumber(0);
+    setSearchState((old) => ({
+      ...old,
+      sortField: newSortField,
+      pageNumber: 0,
+    }));
   };
 
   const handleChangeSortDirection = (newSortDirection) => {
-    setSortDirection(newSortDirection);
-    setPageNumber(0);
+    setSearchState((old) => ({
+      ...old,
+      sortDirection: newSortDirection,
+      pageNumber: 0,
+    }));
   };
 
   useEffect(() => {
-    dispatch(
-      getAllItemsByActive(true, pageNumber, itemCount, sortField, sortDirection)
-    );
-  }, [pageNumber, itemCount, sortField, sortDirection]);
-
-  useEffect(() => {
-    if (searchTerm != '') dispatch(
-      getItemsSearch(
-        searchTerm,
-        pageNumber,
-        itemCount,
-        sortField,
-        sortDirection
-      )
-    );
-    else
+    if (searchState.searchTerm === '') {
       dispatch(
         getAllItemsByActive(
           true,
-          pageNumber,
-          itemCount,
-          sortField,
-          sortDirection
+          searchState.pageNumber,
+          searchState.itemCount,
+          searchState.sortField,
+          searchState.sortDirection
         )
       );
-  }, [searchTerm]);
+    } else {
+      dispatch(
+        getAllItemsSearchByActive(
+          true,
+          searchState.searchTerm,
+          searchState.pageNumber,
+          searchState.itemCount,
+          searchState.sortField,
+          searchState.sortDirection
+        )
+      );
+    }
+  }, [searchState]);
 
   return (
     <Container component="main" maxWidth="xl">
@@ -101,12 +103,15 @@ const Items = () => {
           </Typography>
           <TextField
             id="search-items"
-            value={searchTerm}
+            value={searchState.searchTerm}
             onChange={(event) => {
-              setSearchTerm(event.target.value);
-              setPageNumber(0);
-              setSortField('id');
-              setSortDirection('asc');
+              setSearchState((old) => ({
+                ...old,
+                searchTerm: event.target.value,
+                pageNumber: 0,
+                sortField: 'id',
+                sortDirection: 'asc',
+              }));
             }}
             label="Search Items"
           />
@@ -114,11 +119,11 @@ const Items = () => {
         {!items.isLoading && items.isFetched && (
           <ItemsTable
             items={items.list}
-            count={searchTerm != '' ? items.list.length : items.itemsCount}
-            pageNumber={pageNumber}
-            itemCount={itemCount}
-            sortField={sortField}
-            sortDirection={sortDirection}
+            count={items.itemsCount}
+            pageNumber={searchState.pageNumber}
+            itemCount={searchState.itemCount}
+            sortField={searchState.sortField}
+            sortDirection={searchState.sortDirection}
             handleChangePageNumber={handleChangePageNumber}
             handleChangeItemCount={handleChangeItemCount}
             handleChangeSortField={handleChangeSortField}
