@@ -30,57 +30,49 @@ public class Item {
     private Long id;
 
     private String name;
+
     private String description;
 
     private BigDecimal startingPrice;
+
     private BigDecimal currentPrice;
+
     private BigDecimal buyPrice;
 
     private Integer numberOfBids;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = EAGER)
-    private Set<Bid> bids = new LinkedHashSet<>();
+    @Column(nullable = false)
+    private boolean active;
 
+    private LocalDateTime dateEnds;
+    public boolean isEnded() { return LocalDateTime.now().isAfter(this.dateEnds);}
 
+    @CreationTimestamp
+    private LocalDateTime dateCreated;
 
-    @ManyToMany(mappedBy = "items")
-    private Set<Category> categories = new LinkedHashSet<>();
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = EAGER)
-    private Set<Image> images = new LinkedHashSet<>();
+    @UpdateTimestamp
+    private LocalDateTime dateUpdated;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
-    private boolean active;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = EAGER)
+    private Set<Bid> bids = new LinkedHashSet<>();
+    public void addBid(Bid bid) { this.bids.add(bid); }
+    public void removeBid(Bid bid) { this.bids.remove(bid); }
+    public List<Bid> getSortedBids(){ return this.bids.stream().sorted(Comparator.comparing(Bid::getDateCreated).reversed()).toList(); }
 
-    private LocalDateTime dateEnds;
-    @CreationTimestamp
-    private LocalDateTime dateCreated;
-    @UpdateTimestamp
-    private LocalDateTime dateUpdated;
+    @ManyToMany(mappedBy = "items")
+    private Set<Category> categories = new LinkedHashSet<>();
+    public void addCategory(Category category) { this.categories.add(category); }
+    public void removeCategory(Category category) { this.categories.remove(category); }
 
-
-    public boolean isEnded() { return LocalDateTime.now().isAfter(this.dateEnds);}
-
-    public void addBid(Bid bid) {
-        this.bids.add(bid);
-    }
-
-    public void addImage(Image image) {
-        this.images.add(image);
-    }
-
-    public void addCategory(Category category) {
-        this.categories.add(category);
-    }
-
-    public List<Bid> getSortedBids(){
-        return this.bids.stream().sorted(Comparator.comparing(Bid::getDateCreated).reversed()).toList();
-    }
+    @JsonManagedReference
+    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = EAGER)
+    private Set<Image> images = new LinkedHashSet<>();
+    public void addImage(Image image) { this.images.add(image); }
+    public void removeImage(Image image) { this.images.remove(image); }
 }

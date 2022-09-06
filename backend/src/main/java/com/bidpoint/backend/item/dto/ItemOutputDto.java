@@ -14,21 +14,30 @@ import java.util.Set;
 @AllArgsConstructor
 public class ItemOutputDto {
     private Long id;
+
     private String name;
+
     private String description;
 
     private BigDecimal startingPrice;
+
     private BigDecimal currentPrice;
+
     private BigDecimal buyPrice;
 
     private Integer numberOfBids;
 
-    private Set<String> categories;
-    private Set<Image> images;
+    private boolean active;
 
-    private boolean isActive;
-    private boolean ended;
     private LocalDateTime dateEnds;
+
     private LocalDateTime dateCreated;
+
     private LocalDateTime dateUpdated;
+
+    private String username;
+
+    private Set<String> categories;
+
+    private Set<Image> images;
 }

@@ -21,8 +21,11 @@ public class Image {
     @Id
     @GeneratedValue(strategy = AUTO)
     private Long id;
+
     private String fileName;
+
     private String fileType;
+
     @Lob
     private byte[] fileData;
 

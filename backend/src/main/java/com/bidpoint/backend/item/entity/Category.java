@@ -29,8 +29,8 @@ public class Category {
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "items_id"))
     private Set<Item> items = new LinkedHashSet<>();
-
     public void addItem(Item item) {
         this.items.add(item);
     }
+    public void removeItem(Item item) { this.items.remove(item); }
 }

@@ -18,13 +18,13 @@ public class ItemConverter implements Converter<Item, ItemOutputDto> {
                 source.getCurrentPrice(),
                 source.getBuyPrice(),
                 source.getNumberOfBids(),
-                source.getCategories().stream().map(Category::getName).collect(Collectors.toSet()),
-                source.getImages(),
                 source.isActive(),
-                source.isEnded(),
                 source.getDateEnds(),
                 source.getDateCreated(),
-                source.getDateUpdated()
+                source.getDateUpdated(),
+                source.getUser().getUsername(),
+                source.getCategories().stream().map(Category::getName).collect(Collectors.toSet()),
+                source.getImages()
         );
     }
 }

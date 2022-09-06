@@ -24,42 +24,42 @@ public class User {
     private Long id;
 
     private String firstname;
+
     private String lastname;
+
     @Column(unique=true)
     private String username;
+
     private String password;
 
     @Column(columnDefinition = "boolean default false")
     private boolean approved;
 
     private String address;
+
     private String phone;
+
     private String mail;
+
     private String afm;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new LinkedHashSet<>();
+    public void addRole(Role role){ this.roles.add(role); }
+    public void removeRole(Role role){ this.roles.remove(role); }
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Item> items = new LinkedHashSet<>();
-
-    public void addRole(Role role){
-        this.roles.add(role);
-    }
-
-    public void removeRole(Role role){
-        this.roles.remove(role);
-    }
+    public void addItem(Item item){ this.items.add(item); }
+    public void removeItem(Item item){ this.items.remove(item); }
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Bid> bids = new LinkedHashSet<>();
-
     public void addBid(Bid bid){
         this.bids.add(bid);
     }
-
     public void removeBid(Bid bid){
         this.bids.remove(bid);
     }

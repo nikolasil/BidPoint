@@ -18,14 +18,14 @@ public class ItemInputDtoConverter implements Converter<ItemInputDto, Item> {
                 source.getStartingPrice(),
                 source.getBuyPrice(),
                 0,
-                new LinkedHashSet<>(),
-                new LinkedHashSet<>(),
-                new LinkedHashSet<>(),
-                null,
                 source.isActive(),
                 source.getDateEnds(),
                 null,
-                null
+                null,
+                null,
+                new LinkedHashSet<>(),
+                new LinkedHashSet<>(),
+                new LinkedHashSet<>()
         );
     }
 }

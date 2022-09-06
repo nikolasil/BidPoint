@@ -27,6 +27,10 @@ public class Bid {
 
     private BigDecimal amount;
 
+    @CreationTimestamp
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
+    private LocalDateTime dateCreated;
+
     @JsonBackReference
     @ManyToOne(optional = false)
     @JoinColumn(name = "item_id", nullable = false)
@@ -36,9 +40,4 @@ public class Bid {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @CreationTimestamp
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy' 'HH:mm:ss")
-    private LocalDateTime dateCreated;
-
 }
