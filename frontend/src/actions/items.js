@@ -36,18 +36,22 @@ export const getAllItemsCountByActive = (active) => async (dispatch) => {
     });
   }
 };
-export const getItemsSearch = (searchTerm) => async (dispatch) => {
-  try {
-    dispatch({ type: types.GET_ITEMS_SEARCH_REQUEST });
-    const response = await axios.get(`item/search?searchTerm=${searchTerm}`);
-    dispatch({
-      type: types.GET_ITEMS_SEARCH_SUCCESS,
-      payload: response.data,
-    });
-  } catch (error) {
-    dispatch({
-      type: types.GET_ITEMS_SEARCH_FAILURE,
-      payload: error.response,
-    });
-  }
-};
+export const getItemsSearch =
+  (searchTerm, pageNumber, itemCount, sortField, sortDirection) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: types.GET_ITEMS_SEARCH_REQUEST });
+      const response = await axios.get(
+        `item/search?searchTerm=${searchTerm}&pageNumber=${pageNumber}&itemCount=${itemCount}&sortField=${sortField}&sortDirection=${sortDirection}`
+      );
+      dispatch({
+        type: types.GET_ITEMS_SEARCH_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: types.GET_ITEMS_SEARCH_FAILURE,
+        payload: error.response,
+      });
+    }
+  };

@@ -57,7 +57,15 @@ const Items = () => {
   }, [pageNumber, itemCount, sortField, sortDirection]);
 
   useEffect(() => {
-    if (searchTerm != '') dispatch(getItemsSearch(searchTerm));
+    if (searchTerm != '') dispatch(
+      getItemsSearch(
+        searchTerm,
+        pageNumber,
+        itemCount,
+        sortField,
+        sortDirection
+      )
+    );
     else
       dispatch(
         getAllItemsByActive(
