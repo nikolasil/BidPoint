@@ -8,6 +8,7 @@ import com.bidpoint.backend.item.dto.ItemInputDto;
 import com.bidpoint.backend.item.dto.ItemOutputDto;
 import com.bidpoint.backend.item.dto.PageItemsOutputDto;
 import com.bidpoint.backend.item.entity.Item;
+import com.bidpoint.backend.item.enums.FilterMode;
 import com.bidpoint.backend.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -38,6 +37,7 @@ public class ItemController {
     private final ItemService itemService;
     private final ConversionService conversionService;
     private final AuthService authService;
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ItemOutputDto> createItem(@RequestPart("images") MultipartFile[] images,
                                                     @RequestPart("item") ItemInputDto item,
@@ -82,16 +82,16 @@ public class ItemController {
 
     @GetMapping("/all")
     public ResponseEntity<PageItemsOutputDto> getItemsPaginationAndSorting(
-                                                                      @RequestParam(name = "pageNumber",required = true) int pageNumber,
-                                                                      @RequestParam(name = "itemCount",required = true) int itemCount,
-                                                                      @RequestParam(name = "sortField",required = true) String sortField,
-                                                                      @RequestParam(name = "sortDirection",required = true) String sortDirection,
-                                                                      @RequestParam(name = "active") Optional<Boolean> active,
-                                                                      @RequestParam(name = "dateEnds") Optional<Boolean> dateEnds,
-                                                                      @RequestParam(name = "username") Optional<String> username) {
+                                                                      @RequestParam(name = "pageNumber") int pageNumber,
+                                                                      @RequestParam(name = "itemCount") int itemCount,
+                                                                      @RequestParam(name = "sortField") String sortField,
+                                                                      @RequestParam(name = "sortDirection") String sortDirection,
+                                                                      @RequestParam(name = "active") FilterMode active,
+                                                                      @RequestParam(name = "isEnded") FilterMode isEnded,
+                                                                      @RequestParam(name = "username", defaultValue = "") String username) {
 
-        Page<Item> items = itemService.getItemsPageable(active, username, dateEnds, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-        Long totalCount = itemService.getItemsCount(active, username, dateEnds);
+        Page<Item> items = itemService.getItemsPageable(active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
+        Long totalCount = itemService.getItemsCount(active, username, isEnded);
 
         List<ItemOutputDto> itemsList = items.stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 
@@ -100,17 +100,17 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<PageItemsOutputDto> getItems(
-                                                        @RequestParam(name = "searchTerm",required = true) String searchTerm,
-                                                        @RequestParam(name = "pageNumber",required = true) int pageNumber,
-                                                        @RequestParam(name = "itemCount",required = true) int itemCount,
-                                                        @RequestParam(name = "sortField",required = true) String sortField,
-                                                        @RequestParam(name = "sortDirection",required = true) String sortDirection,
-                                                        @RequestParam(name = "active") Optional<Boolean> active,
-                                                        @RequestParam(name = "dateEnds") Optional<Boolean> dateEnds,
-                                                        @RequestParam(name = "username") Optional<String> username) {
+                                                        @RequestParam(name = "searchTerm") String searchTerm,
+                                                        @RequestParam(name = "pageNumber") int pageNumber,
+                                                        @RequestParam(name = "itemCount") int itemCount,
+                                                        @RequestParam(name = "sortField") String sortField,
+                                                        @RequestParam(name = "sortDirection") String sortDirection,
+                                                        @RequestParam(name = "active") FilterMode active,
+                                                        @RequestParam(name = "isEnded") FilterMode isEnded,
+                                                        @RequestParam(name = "username", defaultValue = "") String username) {
 
-        Page<Item> items = itemService.getItemsSearchPageable(searchTerm, active, username, dateEnds, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-        Long totalCount = itemService.getItemsSearchCount(searchTerm, active, username, dateEnds);
+        Page<Item> items = itemService.getItemsSearchPageable(searchTerm, active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
+        Long totalCount = itemService.getItemsSearchCount(searchTerm, active, username, isEnded);
 
         List<ItemOutputDto> itemsList = items.stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 

@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UserNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UserNotFoundException, UserNotApprovedException {
         log.info("loadUserByUsername username={}",username);
 
         User user = userRepository.findByUsername(username);

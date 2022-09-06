@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.type.ZonedDateTimeType;
+import org.hibernate.type.StringType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -54,7 +54,7 @@ public class Item {
 
     @CreationTimestamp
     @Column(updatable = false)
-    private ZonedDateTime dateCreated = ZonedDateTime.now();
+    private ZonedDateTime dateCreated = ZonedDateTime.now(UTC);
 
     @UpdateTimestamp
     private ZonedDateTime dateUpdated;

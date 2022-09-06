@@ -3,6 +3,7 @@ package com.bidpoint.backend.item.service;
 import com.bidpoint.backend.item.entity.Category;
 import com.bidpoint.backend.item.entity.Image;
 import com.bidpoint.backend.item.entity.Item;
+import com.bidpoint.backend.item.enums.FilterMode;
 import com.bidpoint.backend.item.repository.CategoryRepository;
 import com.bidpoint.backend.item.repository.ImageRepository;
 import com.bidpoint.backend.item.repository.ItemRepository;
@@ -92,121 +93,171 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<Item> getItemsPageable(Optional<Boolean> active, Optional<String> username, Optional<Boolean> dateEnds, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+    public Page<Item> getItemsPageable(FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
         PageRequest pageRequest = PageRequest.of(pageNumber, itemCount).withSort(Sort.by(sortDirection, sortField));
 
-        if(username.isEmpty()) {
-            if (active.isEmpty())
-                if (dateEnds.isEmpty())
+        if(Objects.equals(username, "")) {
+            if (active == FilterMode.NONE) {
+                if (isEnded == FilterMode.NONE)
                     return itemRepository.findAll(pageRequest);
                 else
-                    return itemRepository.findAllByDateEndsGreaterThan(ZonedDateTime.now(UTC), pageRequest);
-            else if (dateEnds.isEmpty())
-                return itemRepository.findAllByActive(active.get(), pageRequest);
-            else
-                return itemRepository.findAllByActiveAndDateEndsGreaterThan(active.get(), ZonedDateTime.now(UTC), pageRequest);
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.findAllByDateEndsGreaterThan(ZonedDateTime.now(UTC), pageRequest) :
+                            itemRepository.findAllByDateEndsLessThan(ZonedDateTime.now(UTC), pageRequest);
+            } else {
+                if (isEnded == FilterMode.NONE)
+                    return itemRepository.findAllByActive(active == FilterMode.TRUE, pageRequest);
+                else
+                    return isEnded == FilterMode.FALSE ?
+                        itemRepository.findAllByActiveAndDateEndsGreaterThan(active == FilterMode.TRUE, ZonedDateTime.now(UTC), pageRequest) :
+                        itemRepository.findAllByActiveAndDateEndsLessThan(active == FilterMode.TRUE, ZonedDateTime.now(UTC), pageRequest);
+            }
         } else {
-            User user = userRepository.findByUsername(username.get());
+            User user = userRepository.findByUsername(username);
             if(user== null)
-                throw new UserNotFoundException(username.get());
+                throw new UserNotFoundException(username);
             
-            if (active.isEmpty())
-                if (dateEnds.isEmpty())
+            if (active == FilterMode.NONE) {
+                if (isEnded == FilterMode.NONE)
                     return itemRepository.findAllByUser(user, pageRequest);
                 else
-                    return itemRepository.findAllByUserAndDateEndsGreaterThan(user, ZonedDateTime.now(UTC), pageRequest);
-            else if (dateEnds.isEmpty())
-                return itemRepository.findAllByActiveAndUser(active.get(), user, pageRequest);
-            else
-                return itemRepository.findAllByActiveAndDateEndsGreaterThanAndUser(active.get(), ZonedDateTime.now(UTC), user, pageRequest);
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.findAllByUserAndDateEndsGreaterThan(user, ZonedDateTime.now(UTC), pageRequest) :
+                            itemRepository.findAllByUserAndDateEndsLessThan(user, ZonedDateTime.now(UTC), pageRequest);
+            } else {
+                if (isEnded == FilterMode.NONE)
+                    return itemRepository.findAllByActiveAndUser(active == FilterMode.TRUE, user, pageRequest);
+                else
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.findAllByActiveAndDateEndsGreaterThanAndUser(active == FilterMode.TRUE, ZonedDateTime.now(UTC), user, pageRequest) :
+                            itemRepository.findAllByActiveAndDateEndsLessThanAndUser(active == FilterMode.TRUE, ZonedDateTime.now(UTC), user, pageRequest);
+            }
         }
     }
 
     @Override
-    public Long getItemsCount(Optional<Boolean> active, Optional<String> username, Optional<Boolean> dateEnds) {
-        if(username.isEmpty()) {
-            if (active.isEmpty())
-                if (dateEnds.isEmpty())
+    public Long getItemsCount(FilterMode active, String username, FilterMode isEnded) {
+        if(Objects.equals(username, "")) {
+            if (active == FilterMode.NONE) {
+                if (isEnded == FilterMode.NONE)
                     return itemRepository.count();
                 else
-                    return itemRepository.countAllByDateEndsGreaterThan(ZonedDateTime.now(UTC));
-            else if (dateEnds.isEmpty())
-                return itemRepository.countAllByActive(active.get());
-            else
-                return itemRepository.countAllByActiveAndDateEndsGreaterThan(active.get(), ZonedDateTime.now(UTC));
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.countAllByDateEndsGreaterThan(ZonedDateTime.now(UTC)) :
+                            itemRepository.countAllByDateEndsLessThan(ZonedDateTime.now(UTC));
+            } else {
+                if (isEnded == FilterMode.NONE)
+                    return itemRepository.countAllByActive(active == FilterMode.TRUE);
+                else
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.countAllByActiveAndDateEndsGreaterThan(active == FilterMode.TRUE, ZonedDateTime.now(UTC)) :
+                            itemRepository.countAllByActiveAndDateEndsLessThan(active == FilterMode.TRUE, ZonedDateTime.now(UTC));
+            }
         } else {
-            User user = userRepository.findByUsername(username.get());
+            User user = userRepository.findByUsername(username);
             if(user== null)
-                throw new UserNotFoundException(username.get());
+                throw new UserNotFoundException(username);
 
-            if (active.isEmpty())
-                if (dateEnds.isEmpty())
+            if (active == FilterMode.NONE) {
+                if (isEnded == FilterMode.NONE)
                     return itemRepository.countAllByUser(user);
                 else
-                    return itemRepository.countAllByUserAndDateEndsGreaterThan(user, ZonedDateTime.now(UTC));
-            else if (dateEnds.isEmpty())
-                return itemRepository.countAllByActiveAndUser(active.get(), user);
-            else
-                return itemRepository.countAllByActiveAndDateEndsGreaterThanAndUser(active.get(), ZonedDateTime.now(UTC), user);
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.countAllByUserAndDateEndsGreaterThan(user, ZonedDateTime.now(UTC)) :
+                            itemRepository.countAllByUserAndDateEndsLessThan(user, ZonedDateTime.now(UTC));
+            } else {
+                if (isEnded == FilterMode.NONE)
+                    return itemRepository.countAllByActiveAndUser(active == FilterMode.TRUE, user);
+                else
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.countAllByActiveAndDateEndsGreaterThanAndUser(active == FilterMode.TRUE, ZonedDateTime.now(UTC), user) :
+                            itemRepository.countAllByActiveAndDateEndsLessThanAndUser(active == FilterMode.TRUE, ZonedDateTime.now(UTC), user);
+            }
         }
     }
 
     @Override
-    public Page<Item> getItemsSearchPageable(String searchTerm, Optional<Boolean> active, Optional<String> username, Optional<Boolean> dateEnds, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+    public Page<Item> getItemsSearchPageable(String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
         PageRequest pageRequest = PageRequest.of(pageNumber, itemCount).withSort(Sort.by(sortDirection, sortField));
-        if(username.isEmpty()) {
-            if (active.isEmpty())
-                if (dateEnds.isEmpty())
+
+        if(Objects.equals(username, "")) {
+            if (active == FilterMode.NONE) {
+                if (isEnded == FilterMode.NONE)
                     return itemRepository.searchItems(searchTerm, pageRequest);
                 else
-                    return itemRepository.searchItemsByDateEndsGreaterThan(searchTerm, ZonedDateTime.now(UTC), pageRequest);
-            else if (dateEnds.isEmpty())
-                return itemRepository.searchItemsByActive(searchTerm, active.get(), pageRequest);
-            else
-                return itemRepository.searchItemsByActiveAndDateEndsGreaterThan(searchTerm, active.get(), ZonedDateTime.now(UTC), pageRequest);
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.searchItemsByDateEndsGreaterThan(searchTerm, ZonedDateTime.now(UTC), pageRequest) :
+                            itemRepository.searchItemsByDateEndsLessThan(searchTerm, ZonedDateTime.now(UTC), pageRequest);
+            } else {
+                if (isEnded == FilterMode.NONE)
+                    return itemRepository.searchItemsByActive(searchTerm, active == FilterMode.TRUE, pageRequest);
+                else
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.searchItemsByActiveAndDateEndsGreaterThan(searchTerm, active == FilterMode.TRUE, ZonedDateTime.now(UTC), pageRequest) :
+                            itemRepository.searchItemsByActiveAndDateEndsLessThan(searchTerm, active == FilterMode.TRUE, ZonedDateTime.now(UTC), pageRequest);
+            }
         } else {
-            User user = userRepository.findByUsername(username.get());
+            User user = userRepository.findByUsername(username);
             if(user== null)
-                throw new UserNotFoundException(username.get());
+                throw new UserNotFoundException(username);
 
-            if (active.isEmpty())
-                if (dateEnds.isEmpty())
+            if (active == FilterMode.NONE) {
+                if (isEnded == FilterMode.NONE)
                     return itemRepository.searchItemsByUser(searchTerm, user, pageRequest);
                 else
-                    return itemRepository.searchItemsByUserAndDateEndsGreaterThan(searchTerm, user, ZonedDateTime.now(UTC), pageRequest);
-            else if (dateEnds.isEmpty())
-                return itemRepository.searchItemsByActiveAndUser(searchTerm, active.get(), user, pageRequest);
-            else
-                return itemRepository.searchItemsByActiveAndDateEndsGreaterThanAndUser(searchTerm, active.get(), ZonedDateTime.now(UTC), user, pageRequest);
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.searchItemsByUserAndDateEndsGreaterThan(searchTerm, user, ZonedDateTime.now(UTC), pageRequest) :
+                            itemRepository.searchItemsByUserAndDateEndsLessThan(searchTerm, user, ZonedDateTime.now(UTC), pageRequest);
+            } else {
+                if (isEnded == FilterMode.NONE)
+                    return itemRepository.searchItemsByActiveAndUser(searchTerm, active == FilterMode.TRUE, user, pageRequest);
+                else
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.searchItemsByActiveAndDateEndsGreaterThanAndUser(searchTerm, active == FilterMode.TRUE, ZonedDateTime.now(UTC), user, pageRequest) :
+                            itemRepository.searchItemsByActiveAndDateEndsLessThanAndUser(searchTerm, active == FilterMode.TRUE, ZonedDateTime.now(UTC), user, pageRequest);
+            }
         }
     }
 
     @Override
-    public Long getItemsSearchCount(String searchTerm, Optional<Boolean> active, Optional<String> username, Optional<Boolean> dateEnds) {
-        if(username.isEmpty()) {
-            if (active.isEmpty())
-                if (dateEnds.isEmpty())
+    public Long getItemsSearchCount(String searchTerm, FilterMode active, String username, FilterMode isEnded) {
+        log.info(String.valueOf(String.valueOf(ZonedDateTime.now(UTC))));
+        if (Objects.equals(username, "")) {
+            if (active == FilterMode.NONE) {
+                if (isEnded == FilterMode.NONE)
                     return itemRepository.countSearchItems(searchTerm);
                 else
-                    return itemRepository.countSearchItemsByDateEndsGreaterThan(searchTerm, ZonedDateTime.now(UTC));
-            else if (dateEnds.isEmpty())
-                return itemRepository.countSearchItemsByActive(searchTerm, active.get());
-            else
-                return itemRepository.countSearchItemsByActiveAndDateEndsGreaterThan(searchTerm, active.get(), ZonedDateTime.now(UTC));
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.countSearchItemsByDateEndsGreaterThan(searchTerm, ZonedDateTime.now(UTC)) :
+                            itemRepository.countSearchItemsByDateEndsLessThan(searchTerm, ZonedDateTime.now(UTC));
+            } else {
+                if (isEnded == FilterMode.NONE)
+                    return itemRepository.countSearchItemsByActive(searchTerm, active == FilterMode.TRUE);
+                else
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.countSearchItemsByActiveAndDateEndsGreaterThan(searchTerm, active == FilterMode.TRUE, ZonedDateTime.now(UTC)) :
+                            itemRepository.countSearchItemsByActiveAndDateEndsLessThan(searchTerm, active == FilterMode.TRUE, ZonedDateTime.now(UTC));
+            }
         } else {
-            User user = userRepository.findByUsername(username.get());
-            if(user== null)
-                throw new UserNotFoundException(username.get());
+            User user = userRepository.findByUsername(username);
+            if (user == null)
+                throw new UserNotFoundException(username);
 
-            if (active.isEmpty())
-                if (dateEnds.isEmpty())
+            if (active == FilterMode.NONE) {
+                if (isEnded == FilterMode.NONE)
                     return itemRepository.countSearchItemsByUser(searchTerm, user);
                 else
-                    return itemRepository.countSearchItemsByUserAndDateEndsGreaterThan(searchTerm, user, ZonedDateTime.now(UTC));
-            else if (dateEnds.isEmpty())
-                return itemRepository.countSearchItemsByActiveAndUser(searchTerm, active.get(), user);
-            else
-                return itemRepository.countSearchItemsByActiveAndDateEndsGreaterThanAndUser(searchTerm, active.get(), ZonedDateTime.now(UTC), user);
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.countSearchItemsByUserAndDateEndsGreaterThan(searchTerm, user, ZonedDateTime.now(UTC)) :
+                            itemRepository.countSearchItemsByUserAndDateEndsLessThan(searchTerm, user, ZonedDateTime.now(UTC));
+            } else {
+                if (isEnded == FilterMode.NONE)
+                    return itemRepository.countSearchItemsByActiveAndUser(searchTerm, active == FilterMode.TRUE, user);
+                else
+                    return isEnded == FilterMode.FALSE ?
+                            itemRepository.countSearchItemsByActiveAndDateEndsGreaterThanAndUser(searchTerm, active == FilterMode.TRUE, ZonedDateTime.now(UTC), user) :
+                            itemRepository.countSearchItemsByActiveAndDateEndsLessThanAndUser(searchTerm, active == FilterMode.TRUE, ZonedDateTime.now(UTC), user);
+            }
         }
     }
 }
