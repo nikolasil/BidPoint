@@ -8,6 +8,13 @@ import {
   InputAdornment,
   OutlinedInput,
   Stack,
+  Toolbar,
+  Tooltip,
+  Switch,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -15,17 +22,25 @@ import {
   getAllItemsSearchByActive,
 } from '../../../actions/items';
 import ItemsTable from './ItemsTable';
+import CachedIcon from '@mui/icons-material/Cached';
 
 const Items = () => {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.items);
   const [searchState, setSearchState] = React.useState({
-    pageNumber: 0,
-    itemCount: 10,
-    sortField: 'dateUpdated',
-    sortDirection: 'desc',
-    searchTerm: '',
+    ...items.searchState,
   });
+
+  var isEqualsJson = (obj1, obj2) => {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    //return true when the two json has same length and all the properties has same value key by key
+    return (
+      keys1.length === keys2.length &&
+      Object.keys(obj1).every((key) => obj1[key] == obj2[key])
+    );
+  };
 
   const handleChangePageNumber = (event, newPage) => {
     setSearchState((old) => ({ ...old, pageNumber: newPage }));
@@ -57,12 +72,12 @@ const Items = () => {
     });
   };
 
-  useEffect(() => {
+  const fetchItems = () => {
     if (searchState.searchTerm === '') {
       dispatch(
         getAllItemsByActive(
           'TRUE',
-          'NONE',
+          searchState.isEnded,
           searchState.pageNumber,
           searchState.itemCount,
           searchState.sortField,
@@ -73,6 +88,7 @@ const Items = () => {
       dispatch(
         getAllItemsSearchByActive(
           'TRUE',
+          searchState.isEnded,
           searchState.searchTerm,
           searchState.pageNumber,
           searchState.itemCount,
@@ -81,6 +97,12 @@ const Items = () => {
         )
       );
     }
+  };
+
+  useEffect(() => {
+    if (!items.isFetched || !isEqualsJson(searchState, items.searchState))
+      fetchItems();
+    else console.log('no need to fetch');
   }, [searchState]);
 
   return (
@@ -101,9 +123,38 @@ const Items = () => {
           alignItems="center"
           spacing={2}
         >
-          {/* <Typography component="h1" variant="h5">
-            Items
-          </Typography> */}
+          <Tooltip title="Refresh Items">
+            <CachedIcon
+              sx={{
+                '&:hover': { color: 'blue', cursor: 'pointer' },
+              }}
+              onClick={() => {
+                fetchItems();
+              }}
+            />
+          </Tooltip>
+
+          <FormControl fullWidth>
+            <InputLabel id="isEnded">Time Left</InputLabel>
+            <Select
+              labelId="Time Left"
+              id="isEnded"
+              value={searchState.isEnded}
+              label="Time Left"
+              onChange={(event) => {
+                setSearchState((old) => ({
+                  ...old,
+                  isEnded: event.target.value,
+                  pageNumber: 0,
+                }));
+              }}
+            >
+              <MenuItem value={'TRUE'}>Has Ended</MenuItem>
+              <MenuItem value={'FALSE'}>Hasn't Ended</MenuItem>
+              <MenuItem value={'NONE'}>Both</MenuItem>
+            </Select>
+          </FormControl>
+
           <TextField
             id="search-items"
             value={searchState.searchTerm}

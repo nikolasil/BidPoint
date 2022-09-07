@@ -62,12 +62,14 @@ const itemReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         bids: payload,
+        createBidError: null,
       };
     case types.CREATE_BID_ITEM_FAILURE:
       console.log('itemReducer: CREATE_BID_ITEM_FAILURE');
       return {
         ...state,
         isLoading: false,
+        createBidError: payload,
       };
     case types.GET_BIDS_ITEM_REQUEST:
       console.log('itemReducer: GET_BIDS_ITEM_REQUEST');

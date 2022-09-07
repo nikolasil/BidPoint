@@ -2,6 +2,7 @@ package com.bidpoint.backend.item.service;
 
 import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Item;
+import com.bidpoint.backend.item.exception.BidAmountException;
 import com.bidpoint.backend.item.exception.ItemHasEndedException;
 import com.bidpoint.backend.item.exception.ItemNotActiveException;
 import com.bidpoint.backend.item.exception.ItemNotFoundException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class BidServiceImpl implements BidService {
    private final UserRepository userRepository;
 
     @Override
-    public void createBid(Long itemId, String username, Bid bid) {
+    public void createBid(UUID itemId, String username, Bid bid) {
         Item item = itemRepository.findItemById(itemId);
         if(item == null)
             throw new ItemNotFoundException(itemId.toString());
@@ -35,6 +37,9 @@ public class BidServiceImpl implements BidService {
             throw new ItemHasEndedException(itemId.toString());
         if(!item.isActive())
             throw new ItemNotActiveException(itemId.toString());
+        if(item.getCurrentPrice().compareTo(bid.getAmount()) >= 0)
+            throw new BidAmountException(bid.getAmount(), item.getCurrentPrice(), itemId);
+
 
         User user = userRepository.findByUsername(username);
 
@@ -50,12 +55,12 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public Bid getBid(Long bidId) {
+    public Bid getBid(UUID bidId) {
         return bidRepository.findBidById(bidId);
     }
 
     @Override
-    public List<Bid> getBidsOfItem(Long itemId) {
+    public List<Bid> getBidsOfItem(UUID itemId) {
         Item item = itemRepository.findItemById(itemId);
         if(item == null)
             throw new ItemNotFoundException(itemId.toString());

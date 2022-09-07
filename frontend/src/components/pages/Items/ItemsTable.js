@@ -45,15 +45,6 @@ export default function ItemsTable(props) {
       <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>
-              <TableSortLabel
-                active={sortField === 'id'}
-                direction={sortDirection}
-                onClick={() => handleChangeSort('id')}
-              >
-                Id
-              </TableSortLabel>
-            </TableCell>
             <TableCell align="right">Image</TableCell>
             <TableCell align="right">
               <TableSortLabel
@@ -168,9 +159,6 @@ export default function ItemsTable(props) {
                     cursor: 'pointer',
                   }}
                 >
-                  <TableCell component="th" scope="row">
-                    {item.id}
-                  </TableCell>
                   <TableCell align="right">
                     {item.images && (
                       <Carousel

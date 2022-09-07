@@ -7,6 +7,7 @@ import com.bidpoint.backend.auth.service.AuthService;
 import com.bidpoint.backend.item.dto.ItemInputDto;
 import com.bidpoint.backend.item.dto.ItemOutputDto;
 import com.bidpoint.backend.item.dto.PageItemsOutputDto;
+import com.bidpoint.backend.item.dto.SearchStateOutputDto;
 import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.item.enums.FilterMode;
 import com.bidpoint.backend.item.service.ItemService;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -71,7 +73,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<ItemOutputDto> getItem(@RequestParam(name = "itemId",required = true) Long itemId) {
+    public ResponseEntity<ItemOutputDto> getItem(@RequestParam(name = "itemId",required = true) UUID itemId) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 conversionService.convert(
                         itemService.getItem(itemId),
@@ -95,7 +97,13 @@ public class ItemController {
 
         List<ItemOutputDto> itemsList = items.stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 
-        return ResponseEntity.status(HttpStatus.OK).body(new PageItemsOutputDto(totalCount, itemsList));
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new PageItemsOutputDto(
+                        totalCount,
+                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, ""),
+                        itemsList
+                )
+        );
     }
 
     @GetMapping("/search")
@@ -114,6 +122,12 @@ public class ItemController {
 
         List<ItemOutputDto> itemsList = items.stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 
-        return ResponseEntity.status(HttpStatus.OK).body(new PageItemsOutputDto(totalCount, itemsList));
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new PageItemsOutputDto(
+                        totalCount,
+                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm),
+                        itemsList
+                )
+        );
     }
 }

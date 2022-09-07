@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -21,9 +22,9 @@ import java.time.ZonedDateTime;
 @Table(name = "bid")
 public class Bid {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Column(nullable = false)
-    private Long id;
+    private UUID id;
 
     private BigDecimal amount;
 

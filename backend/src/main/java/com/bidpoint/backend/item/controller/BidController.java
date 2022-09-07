@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -30,7 +31,7 @@ public class BidController {
 
     @PostMapping
     public ResponseEntity<List<BidOutputDto>> createBid(HttpServletRequest request,
-                                                             @RequestParam(name = "itemId",required = true) Long itemId,
+                                                             @RequestParam(name = "itemId",required = true) UUID itemId,
                                                              @RequestParam(name = "amount",required = true) BigDecimal amount) {
         bidService.createBid(
                 itemId,
@@ -47,12 +48,12 @@ public class BidController {
     }
 
     @GetMapping
-    public ResponseEntity<Bid> getBid(@RequestParam(name = "bidId",required = true) Long bidId) {
+    public ResponseEntity<Bid> getBid(@RequestParam(name = "bidId",required = true) UUID bidId) {
         return ResponseEntity.status(HttpStatus.OK).body(bidService.getBid(bidId));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<BidOutputDto>> getBidsOfItem(@RequestParam(name = "itemId",required = true) Long itemId) {
+    public ResponseEntity<List<BidOutputDto>> getBidsOfItem(@RequestParam(name = "itemId",required = true) UUID itemId) {
         List<Bid> bids = bidService.getBidsOfItem(itemId);
         return ResponseEntity.status(HttpStatus.OK).body(bids.stream().map(bid -> conversionService.convert(bid, BidOutputDto.class)).collect(Collectors.toList()));
     }

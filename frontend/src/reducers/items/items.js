@@ -23,6 +23,7 @@ const itemsReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         isFetched: true,
+        searchState: payload.searchState,
         list: payload.items,
         itemsCount: payload.totalItems,
       };
@@ -34,6 +35,7 @@ const itemsReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
+        searchState: {},
         isFetched: false,
         list: [],
       };

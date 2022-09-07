@@ -46,7 +46,10 @@ export const bidItem = (id, amount) => async (dispatch) => {
     const res = await axios.post(`bid?itemId=${id}&amount=${amount}`);
     dispatch({ type: types.CREATE_BID_ITEM_SUCCESS, payload: res.data });
   } catch (error) {
-    dispatch({ type: types.CREATE_BID_ITEM_FAILURE, payload: error.response });
+    dispatch({
+      type: types.CREATE_BID_ITEM_FAILURE,
+      payload: error.response.data,
+    });
   }
 };
 

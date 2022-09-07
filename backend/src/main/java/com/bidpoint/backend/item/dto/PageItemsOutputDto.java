@@ -15,5 +15,6 @@ import java.util.Set;
 @AllArgsConstructor
 public class PageItemsOutputDto {
     private Long totalItems;
+    private SearchStateOutputDto searchState;
     private List<ItemOutputDto> items;
 }

@@ -9,9 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 public interface ItemRepository extends JpaRepository<Item,Long> {
-    Item findItemById(Long id);
+    Item findItemById(UUID id);
 
 //    Pagination Queries, searching and counting
     Page<Item> findAllByActive(boolean active, Pageable pageable);

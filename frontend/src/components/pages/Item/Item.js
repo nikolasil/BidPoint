@@ -9,6 +9,7 @@ import {
   Paper,
   Chip,
   TextField,
+  Tooltip,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,9 +21,11 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Countdown from 'react-countdown';
 import moment from 'moment';
+import CachedIcon from '@mui/icons-material/Cached';
 
 const Item = (props) => {
   const item = useSelector((state) => state.item);
+  const createBidError = useSelector((state) => state.item.createBidError);
   const bidsState = useSelector((state) => state.item.bids);
 
   const dispatch = useDispatch();
@@ -31,6 +34,12 @@ const Item = (props) => {
   const [pageNumber, setPageNumber] = React.useState(0);
   const [itemCount, setItemCount] = React.useState(5);
   const [bids, setBids] = React.useState([]);
+  const [isEnded, setIsEnded] = React.useState(false);
+
+  const handleEnded = () => {
+    console.log('is ended');
+    dispatch(getBidsOfItem(id));
+  };
 
   const handleChangePageNumber = (event, newPage) => {
     setPageNumber(newPage);
@@ -42,14 +51,28 @@ const Item = (props) => {
   };
 
   useEffect(() => {
+    console.log('First Bids');
+    dispatch(getBidsOfItem(id));
+  }, []);
+
+  useEffect(() => {
+    if (item.item.dateEnds) {
+      if (moment(item.item.dateEnds).utc().isBefore(moment().utc())) {
+        console.log('is ended');
+        setIsEnded(true);
+      }
+    }
+  }, [item.item]);
+
+  useEffect(() => {
     console.log('Item');
     dispatch(getItem(id));
   }, [bidsState]);
 
   useEffect(() => {
     console.log('Bids');
-    dispatch(getBidsOfItem(id));
-  }, []);
+    if (createBidError != null) dispatch(getBidsOfItem(id));
+  }, [createBidError]);
 
   const handleChangeBids = (totalBids, pageNumber, itemCount) => {
     console.log('Bids');
@@ -120,6 +143,7 @@ const Item = (props) => {
                   date={moment.utc(item.item.dateEnds).toString()}
                   intervalDelay={0}
                   precision={1}
+                  onComplete={handleEnded}
                   renderer={({
                     days,
                     hours,
@@ -211,16 +235,33 @@ const Item = (props) => {
                         }
                       />
                       <LoadingButton
+                        disabled={isEnded}
                         type="submit"
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                         loading={item.isLoading}
                         loadingIndicator="Loading…"
                       >
-                        Submit Bid
+                        {!isEnded ? 'Submit Bid' : 'Cannot Submit Bid'}
                       </LoadingButton>
+                      {createBidError && createBidError.message}
                     </form>
 
+                    {isEnded && (
+                      <Typography variant="h4">
+                        Winning Bid: {bids[0].username} with {bids[0].amount}$
+                      </Typography>
+                    )}
+                    <Tooltip title="Refresh Bids">
+                      <CachedIcon
+                        sx={{
+                          '&:hover': { color: 'blue', cursor: 'pointer' },
+                        }}
+                        onClick={() => {
+                          dispatch(getBidsOfItem(id));
+                        }}
+                      />
+                    </Tooltip>
                     <BidsTable
                       bids={bids}
                       count={bidsState.length}

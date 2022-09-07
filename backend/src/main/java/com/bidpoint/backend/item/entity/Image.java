@@ -9,6 +9,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
+import java.util.UUID;
+
 import static javax.persistence.GenerationType.AUTO;
 
 @Getter
@@ -19,8 +21,8 @@ import static javax.persistence.GenerationType.AUTO;
 @Table(name = "image")
 public class Image {
     @Id
-    @GeneratedValue(strategy = AUTO)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     private String fileName;
 

@@ -4,6 +4,7 @@ const initialState = {
   isCreated: false,
   item: {},
   bids: [],
+  createBidError: null,
 };
 
 export default initialState;

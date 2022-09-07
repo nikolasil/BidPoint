@@ -15,11 +15,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 public class BidOutputDto {
-    private Long id;
+    private UUID id;
     private BigDecimal amount;
     private String username;
 

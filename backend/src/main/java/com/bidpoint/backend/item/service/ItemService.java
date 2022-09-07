@@ -9,10 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ItemService {
     Item createItemWithCategoryAndImages(String username, Item item, List<String> categories, MultipartFile[] images);
-    Item getItem(Long itemId);
+    Item getItem(UUID itemId);
 
     Page<Item> getItemsPageable(FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection);
     Long getItemsCount(FilterMode active, String username, FilterMode isEnded);

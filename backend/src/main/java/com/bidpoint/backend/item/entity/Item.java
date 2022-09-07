@@ -30,12 +30,12 @@ import static javax.persistence.FetchType.EAGER;
 @Table(name = "item")
 public class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Column(nullable = false)
-    private Long id;
+    private UUID id;
 
     private String name;
-    
+
     @Column(columnDefinition="TEXT")
     private String description;
 

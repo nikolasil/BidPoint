@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static javax.persistence.GenerationType.AUTO;
 
@@ -18,8 +19,8 @@ import static javax.persistence.GenerationType.AUTO;
 @Table(name="category")
 public class Category {
     @Id
-    @GeneratedValue(strategy = AUTO)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @Column(unique=true)
     private String name;
