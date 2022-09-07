@@ -42,7 +42,7 @@ const CreateItem = () => {
       startingPrice: 0,
       buyPrice: 0,
       categories: [],
-      isActive: false,
+      isActive: true,
       dateEnds: '',
       images: [],
     },

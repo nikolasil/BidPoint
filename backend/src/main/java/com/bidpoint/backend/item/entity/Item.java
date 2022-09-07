@@ -35,7 +35,8 @@ public class Item {
     private Long id;
 
     private String name;
-
+    
+    @Column(columnDefinition="TEXT")
     private String description;
 
     private BigDecimal startingPrice;

@@ -22,8 +22,8 @@ const Items = () => {
   const [searchState, setSearchState] = React.useState({
     pageNumber: 0,
     itemCount: 10,
-    sortField: 'id',
-    sortDirection: 'asc',
+    sortField: 'dateUpdated',
+    sortDirection: 'desc',
     searchTerm: '',
   });
 
@@ -39,27 +39,30 @@ const Items = () => {
     }));
   };
 
-  const handleChangeSortField = (newSortField) => {
-    setSearchState((old) => ({
-      ...old,
-      sortField: newSortField,
-      pageNumber: 0,
-    }));
-  };
-
-  const handleChangeSortDirection = (newSortDirection) => {
-    setSearchState((old) => ({
-      ...old,
-      sortDirection: newSortDirection,
-      pageNumber: 0,
-    }));
+  const handleChangeSort = (sortField) => {
+    setSearchState((old) => {
+      if (old.sortField === sortField) {
+        return {
+          ...old,
+          sortDirection: old.sortDirection === 'asc' ? 'desc' : 'asc',
+          pageNumber: 0,
+        };
+      }
+      return {
+        ...old,
+        sortField,
+        sortDirection: 'asc',
+        pageNumber: 0,
+      };
+    });
   };
 
   useEffect(() => {
     if (searchState.searchTerm === '') {
       dispatch(
         getAllItemsByActive(
-          true,
+          'TRUE',
+          'NONE',
           searchState.pageNumber,
           searchState.itemCount,
           searchState.sortField,
@@ -69,7 +72,7 @@ const Items = () => {
     } else {
       dispatch(
         getAllItemsSearchByActive(
-          true,
+          'TRUE',
           searchState.searchTerm,
           searchState.pageNumber,
           searchState.itemCount,
@@ -98,9 +101,9 @@ const Items = () => {
           alignItems="center"
           spacing={2}
         >
-          <Typography component="h1" variant="h5">
+          {/* <Typography component="h1" variant="h5">
             Items
-          </Typography>
+          </Typography> */}
           <TextField
             id="search-items"
             value={searchState.searchTerm}
@@ -116,20 +119,19 @@ const Items = () => {
             label="Search Items"
           />
         </Stack>
-        {!items.isLoading && items.isFetched && (
-          <ItemsTable
-            items={items.list}
-            count={items.itemsCount}
-            pageNumber={searchState.pageNumber}
-            itemCount={searchState.itemCount}
-            sortField={searchState.sortField}
-            sortDirection={searchState.sortDirection}
-            handleChangePageNumber={handleChangePageNumber}
-            handleChangeItemCount={handleChangeItemCount}
-            handleChangeSortField={handleChangeSortField}
-            handleChangeSortDirection={handleChangeSortDirection}
-          />
-        )}
+        <ItemsTable
+          loading={items.isLoading}
+          fetched={items.isFetched}
+          items={items.list}
+          count={items.itemsCount}
+          pageNumber={searchState.pageNumber}
+          itemCount={searchState.itemCount}
+          sortField={searchState.sortField}
+          sortDirection={searchState.sortDirection}
+          handleChangePageNumber={handleChangePageNumber}
+          handleChangeItemCount={handleChangeItemCount}
+          handleChangeSort={handleChangeSort}
+        />
       </Box>
     </Container>
   );
