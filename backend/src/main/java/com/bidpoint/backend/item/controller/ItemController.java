@@ -4,10 +4,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.bidpoint.backend.auth.exception.AuthorizationException;
 import com.bidpoint.backend.auth.exception.TokenIsMissingException;
 import com.bidpoint.backend.auth.service.AuthService;
-import com.bidpoint.backend.item.dto.ItemInputDto;
-import com.bidpoint.backend.item.dto.ItemOutputDto;
-import com.bidpoint.backend.item.dto.PageItemsOutputDto;
-import com.bidpoint.backend.item.dto.SearchStateOutputDto;
+import com.bidpoint.backend.item.dto.*;
 import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.item.enums.FilterMode;
 import com.bidpoint.backend.item.service.ItemService;
@@ -16,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -93,17 +91,16 @@ public class ItemController {
                                                         @RequestParam(name = "username", defaultValue = "") String username,
                                                         @RequestParam(name = "categories", defaultValue = "") String[] categories) {
 
-        Page<Item> items = itemService.getItemsSearchPageableSortingFiltering(Arrays.stream(categories).toList(), searchTerm, active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-//        Long totalCount = itemService.countItemsSearchPageableSortingFiltering(Arrays.stream(categories).toList(), searchTerm, active, username, isEnded);
-        Long totalCount = Long.valueOf(5);
+        SearchQueryOutputDto results = itemService.getItemsSearchPageableSortingFiltering(Arrays.stream(categories).toList(), searchTerm, active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
 
-        List<ItemOutputDto> itemsList = items.stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
+
+        List<ItemOutputDto> itemsList = results.getItems().stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new PageItemsOutputDto(
-                        totalCount,
-                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm, active.toString(), isEnded.toString(), username, new LinkedHashSet<>()),
-                        itemsList
+                        results.getTotalItems(),
+                        itemsList,
+                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm, active.toString(), isEnded.toString(), username, new LinkedHashSet<>())
                 )
         );
     }

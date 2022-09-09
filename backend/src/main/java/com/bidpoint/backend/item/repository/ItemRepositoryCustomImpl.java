@@ -1,5 +1,6 @@
 package com.bidpoint.backend.item.repository;
 
+import com.bidpoint.backend.item.dto.SearchQueryOutputDto;
 import com.bidpoint.backend.item.entity.Category;
 import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.item.enums.FilterMode;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
+import org.springframework.data.util.Pair;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,7 +28,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Page<Item> getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, Pageable pageable) {
+    public SearchQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> item = query.from(Item.class);
@@ -67,6 +69,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .orderBy(QueryUtils.toOrders(pageable.getSort(), item, cb));
 
         TypedQuery<Item> tQuery =  entityManager.createQuery(query);
-        return new PageImpl<Item>(tQuery.getResultList(), pageable, tQuery.getResultList().size());
+
+        return new SearchQueryOutputDto(new PageImpl<Item>(tQuery.getResultList(), pageable, tQuery.getResultList().size()), (long) tQuery.getResultList().size());
     }
 }

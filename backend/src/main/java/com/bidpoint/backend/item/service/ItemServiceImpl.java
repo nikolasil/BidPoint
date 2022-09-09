@@ -1,5 +1,6 @@
 package com.bidpoint.backend.item.service;
 
+import com.bidpoint.backend.item.dto.SearchQueryOutputDto;
 import com.bidpoint.backend.item.entity.Category;
 import com.bidpoint.backend.item.entity.Image;
 import com.bidpoint.backend.item.entity.Item;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -92,7 +94,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<Item> getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+    public SearchQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
         PageRequest pageRequest = PageRequest.of(pageNumber, itemCount).withSort(Sort.by(sortDirection, sortField));
         return itemRepository.getItemsSearchPageableSortingFiltering(categories, searchTerm, active, username, isEnded, pageRequest);
     }
