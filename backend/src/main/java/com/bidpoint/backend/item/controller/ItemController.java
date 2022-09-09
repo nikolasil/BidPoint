@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -100,7 +101,7 @@ public class ItemController {
                 new PageItemsOutputDto(
                         results.getTotalItems(),
                         itemsList,
-                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm, active.toString(), isEnded.toString(), username, new LinkedHashSet<>())
+                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm, active.toString(), isEnded.toString(), username,  Arrays.stream(categories).toList())
                 )
         );
     }

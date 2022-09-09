@@ -17,5 +17,5 @@ public class SearchStateOutputDto {
     private String active;
     private String isEnded;
     private String username;
-    private Set<String> categories;
+    private List<String> categories;
 }

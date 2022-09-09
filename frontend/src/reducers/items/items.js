@@ -19,6 +19,7 @@ const itemsReducer = (state = initialState, action) => {
       console.log(
         'itemsReducer: GET_ALL_ITEMS_SUCCESS | GET_ITEMS_SEARCH_SUCCESS'
       );
+      localStorage.setItem('searchState', JSON.stringify(payload.searchState));
       return {
         ...state,
         isLoading: false,

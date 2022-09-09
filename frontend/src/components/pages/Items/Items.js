@@ -44,6 +44,20 @@ const Items = () => {
     );
   };
 
+  const handleCategoryChipClick = (event, value) => {
+    event.stopPropagation();
+    console.log(value);
+    let cat = searchState.categories;
+    const index = cat.indexOf(value);
+
+    if (index > -1) cat.splice(index, 1);
+    else cat.push(value);
+
+    return setSearchState((old) => ({
+      ...old,
+      categories: cat,
+    }));
+  };
   const handleChangePageNumber = (event, newPage) => {
     setSearchState((old) => ({ ...old, pageNumber: newPage }));
   };
@@ -204,13 +218,10 @@ const Items = () => {
                   categories: value,
                 }));
               }}
+              value={searchState.categories}
               options={categories.list}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Categories"
-                  value={searchState.categories}
-                />
+                <TextField {...params} label="Categories" />
               )}
             />
           </Stack>
@@ -227,6 +238,7 @@ const Items = () => {
           handleChangePageNumber={handleChangePageNumber}
           handleChangeItemCount={handleChangeItemCount}
           handleChangeSort={handleChangeSort}
+          onClickCategoryChip={handleCategoryChipClick}
         />
       </Box>
     </Container>

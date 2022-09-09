@@ -13,6 +13,7 @@ import {
   LinearProgress,
   TablePagination,
   TableSortLabel,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
@@ -36,6 +37,7 @@ export default function ItemsTable(props) {
     handleChangePageNumber,
     handleChangeItemCount,
     handleChangeSort,
+    onClickCategoryChip,
   } = props;
 
   const dispatch = useDispatch();
@@ -177,7 +179,21 @@ export default function ItemsTable(props) {
                   <TableCell align="right">{item.numberOfBids}</TableCell>
                   <TableCell align="right">
                     {item.categories.map((category) => (
-                      <Chip key={category} label={category} />
+                      <Tooltip title={'Toggle filter: ' + category}>
+                        <Chip
+                          sx={{
+                            '&:hover': {
+                              color: 'blue',
+                              cursor: 'pointer',
+                            },
+                          }}
+                          onClick={(event) =>
+                            onClickCategoryChip(event, category)
+                          }
+                          key={category}
+                          label={category}
+                        />
+                      </Tooltip>
                     ))}
                   </TableCell>
                   <TableCell align="right">
