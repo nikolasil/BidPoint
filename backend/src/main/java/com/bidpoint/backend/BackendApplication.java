@@ -44,7 +44,7 @@ public class BackendApplication {
 
     @Bean
     @Transactional
-    CommandLineRunner run(UserService userService, RoleService roleService, ItemService itemService, CategoryService categoryService, BidService bidService) {
+    CommandLineRunner run(UserService userService, RoleService roleService) {
         return args -> {
 
             String role_admin = "admin";

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,7 +33,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<Category> getCategory(@RequestParam(name = "categoryId",required = true) Long categoryId) {
+    public ResponseEntity<Category> getCategory(@RequestParam(name = "categoryId",required = true) UUID categoryId) {
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.getCategory(categoryId));
     }
 

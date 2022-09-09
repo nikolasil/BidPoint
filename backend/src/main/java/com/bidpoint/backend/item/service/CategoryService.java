@@ -6,10 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CategoryService {
     Category createCategory(Category category);
-    Category getCategory(Long categoryId);
+    Category getCategory(UUID categoryId);
     Category getCategory(String categoryName);
     List<Category> getAllCategories();
 }

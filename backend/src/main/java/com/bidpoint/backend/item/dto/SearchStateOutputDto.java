@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -13,4 +14,8 @@ public class SearchStateOutputDto {
     private String sortField;
     private String sortDirection;
     private String searchTerm;
+    private String active;
+    private String isEnded;
+    private String username;
+    private Set<String> categories;
 }

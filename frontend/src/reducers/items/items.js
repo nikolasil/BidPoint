@@ -35,7 +35,16 @@ const itemsReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        searchState: {},
+        searchState: {
+          pageNumber: 0,
+          itemCount: 10,
+          sortField: 'dateUpdated',
+          sortDirection: 'desc',
+          searchTerm: '',
+          active: 'TRUE',
+          isEnded: 'NONE',
+          username: '',
+        },
         isFetched: false,
         list: [],
       };

@@ -1,13 +1,25 @@
 import * as types from '../types';
 import axios from 'axios';
 
-export const getAllItemsByActive =
-  (active, isEnded, pageNumber, itemCount, sortField, sortDirection) =>
+export const getItemsSearchPageableSortingFiltering =
+  (
+    categories,
+    active,
+    isEnded,
+    username,
+    searchTerm,
+    pageNumber,
+    itemCount,
+    sortField,
+    sortDirection
+  ) =>
   async (dispatch) => {
     try {
       dispatch({ type: types.GET_ALL_ITEMS_REQUEST });
       const response = await axios.get(
-        `item/all?active=${active}&isEnded=${isEnded}&pageNumber=${pageNumber}&itemCount=${itemCount}&sortField=${sortField}&sortDirection=${sortDirection}`
+        `item/all?categories=${categories.join(
+          '&categories='
+        )}&searchTerm=${searchTerm}&active=${active}&isEnded=${isEnded}&username=${username}&pageNumber=${pageNumber}&itemCount=${itemCount}&sortField=${sortField}&sortDirection=${sortDirection}`
       );
       dispatch({
         type: types.GET_ALL_ITEMS_SUCCESS,
@@ -16,26 +28,6 @@ export const getAllItemsByActive =
     } catch (error) {
       dispatch({
         type: types.GET_ALL_ITEMS_FAILURE,
-        payload: error.response,
-      });
-    }
-  };
-
-export const getAllItemsSearchByActive =
-  (active, searchTerm, pageNumber, itemCount, sortField, sortDirection) =>
-  async (dispatch) => {
-    try {
-      dispatch({ type: types.GET_ITEMS_SEARCH_REQUEST });
-      const response = await axios.get(
-        `item/search?active=${active}&searchTerm=${searchTerm}&pageNumber=${pageNumber}&itemCount=${itemCount}&sortField=${sortField}&sortDirection=${sortDirection}`
-      );
-      dispatch({
-        type: types.GET_ITEMS_SEARCH_SUCCESS,
-        payload: response.data,
-      });
-    } catch (error) {
-      dispatch({
-        type: types.GET_ITEMS_SEARCH_FAILURE,
         payload: error.response,
       });
     }

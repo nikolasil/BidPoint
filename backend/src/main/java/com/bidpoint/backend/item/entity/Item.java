@@ -3,6 +3,7 @@ package com.bidpoint.backend.item.entity;
 import com.bidpoint.backend.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -72,7 +73,8 @@ public class Item {
     public void removeBid(Bid bid) { this.bids.remove(bid); }
     public List<Bid> getSortedBids(){ return this.bids.stream().sorted(Comparator.comparing(Bid::getDateCreated).reversed()).toList(); }
 
-    @ManyToMany(mappedBy = "items")
+    @JsonIgnoreProperties(value = "items")
+    @ManyToMany(mappedBy = "items", fetch = EAGER)
     private Set<Category> categories = new LinkedHashSet<>();
     public void addCategory(Category category) { this.categories.add(category); }
     public void removeCategory(Category category) { this.categories.remove(category); }

@@ -10,6 +10,8 @@ import {
   Chip,
   TextField,
   Tooltip,
+  CircularProgress,
+  LinearProgress,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +24,7 @@ import * as yup from 'yup';
 import Countdown from 'react-countdown';
 import moment from 'moment';
 import CachedIcon from '@mui/icons-material/Cached';
+import RefreshButton from '../../ui/RefreshButton';
 
 const Item = (props) => {
   const item = useSelector((state) => state.item);
@@ -35,6 +38,10 @@ const Item = (props) => {
   const [itemCount, setItemCount] = React.useState(5);
   const [bids, setBids] = React.useState([]);
   const [isEnded, setIsEnded] = React.useState(false);
+
+  const handleFetchBids = () => {
+    dispatch(getBidsOfItem(id));
+  };
 
   const handleEnded = () => {
     console.log('is ended');
@@ -60,8 +67,10 @@ const Item = (props) => {
       if (moment(item.item.dateEnds).utc().isBefore(moment().utc())) {
         console.log('is ended');
         setIsEnded(true);
+        return;
       }
     }
+    setIsEnded(false);
   }, [item.item]);
 
   useEffect(() => {
@@ -108,6 +117,26 @@ const Item = (props) => {
       dispatch(bidItem(id, values.amount));
     },
   });
+  
+  if (id != item.item.id) {
+    console.log('id != item.item.id');
+    return (
+      <Container component="main">
+        <Box
+          sx={{
+            marginTop: 1,
+            marginBottom: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            // paddingLeft: '16px',
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container component="main">
@@ -249,19 +278,21 @@ const Item = (props) => {
 
                     {isEnded && (
                       <Typography variant="h4">
-                        Winning Bid: {bids[0].username} with {bids[0].amount}$
+                        {bids.length == 0
+                          ? 'No Winner'
+                          : 'Winner:' +
+                            bids[0].username +
+                            ' -> ' +
+                            bids[0].amount +
+                            '$'}
                       </Typography>
                     )}
-                    <Tooltip title="Refresh Bids">
-                      <CachedIcon
-                        sx={{
-                          '&:hover': { color: 'blue', cursor: 'pointer' },
-                        }}
-                        onClick={() => {
-                          dispatch(getBidsOfItem(id));
-                        }}
-                      />
-                    </Tooltip>
+
+                    <RefreshButton
+                      tooltip={'Refresh Bids'}
+                      fetch={handleFetchBids}
+                    />
+
                     <BidsTable
                       bids={bids}
                       count={bidsState.length}

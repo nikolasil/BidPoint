@@ -24,9 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.sql.Array;
+import java.util.*;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -83,30 +82,6 @@ public class ItemController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<PageItemsOutputDto> getItemsPaginationAndSorting(
-                                                                      @RequestParam(name = "pageNumber") int pageNumber,
-                                                                      @RequestParam(name = "itemCount") int itemCount,
-                                                                      @RequestParam(name = "sortField") String sortField,
-                                                                      @RequestParam(name = "sortDirection") String sortDirection,
-                                                                      @RequestParam(name = "active") FilterMode active,
-                                                                      @RequestParam(name = "isEnded") FilterMode isEnded,
-                                                                      @RequestParam(name = "username", defaultValue = "") String username) {
-
-        Page<Item> items = itemService.getItemsPageable(active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-        Long totalCount = itemService.getItemsCount(active, username, isEnded);
-
-        List<ItemOutputDto> itemsList = items.stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new PageItemsOutputDto(
-                        totalCount,
-                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, ""),
-                        itemsList
-                )
-        );
-    }
-
-    @GetMapping("/search")
     public ResponseEntity<PageItemsOutputDto> getItems(
                                                         @RequestParam(name = "searchTerm") String searchTerm,
                                                         @RequestParam(name = "pageNumber") int pageNumber,
@@ -115,17 +90,19 @@ public class ItemController {
                                                         @RequestParam(name = "sortDirection") String sortDirection,
                                                         @RequestParam(name = "active") FilterMode active,
                                                         @RequestParam(name = "isEnded") FilterMode isEnded,
-                                                        @RequestParam(name = "username", defaultValue = "") String username) {
+                                                        @RequestParam(name = "username", defaultValue = "") String username,
+                                                        @RequestParam(name = "categories", defaultValue = "") String[] categories) {
 
-        Page<Item> items = itemService.getItemsSearchPageable(searchTerm, active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-        Long totalCount = itemService.getItemsSearchCount(searchTerm, active, username, isEnded);
+        Page<Item> items = itemService.getItemsSearchPageableSortingFiltering(Arrays.stream(categories).toList(), searchTerm, active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
+//        Long totalCount = itemService.countItemsSearchPageableSortingFiltering(Arrays.stream(categories).toList(), searchTerm, active, username, isEnded);
+        Long totalCount = Long.valueOf(5);
 
         List<ItemOutputDto> itemsList = items.stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new PageItemsOutputDto(
                         totalCount,
-                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm),
+                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm, active.toString(), isEnded.toString(), username, new LinkedHashSet<>()),
                         itemsList
                 )
         );

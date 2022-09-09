@@ -18,15 +18,17 @@ import {
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  getAllItemsByActive,
+  getItemsSearchPageableSortingFiltering,
   getAllItemsSearchByActive,
 } from '../../../actions/items';
 import ItemsTable from './ItemsTable';
-import CachedIcon from '@mui/icons-material/Cached';
+import RefreshButton from '../../ui/RefreshButton';
+import { getAllCategories } from '../../../actions/categories';
 
 const Items = () => {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.items);
+  const categories = useSelector((state) => state.categories);
   const [searchState, setSearchState] = React.useState({
     ...items.searchState,
   });
@@ -73,36 +75,39 @@ const Items = () => {
   };
 
   const fetchItems = () => {
-    if (searchState.searchTerm === '') {
-      dispatch(
-        getAllItemsByActive(
-          'TRUE',
-          searchState.isEnded,
-          searchState.pageNumber,
-          searchState.itemCount,
-          searchState.sortField,
-          searchState.sortDirection
-        )
-      );
-    } else {
-      dispatch(
-        getAllItemsSearchByActive(
-          'TRUE',
-          searchState.isEnded,
-          searchState.searchTerm,
-          searchState.pageNumber,
-          searchState.itemCount,
-          searchState.sortField,
-          searchState.sortDirection
-        )
-      );
-    }
+    dispatch(
+      getItemsSearchPageableSortingFiltering(
+        searchState.categories,
+        'TRUE',
+        searchState.isEnded,
+        searchState.username,
+        searchState.searchTerm,
+        searchState.pageNumber,
+        searchState.itemCount,
+        searchState.sortField,
+        searchState.sortDirection
+      )
+    );
   };
 
   useEffect(() => {
-    if (!items.isFetched || !isEqualsJson(searchState, items.searchState))
-      fetchItems();
-    else console.log('no need to fetch');
+    dispatch(getAllCategories());
+  }, []);
+
+  useEffect(() => {
+    if (!items.isFetched || !isEqualsJson(searchState, items.searchState)) {
+      if (
+        searchState.searchTerm === items.searchState.searchTerm &&
+        searchState.username === items.searchState.username
+      ) {
+        fetchItems();
+      } else {
+        const delayDebounceFn = setTimeout(() => {
+          fetchItems();
+        }, 600);
+        return () => clearTimeout(delayDebounceFn);
+      }
+    } else console.log('no need to fetch');
   }, [searchState]);
 
   return (
@@ -118,57 +123,97 @@ const Items = () => {
         }}
       >
         <Stack
-          direction="row"
+          direction="column"
           justifyContent="center"
           alignItems="center"
           spacing={2}
         >
-          <Tooltip title="Refresh Items">
-            <CachedIcon
-              sx={{
-                '&:hover': { color: 'blue', cursor: 'pointer' },
-              }}
-              onClick={() => {
-                fetchItems();
-              }}
-            />
-          </Tooltip>
+          <Stack
+            minWidth={'90%'}
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="isEnded">Time Left</InputLabel>
+              <Select
+                labelId="Time Left"
+                id="isEnded"
+                value={searchState.isEnded}
+                label="Time Left"
+                onChange={(event) => {
+                  setSearchState((old) => ({
+                    ...old,
+                    isEnded: event.target.value,
+                    pageNumber: 0,
+                  }));
+                }}
+              >
+                <MenuItem value={'TRUE'}>Has Ended</MenuItem>
+                <MenuItem value={'FALSE'}>Hasn't Ended</MenuItem>
+                <MenuItem value={'NONE'}>Both</MenuItem>
+              </Select>
+            </FormControl>
 
-          <FormControl fullWidth>
-            <InputLabel id="isEnded">Time Left</InputLabel>
-            <Select
-              labelId="Time Left"
-              id="isEnded"
-              value={searchState.isEnded}
-              label="Time Left"
+            <TextField
+              id="seller"
+              fullWidth
+              value={searchState.username}
               onChange={(event) => {
                 setSearchState((old) => ({
                   ...old,
-                  isEnded: event.target.value,
-                  pageNumber: 0,
+                  username: event.target.value,
                 }));
               }}
-            >
-              <MenuItem value={'TRUE'}>Has Ended</MenuItem>
-              <MenuItem value={'FALSE'}>Hasn't Ended</MenuItem>
-              <MenuItem value={'NONE'}>Both</MenuItem>
-            </Select>
-          </FormControl>
+              label="Seller Username"
+            />
 
-          <TextField
-            id="search-items"
-            value={searchState.searchTerm}
-            onChange={(event) => {
-              setSearchState((old) => ({
-                ...old,
-                searchTerm: event.target.value,
-                pageNumber: 0,
-                sortField: 'id',
-                sortDirection: 'asc',
-              }));
-            }}
-            label="Search Items"
-          />
+            <TextField
+              id="search-items"
+              fullWidth
+              value={searchState.searchTerm}
+              onChange={(event) => {
+                setSearchState((old) => ({
+                  ...old,
+                  searchTerm: event.target.value,
+                  pageNumber: 0,
+                  sortField: 'id',
+                  sortDirection: 'asc',
+                }));
+              }}
+              label="Search on Name, Description"
+            />
+
+            <RefreshButton tooltip={'Refresh Items'} fetch={fetchItems} />
+          </Stack>
+          <Stack
+            minWidth={'90%'}
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}
+          >
+            <Autocomplete
+              multiple
+              id="categories"
+              name="categories"
+              onChange={(event, value) => {
+                setSearchState((old) => ({
+                  ...old,
+                  categories: value,
+                }));
+              }}
+              options={categories.list}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Categories"
+                  value={searchState.categories}
+                />
+              )}
+            />
+          </Stack>
         </Stack>
         <ItemsTable
           loading={items.isLoading}
