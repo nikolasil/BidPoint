@@ -8,14 +8,15 @@ import PrivateRoute from './privateRoutes/PrivateRoute';
 import SignIn from './components/pages/Auth/SignIn';
 import SignUp from './components/pages/Auth/SignUp';
 import { Box, Grid, Typography } from '@mui/material';
-import Items from './components/pages/Items/Items';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { useSelector } from 'react-redux';
 import PageContainer from './components/ui/PageContainer';
-import CreateItem from './components/pages/Create Item/CreateItem';
-import MyItems from './components/pages/My Items/MyItems';
-import Item from './components/pages/Item/Item';
+import CreateItem from './components/pages/Account/Items/CreateItem';
+import AccountItems from './components/pages/Account/Items/AccountItems';
+import EditItem from './components/pages/Account/Items/EditItem';
+import Items from './components/pages/Items/Items';
+import Item from './components/pages/Items/Item';
 
 const Customer = () => {
   const auth = useSelector((state) => state.auth);
@@ -26,7 +27,7 @@ const Customer = () => {
         pages={[
           { name: 'Items', path: '/items' },
           { name: 'My Items', path: '/account/items' },
-          { name: 'Create Item', path: '/account/create/item' },
+          { name: 'Create Item', path: '/account/items/create' },
         ]}
         settings={[
           {
@@ -70,21 +71,6 @@ const Customer = () => {
         />
         <Route
           exact
-          path="/items"
-          element={<PageContainer page={<Items />} />}
-        />
-        <Route
-          exact
-          path="/items/create"
-          element={<PageContainer page={<CreateItem />} />}
-        />
-        <Route
-          exact
-          path="/items/:id"
-          element={<PageContainer page={<Item />} />}
-        />
-        <Route
-          exact
           path="/logout"
           element={<PageContainer page={<Logout />} />}
         />
@@ -99,7 +85,26 @@ const Customer = () => {
         />
         <Route
           exact
-          path="/account/create/item"
+          path="/items"
+          element={<PageContainer page={<Items />} />}
+        />
+        <Route
+          exact
+          path="/items/:id"
+          element={<PageContainer page={<Item />} />}
+        />
+        <Route
+          exact
+          path="/account/items"
+          element={
+            <PrivateRoute>
+              <PageContainer page={<AccountItems />} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          exact
+          path="/account/items/create"
           element={
             <PrivateRoute>
               <PageContainer page={<CreateItem />} />
@@ -108,10 +113,10 @@ const Customer = () => {
         />
         <Route
           exact
-          path="/account/items"
+          path="/account/items/edit/:id"
           element={
             <PrivateRoute>
-              <PageContainer page={<MyItems />} />
+              <PageContainer page={<EditItem />} />
             </PrivateRoute>
           }
         />

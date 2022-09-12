@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TablePagination } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import TableActions from '../../ui/TableActions';
+import TableActions from './TableActions';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 

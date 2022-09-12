@@ -1,28 +1,26 @@
 package com.bidpoint.backend.item.controller;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.bidpoint.backend.auth.exception.AuthorizationException;
 import com.bidpoint.backend.auth.exception.TokenIsMissingException;
 import com.bidpoint.backend.auth.service.AuthService;
 import com.bidpoint.backend.item.dto.*;
+import com.bidpoint.backend.item.dto.xml.ItemXmlDto;
+import com.bidpoint.backend.item.dto.xml.ItemXmlListDto;
+import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.item.enums.FilterMode;
 import com.bidpoint.backend.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,10 +44,7 @@ public class ItemController {
         if (!authService.hasAuthorizationHeader(authorizationHeader))
             throw new TokenIsMissingException();
         try {
-            DecodedJWT decodedJWT = authService.decodeAuthorizationHeader(authorizationHeader);
-
-            Collection<GrantedAuthority> authorities = authService.mapRolesToSimpleGrantedAuthority(decodedJWT.getClaim("roles").asArray(String.class));
-            String username = decodedJWT.getSubject();
+            String username = authService.decodeAuthorizationHeader(authorizationHeader).getSubject();
 
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     conversionService.convert(
@@ -59,7 +54,7 @@ public class ItemController {
                                             item,
                                             Item.class
                                     ),
-                                    item.getCategories().stream().toList(),
+                                    item.getCategories(),
                                     images
                             ),
                             ItemOutputDto.class
@@ -104,5 +99,26 @@ public class ItemController {
                         new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm, active.toString(), isEnded.toString(), username,  Arrays.stream(categories).toList())
                 )
         );
+    }
+
+    @GetMapping(value = "/export", produces = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<ItemXmlListDto> exportItems() {
+        List<Item> results = itemService.getAll();
+
+        ItemXmlListDto ret = new ItemXmlListDto();
+
+        return ResponseEntity.status(HttpStatus.OK).body(ret);
+    }
+
+    @PostMapping(value = "/import", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, "application/xml;charset=UTF-8"}, produces = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, "application/xml;charset=UTF-8"})
+    public ResponseEntity<ItemXmlListDto> importItems(@RequestBody ItemXmlListDto items) {
+        itemService.createAll(
+                items.getItems().stream().map(i->i.getSeller().getUsername()).toList(),
+                items.getItems().stream().map(i->conversionService.convert(i, Item.class)).toList(),
+                items.getItems().stream().map(ItemXmlDto::getCategories).toList(),
+                items.getItems().stream().map(i -> i.getBids().stream().map(b-> conversionService.convert(b, Bid.class)).toList()).toList()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(items);
     }
 }

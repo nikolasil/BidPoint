@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getItem, bidItem, getBidsOfItem } from '../../../actions/item';
 import Carousel from '../../ui/Carousel';
-import BidsTable from './BidsTable';
+import BidsTable from '../../ui/BidsTable';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Countdown from 'react-countdown';
@@ -117,7 +117,7 @@ const Item = (props) => {
       dispatch(bidItem(id, values.amount));
     },
   });
-  
+
   if (id != item.item.id) {
     console.log('id != item.item.id');
     return (

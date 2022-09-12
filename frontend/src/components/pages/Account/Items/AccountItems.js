@@ -20,14 +20,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   getItemsSearchPageableSortingFiltering,
   getAllItemsSearchByActive,
-} from '../../../actions/items';
-import ItemsTable from '../../ui/ItemsTable';
-import RefreshButton from '../../ui/RefreshButton';
-import { getAllCategories } from '../../../actions/categories';
+} from '../../../../actions/items';
+import ItemsTable from '../../../ui/ItemsTable';
+import RefreshButton from '../../../ui/RefreshButton';
+import { getAllCategories } from '../../../../actions/categories';
 
-const Items = () => {
+const AccountItems = () => {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.items);
+  const auth = useSelector((state) => state.auth);
   const categories = useSelector((state) => state.categories);
   const [searchState, setSearchState] = React.useState({
     pageNumber: 0,
@@ -35,9 +36,9 @@ const Items = () => {
     sortField: 'dateUpdated',
     sortDirection: 'desc',
     searchTerm: '',
-    active: 'TRUE',
+    active: 'NONE',
     isEnded: 'NONE',
-    username: '',
+    username: auth.user.username,
     categories: [],
   });
 
@@ -89,9 +90,9 @@ const Items = () => {
     dispatch(
       getItemsSearchPageableSortingFiltering(
         searchState.categories,
-        'TRUE',
+        searchState.active,
         searchState.isEnded,
-        searchState.username,
+        auth.user.username,
         searchState.searchTerm,
         searchState.pageNumber,
         searchState.itemCount,
@@ -165,18 +166,26 @@ const Items = () => {
               </Select>
             </FormControl>
 
-            <TextField
-              id="seller"
-              fullWidth
-              value={searchState.username}
-              onChange={(event) => {
-                setSearchState((old) => ({
-                  ...old,
-                  username: event.target.value,
-                }));
-              }}
-              label="Seller Username"
-            />
+            <FormControl fullWidth>
+              <InputLabel id="active">Status</InputLabel>
+              <Select
+                labelId="Status"
+                id="active"
+                value={searchState.active}
+                label="Status"
+                onChange={(event) => {
+                  setSearchState((old) => ({
+                    ...old,
+                    active: event.target.value,
+                    pageNumber: 0,
+                  }));
+                }}
+              >
+                <MenuItem value={'TRUE'}>Active</MenuItem>
+                <MenuItem value={'FALSE'}>Disabled</MenuItem>
+                <MenuItem value={'NONE'}>Both</MenuItem>
+              </Select>
+            </FormControl>
 
             <TextField
               id="search-items"
@@ -240,4 +249,4 @@ const Items = () => {
   );
 };
 
-export default Items;
+export default AccountItems;

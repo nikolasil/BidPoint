@@ -17,9 +17,9 @@ import {
   Typography,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import TableActions from '../../ui/TableActions';
+import TableActions from './TableActions';
 import { useNavigate } from 'react-router-dom';
-import Carousel from '../../ui/Carousel';
+import Carousel from './Carousel';
 import moment from 'moment';
 import { Box } from '@mui/system';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
@@ -154,7 +154,11 @@ export default function ItemsTable(props) {
             <TableBody>
               {items.map((item) => (
                 <TableRow
-                  onClick={() => navigate('/items/' + item.id)}
+                  onClick={() => {
+                    window.location.pathname === '/items'
+                      ? navigate('/items/' + item.id)
+                      : navigate('/account/items/edit/' + item.id);
+                  }}
                   key={item.id}
                   sx={{
                     '&:last-child td, &:last-child th': { border: 0 },
