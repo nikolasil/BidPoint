@@ -225,7 +225,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public SearchQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
-        PageRequest pageRequest = PageRequest.of(pageNumber, itemCount).withSort(Sort.by(sortDirection, sortField));
-        return itemRepository.getItemsSearchPageableSortingFiltering(categories, searchTerm, active, username, isEnded, pageRequest);
+        return itemRepository.getItemsSearchPageableSortingFiltering(categories, searchTerm, active, username, isEnded, PageRequest.of(pageNumber, itemCount).withSort(Sort.by(sortDirection, sortField)));
     }
 }

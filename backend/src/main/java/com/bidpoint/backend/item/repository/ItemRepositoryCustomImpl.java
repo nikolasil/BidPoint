@@ -6,6 +6,7 @@ import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.item.enums.FilterMode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.util.Pair;
@@ -27,8 +28,18 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
+    private Long getTotalCount(CriteriaBuilder criteriaBuilder, Predicate[] predicateArray) {
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Item> root = criteriaQuery.from(Item.class);
+
+        criteriaQuery.select(criteriaBuilder.count(root));
+        criteriaQuery.where(predicateArray);
+
+        return entityManager.createQuery(criteriaQuery).getSingleResult();
+    }
+
     @Override
-    public SearchQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, Pageable pageable) {
+    public SearchQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, PageRequest pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> item = query.from(Item.class);
@@ -63,13 +74,17 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     cb.greaterThan(item.get("dateEnds"), ZonedDateTime.now(UTC)) :
                     cb.lessThan(item.get("dateEnds"), ZonedDateTime.now(UTC)));
 
+        Predicate[] predicatesArray = predicates.toArray(new Predicate[predicates.size()]);
+
         query
                 .select(item)
-                .where(predicates.toArray(new Predicate[predicates.size()]))
+                .where(predicatesArray)
                 .orderBy(QueryUtils.toOrders(pageable.getSort(), item, cb));
 
         TypedQuery<Item> tQuery =  entityManager.createQuery(query);
-
-        return new SearchQueryOutputDto(new PageImpl<Item>(tQuery.getResultList(), pageable, tQuery.getResultList().size()), (long) tQuery.getResultList().size());
+        tQuery.setFirstResult(Math.toIntExact(pageable.getOffset()));
+        tQuery.setMaxResults(pageable.getPageSize());
+        Long totalCount = getTotalCount(cb, predicatesArray);
+        return new SearchQueryOutputDto(new PageImpl<Item>(tQuery.getResultList(), pageable, totalCount), totalCount);
     }
 }
