@@ -281,9 +281,9 @@ const Item = (props) => {
                         {bids.length == 0
                           ? 'No Winner'
                           : 'Winner:' +
-                            bids[0].username +
+                            bidsState[0].username +
                             ' -> ' +
-                            bids[0].amount +
+                            bidsState[0].amount +
                             '$'}
                       </Typography>
                     )}
