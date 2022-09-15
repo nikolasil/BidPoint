@@ -1,12 +1,11 @@
 package com.bidpoint.backend.item.service;
 
-import com.bidpoint.backend.item.dto.SearchQueryOutputDto;
-import com.bidpoint.backend.item.dto.xml.ItemBidXmlDto;
+import com.bidpoint.backend.item.dto.SearchItemQueryOutputDto;
 import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Category;
 import com.bidpoint.backend.item.entity.Image;
 import com.bidpoint.backend.item.entity.Item;
-import com.bidpoint.backend.item.enums.FilterMode;
+import com.bidpoint.backend.enums.FilterMode;
 import com.bidpoint.backend.item.repository.BidRepository;
 import com.bidpoint.backend.item.repository.CategoryRepository;
 import com.bidpoint.backend.item.repository.ImageRepository;
@@ -25,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -224,7 +220,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public SearchQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+    public SearchItemQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
         return itemRepository.getItemsSearchPageableSortingFiltering(categories, searchTerm, active, username, isEnded, PageRequest.of(pageNumber, itemCount).withSort(Sort.by(sortDirection, sortField)));
     }
 }

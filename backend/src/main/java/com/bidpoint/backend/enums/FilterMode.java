@@ -1,4 +1,4 @@
-package com.bidpoint.backend.item.enums;
+package com.bidpoint.backend.enums;
 
 public enum FilterMode {
     FALSE,

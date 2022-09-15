@@ -1,10 +1,9 @@
 package com.bidpoint.backend.item.service;
 
-import com.bidpoint.backend.item.dto.SearchQueryOutputDto;
-import com.bidpoint.backend.item.dto.xml.ItemBidXmlDto;
+import com.bidpoint.backend.item.dto.SearchItemQueryOutputDto;
 import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Item;
-import com.bidpoint.backend.item.enums.FilterMode;
+import com.bidpoint.backend.enums.FilterMode;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,5 +21,5 @@ public interface ItemService {
     Item importItemWithCategoriesAndBids(String username, Item item, List<String> categories, List<Bid> bids);
     Item importItemWithCategoryAndBidsAndImages(Item item, List<String> categories, List<Bid> bids, MultipartFile[] images);
 
-    SearchQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection);
+    SearchItemQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection);
 }

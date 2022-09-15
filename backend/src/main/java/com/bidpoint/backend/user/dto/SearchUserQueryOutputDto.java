@@ -1,15 +1,14 @@
-package com.bidpoint.backend.item.dto;
+package com.bidpoint.backend.user.dto;
 
 import com.bidpoint.backend.item.entity.Item;
+import com.bidpoint.backend.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
-public class SearchQueryOutputDto {
-    private Page<Item> items;
+public class SearchUserQueryOutputDto {
+    private Page<User> users;
     private Long totalItems;
 }

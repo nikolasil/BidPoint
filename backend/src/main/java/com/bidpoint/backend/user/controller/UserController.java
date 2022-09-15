@@ -1,13 +1,14 @@
 package com.bidpoint.backend.user.controller;
 
 import com.bidpoint.backend.auth.service.AuthServiceImpl;
-import com.bidpoint.backend.user.dto.UserInputDto;
-import com.bidpoint.backend.user.dto.UserOutputDto;
+import com.bidpoint.backend.user.dto.*;
+import com.bidpoint.backend.enums.FilterMode;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +38,23 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserOutputDto>> getAllUsers(){
-        List<User> listOfUsers = userService.getUsers();
-        return ResponseEntity.status(HttpStatus.OK).body(listOfUsers.stream().map(user->conversionService.convert(user,UserOutputDto.class)).collect(Collectors.toList()));
+    public ResponseEntity<PageUsersOutputDto> getUsersSearchPageableSorting( @RequestParam(name = "searchTerm") String searchTerm,
+                                                                 @RequestParam(name = "pageNumber") int pageNumber,
+                                                                 @RequestParam(name = "itemCount") int itemCount,
+                                                                 @RequestParam(name = "sortField") String sortField,
+                                                                 @RequestParam(name = "sortDirection") String sortDirection,
+                                                                 @RequestParam(name = "approved") FilterMode approved){
+        SearchUserQueryOutputDto results = userService.getUsersSearchPageableSorting(searchTerm,approved,pageNumber,itemCount,sortField, Sort.Direction.fromString(sortDirection));
+
+        List<UserOutputDto> usersList = results.getUsers().stream().map(i -> conversionService.convert(i, UserOutputDto.class)).toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new PageUsersOutputDto(
+                        results.getTotalItems(),
+                        usersList,
+                        new SearchUserStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm, approved.toString())
+                )
+        );
     }
 
     @GetMapping("/approved")

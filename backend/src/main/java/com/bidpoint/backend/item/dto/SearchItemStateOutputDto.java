@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
-public class SearchStateOutputDto {
+public class SearchItemStateOutputDto {
     private int pageNumber;
     private int itemCount;
     private String sortField;

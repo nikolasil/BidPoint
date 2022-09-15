@@ -8,7 +8,7 @@ import com.bidpoint.backend.item.dto.xml.ItemXmlDto;
 import com.bidpoint.backend.item.dto.xml.ItemXmlListDto;
 import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Item;
-import com.bidpoint.backend.item.enums.FilterMode;
+import com.bidpoint.backend.enums.FilterMode;
 import com.bidpoint.backend.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -96,15 +95,15 @@ public class ItemController {
         if(Arrays.asList(categories).size() == 1 && Objects.equals(Arrays.asList(categories).get(0), ""))
             categories = new String[0];
 
-        SearchQueryOutputDto results = itemService.getItemsSearchPageableSortingFiltering(Arrays.asList(categories), searchTerm, active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-        
+        SearchItemQueryOutputDto results = itemService.getItemsSearchPageableSortingFiltering(Arrays.asList(categories), searchTerm, active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
+
         List<ItemOutputDto> itemsList = results.getItems().stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new PageItemsOutputDto(
                         results.getTotalItems(),
                         itemsList,
-                        new SearchStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm, active.toString(), isEnded.toString(), username,  Arrays.stream(categories).toList())
+                        new SearchItemStateOutputDto(pageNumber, itemCount, sortField, sortDirection, searchTerm, active.toString(), isEnded.toString(), username,  Arrays.stream(categories).toList())
                 )
         );
     }

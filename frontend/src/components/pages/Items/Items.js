@@ -55,6 +55,7 @@ const Items = () => {
       categories: cat,
     }));
   };
+  
   const handleChangePageNumber = (event, newPage) => {
     setSearchState((old) => ({ ...old, pageNumber: newPage }));
   };

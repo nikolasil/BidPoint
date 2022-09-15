@@ -1,6 +1,8 @@
 package com.bidpoint.backend.user.service;
 
 import com.bidpoint.backend.auth.exception.UserNotApprovedException;
+import com.bidpoint.backend.user.dto.SearchUserQueryOutputDto;
+import com.bidpoint.backend.enums.FilterMode;
 import com.bidpoint.backend.role.entity.Role;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.role.exception.RoleNotFoundException;
@@ -9,16 +11,16 @@ import com.bidpoint.backend.role.repository.RoleRepository;
 import com.bidpoint.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -137,6 +139,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("getUsers");
 
         return userRepository.findAll();
+    }
+
+    @Override
+    public SearchUserQueryOutputDto getUsersSearchPageableSorting(String searchTerm, FilterMode approved, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
+        return userRepository.getUsersSearchPageableSorting(searchTerm, approved, PageRequest.of(pageNumber, itemCount).withSort(Sort.by(sortDirection, sortField)));
     }
 
     @Override

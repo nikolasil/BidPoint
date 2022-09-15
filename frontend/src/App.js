@@ -77,9 +77,9 @@ function App() {
             exact
             path="/admin/*"
             element={
-              <AdminPrivateRoute>
-                <Admin />
-              </AdminPrivateRoute>
+              // <AdminPrivateRoute>
+              <Admin />
+              // </AdminPrivateRoute>
             }
           />
         </Routes>
