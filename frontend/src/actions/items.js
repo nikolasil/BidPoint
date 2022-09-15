@@ -16,10 +16,19 @@ export const getItemsSearchPageableSortingFiltering =
   async (dispatch) => {
     try {
       dispatch({ type: types.GET_ALL_ITEMS_REQUEST });
+      console.log(categories);
+      categories = categories.map((element) => {
+        return encodeURIComponent(element);
+      });
+      console.log(categories);
+      if (categories.length != 0) categories = categories.join('&categories=');
+      else categories = '';
       const response = await axios.get(
-        `item/all?categories=${categories.join(
-          '&categories='
-        )}&searchTerm=${searchTerm}&active=${active}&isEnded=${isEnded}&username=${username}&pageNumber=${pageNumber}&itemCount=${itemCount}&sortField=${sortField}&sortDirection=${sortDirection}`
+        `item/all?categories=${categories}&searchTerm=${encodeURIComponent(
+          searchTerm
+        )}&active=${active}&isEnded=${isEnded}&username=${encodeURIComponent(
+          username
+        )}&pageNumber=${pageNumber}&itemCount=${itemCount}&sortField=${sortField}&sortDirection=${sortDirection}`
       );
       dispatch({
         type: types.GET_ALL_ITEMS_SUCCESS,

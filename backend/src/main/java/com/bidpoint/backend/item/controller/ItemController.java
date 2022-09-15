@@ -12,11 +12,13 @@ import com.bidpoint.backend.item.enums.FilterMode;
 import com.bidpoint.backend.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.propertyeditors.StringArrayPropertyEditor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +37,11 @@ public class ItemController {
     private final ItemService itemService;
     private final ConversionService conversionService;
     private final AuthService authService;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String[].class, new StringArrayPropertyEditor(null));
+    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ItemOutputDto> createItem(@RequestPart("images") MultipartFile[] images,
@@ -85,11 +92,12 @@ public class ItemController {
                                                         @RequestParam(name = "active") FilterMode active,
                                                         @RequestParam(name = "isEnded") FilterMode isEnded,
                                                         @RequestParam(name = "username", defaultValue = "") String username,
-                                                        @RequestParam(name = "categories", defaultValue = "") String[] categories) {
+                                                        @RequestParam(name = "categories") String[] categories) {
+        if(Arrays.asList(categories).size() == 1 && Objects.equals(Arrays.asList(categories).get(0), ""))
+            categories = new String[0];
 
-        SearchQueryOutputDto results = itemService.getItemsSearchPageableSortingFiltering(Arrays.stream(categories).toList(), searchTerm, active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
-
-
+        SearchQueryOutputDto results = itemService.getItemsSearchPageableSortingFiltering(Arrays.asList(categories), searchTerm, active, username, isEnded, pageNumber, itemCount, sortField, Sort.Direction.fromString(sortDirection));
+        
         List<ItemOutputDto> itemsList = results.getItems().stream().map(i -> conversionService.convert(i, ItemOutputDto.class)).toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(

@@ -4,6 +4,7 @@ import com.bidpoint.backend.item.dto.SearchQueryOutputDto;
 import com.bidpoint.backend.item.entity.Category;
 import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.item.enums.FilterMode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static java.time.ZoneOffset.UTC;
-
+@Slf4j
 public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
     @PersistenceContext
@@ -46,6 +47,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         List<Predicate> predicates = new  ArrayList<>();
 
         for(String category : categories) {
+            log.info(category);
             Subquery<UUID> subquery = query.subquery(UUID.class);
             Root<Item> subqueryItem = subquery.from(Item.class);
             Join<Category, Item> subqueryCategory = subqueryItem.join("categories");
