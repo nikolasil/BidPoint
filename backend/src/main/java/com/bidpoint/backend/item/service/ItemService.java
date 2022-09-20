@@ -15,7 +15,7 @@ public interface ItemService {
     Item createItemWithCategoryAndImages(String username, Item item, Set<String> categories, MultipartFile[] images);
     Item createItemWithCategory(String username, Item item, Set<String> categories);
     Item getItem(UUID itemId);
-
+    Item getItemAndStoreVisitor(UUID itemId, String username);
     List<Item> getAll();
     List<Item> createAll(List<String> usernames, List<Item> items, List<List<String>> categories, List<List<Bid>> bids);
     Item importItemWithCategoriesAndBids(String username, Item item, List<String> categories, List<Bid> bids);

@@ -2,9 +2,9 @@ package com.bidpoint.backend.config;
 
 import com.bidpoint.backend.auth.filter.CustomAuthenticationFilter;
 import com.bidpoint.backend.auth.filter.CustomAuthorizationFilter;
-import com.bidpoint.backend.user.service.UserService;
 import com.bidpoint.backend.auth.service.AuthServiceImpl;
-import lombok.RequiredArgsConstructor;
+import com.bidpoint.backend.user.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;

@@ -2,7 +2,7 @@ package com.bidpoint.backend.item.controller;
 
 import com.bidpoint.backend.item.entity.Category;
 import com.bidpoint.backend.item.service.CategoryService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/category")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;

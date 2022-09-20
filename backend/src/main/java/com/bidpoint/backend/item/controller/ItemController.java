@@ -3,14 +3,14 @@ package com.bidpoint.backend.item.controller;
 import com.bidpoint.backend.auth.exception.AuthorizationException;
 import com.bidpoint.backend.auth.exception.TokenIsMissingException;
 import com.bidpoint.backend.auth.service.AuthService;
+import com.bidpoint.backend.enums.FilterMode;
 import com.bidpoint.backend.item.dto.*;
 import com.bidpoint.backend.item.dto.xml.ItemXmlDto;
 import com.bidpoint.backend.item.dto.xml.ItemXmlListDto;
 import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Item;
-import com.bidpoint.backend.enums.FilterMode;
 import com.bidpoint.backend.item.service.ItemService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.StringArrayPropertyEditor;
 import org.springframework.core.convert.ConversionService;
@@ -23,13 +23,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/api/item")
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class ItemController {
 
@@ -72,13 +75,28 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<ItemOutputDto> getItem(@RequestParam(name = "itemId",required = true) UUID itemId) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                conversionService.convert(
-                        itemService.getItem(itemId),
-                        ItemOutputDto.class
-                )
-        );
+    public ResponseEntity<ItemOutputDto> getItem(@RequestParam(name = "itemId",required = true) UUID itemId,
+                                                 HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        if (!authService.hasAuthorizationHeader(authorizationHeader))
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    conversionService.convert(
+                            itemService.getItem(itemId),
+                            ItemOutputDto.class
+                    )
+            );
+        try {
+            String username = authService.decodeAuthorizationHeader(authorizationHeader).getSubject();
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    conversionService.convert(
+                            itemService.getItemAndStoreVisitor(itemId,username),
+                            ItemOutputDto.class
+                    )
+            );
+        } catch (Exception e) {
+            throw new AuthorizationException(e);
+        }
     }
 
     @GetMapping("/all")

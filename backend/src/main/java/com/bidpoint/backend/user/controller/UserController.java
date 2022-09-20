@@ -1,12 +1,12 @@
 package com.bidpoint.backend.user.controller;
 
 import com.bidpoint.backend.auth.service.AuthServiceImpl;
-import com.bidpoint.backend.user.dto.*;
 import com.bidpoint.backend.enums.FilterMode;
+import com.bidpoint.backend.user.dto.*;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.user.service.UserService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/api/user")
-@RequiredArgsConstructor
-@Log4j2
+@AllArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;

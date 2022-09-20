@@ -2,11 +2,9 @@ package com.bidpoint.backend.item.controller;
 
 import com.bidpoint.backend.auth.service.AuthService;
 import com.bidpoint.backend.item.dto.BidOutputDto;
-import com.bidpoint.backend.item.dto.ItemOutputDto;
 import com.bidpoint.backend.item.entity.Bid;
-import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.item.service.BidService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/api/bid")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BidController {
 
     private final BidService bidService;

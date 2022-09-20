@@ -4,14 +4,15 @@ import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Item;
 import com.bidpoint.backend.role.entity.Role;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
-
-import static javax.persistence.GenerationType.AUTO;
 
 @Getter
 @Setter

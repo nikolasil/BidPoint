@@ -2,17 +2,14 @@ package com.bidpoint.backend.role.controller;
 
 import com.bidpoint.backend.role.entity.Role;
 import com.bidpoint.backend.role.service.RoleService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/api/role")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RoleController {
     private final RoleService roleService;
 

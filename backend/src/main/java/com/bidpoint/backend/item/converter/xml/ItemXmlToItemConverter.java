@@ -3,17 +3,13 @@ package com.bidpoint.backend.item.converter.xml;
 import com.bidpoint.backend.item.dto.xml.ItemXmlDto;
 import com.bidpoint.backend.item.entity.Item;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
 import org.springframework.core.convert.converter.Converter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
-import java.util.Locale;
 
 import static java.time.ZoneOffset.UTC;
 @Slf4j

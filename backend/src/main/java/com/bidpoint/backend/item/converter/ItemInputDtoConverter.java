@@ -2,7 +2,6 @@ package com.bidpoint.backend.item.converter;
 
 import com.bidpoint.backend.item.dto.ItemInputDto;
 import com.bidpoint.backend.item.entity.Item;
-import com.bidpoint.backend.item.repository.CategoryRepository;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.LinkedHashSet;

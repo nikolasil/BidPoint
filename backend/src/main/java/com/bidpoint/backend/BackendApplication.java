@@ -1,15 +1,11 @@
 package com.bidpoint.backend;
 
-import com.bidpoint.backend.item.entity.Category;
-import com.bidpoint.backend.item.entity.Item;
-import com.bidpoint.backend.item.repository.ItemRepository;
-import com.bidpoint.backend.item.service.*;
-import com.bidpoint.backend.user.dto.UserInputDto;
 import com.bidpoint.backend.role.entity.Role;
-import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.role.service.RoleService;
+import com.bidpoint.backend.user.dto.UserInputDto;
+import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.user.service.UserService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,14 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.TimeZone;
 
 @SpringBootApplication
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BackendApplication {
     private final ConversionService conversionService;
     public static void main(String[] args) {

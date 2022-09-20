@@ -1,21 +1,21 @@
 package com.bidpoint.backend.item.service;
 
+import com.bidpoint.backend.enums.FilterMode;
 import com.bidpoint.backend.item.dto.SearchItemQueryOutputDto;
 import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Category;
 import com.bidpoint.backend.item.entity.Image;
 import com.bidpoint.backend.item.entity.Item;
-import com.bidpoint.backend.enums.FilterMode;
 import com.bidpoint.backend.item.repository.BidRepository;
 import com.bidpoint.backend.item.repository.CategoryRepository;
 import com.bidpoint.backend.item.repository.ImageRepository;
 import com.bidpoint.backend.item.repository.ItemRepository;
-import com.bidpoint.backend.role.repository.RoleRepository;
+import com.bidpoint.backend.recommendation.service.ActivityHistoryService;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.user.exception.UserNotFoundException;
 import com.bidpoint.backend.user.repository.UserRepository;
 import com.bidpoint.backend.user.service.UserService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Transactional
 @Slf4j
 public class ItemServiceImpl implements ItemService {
@@ -36,7 +36,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
-    private final RoleRepository roleRepository;
+    private final ActivityHistoryService activityHistoryService;
     private final BidRepository bidRepository;
 
     @Override
@@ -126,6 +126,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Item getItemAndStoreVisitor(UUID itemId, String username) {
+        User user = userRepository.findByUsername(username);
+        if(user== null)
+            throw new UserNotFoundException(username);
+        Item item = itemRepository.findItemById(itemId);
+        activityHistoryService.addVisit(user, item);
+        return item;
+    }
+
+    @Override
     public List<Item> getAll() {
         return itemRepository.findAll();
     }
@@ -209,6 +219,7 @@ public class ItemServiceImpl implements ItemService {
             }
             bid.setUser(bidderUser);
             item.addBid(bidRepository.save(bid));
+            activityHistoryService.addBid(bidderUser, item);
         });
 
         return itemRepository.save(item);

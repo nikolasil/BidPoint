@@ -4,7 +4,7 @@ import com.bidpoint.backend.role.entity.Role;
 import com.bidpoint.backend.role.exception.RoleAlreadyExistsException;
 import com.bidpoint.backend.role.exception.RoleNotFoundException;
 import com.bidpoint.backend.role.repository.RoleRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Transactional
 @Slf4j
 public class RoleServiceImpl implements RoleService {
