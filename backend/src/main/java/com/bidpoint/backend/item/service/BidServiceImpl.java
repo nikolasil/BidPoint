@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +50,7 @@ public class BidServiceImpl implements BidService {
 
         bid.setItem(item);
         bid.setUser(user);
+        bid.setDateCreated(ZonedDateTime.now());
 
         bidRepository.save(bid);
         item.addBid(bid);

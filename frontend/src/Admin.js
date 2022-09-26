@@ -12,6 +12,7 @@ import User from './components/adminPages/Users/User';
 import PageContainer from './components/ui/PageContainer';
 import Account from './components/pages/Account/Account';
 import AdminPrivateRoute from './privateRoutes/AdminPrivateRoute';
+import Items from './components/adminPages/Items/Items';
 
 const Admin = () => {
   const auth = useSelector((state) => state.auth);
@@ -22,6 +23,7 @@ const Admin = () => {
         pages={[
           { name: 'Website', path: '/' },
           { name: 'Users', path: '/admin/users' },
+          { name: 'Items', path: '/admin/items' },
         ]}
         settings={[
           {
@@ -85,6 +87,15 @@ const Admin = () => {
           element={
             <AdminPrivateRoute>
               <PageContainer page={<User />} />
+            </AdminPrivateRoute>
+          }
+        />
+        <Route
+          exact
+          path="/items"
+          element={
+            <AdminPrivateRoute>
+              <PageContainer page={<Items />} />
             </AdminPrivateRoute>
           }
         />

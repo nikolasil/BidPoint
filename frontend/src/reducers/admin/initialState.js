@@ -18,6 +18,17 @@ const initialState = {
     isFetched: false,
     user: {},
   },
+  items: {
+    import: {
+      isLoading: false,
+      isImported: false,
+    },
+    export: {
+      isLoading: false,
+      isExported: false,
+      list: null,
+    },
+  },
 };
 
 export default initialState;

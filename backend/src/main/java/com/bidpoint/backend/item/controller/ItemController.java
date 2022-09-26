@@ -126,16 +126,20 @@ public class ItemController {
         );
     }
 
-    @GetMapping(value = "/export", produces = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<ItemXmlListDto> exportItems() {
-        List<Item> results = itemService.getAll();
-
+    @GetMapping(value = "/export/xml", produces = {MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<ItemXmlListDto> exportItemsXml() {
         ItemXmlListDto ret = new ItemXmlListDto();
-
+        ret.setItems(itemService.getAll().stream().map(i->conversionService.convert(i,ItemXmlDto.class)).toList());
+        return ResponseEntity.status(HttpStatus.OK).body(ret);
+    }
+    @GetMapping(value = "/export/json", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ItemXmlListDto> exportItemsJson() {
+        ItemXmlListDto ret = new ItemXmlListDto();
+        ret.setItems(itemService.getAll().stream().map(i->conversionService.convert(i,ItemXmlDto.class)).toList());
         return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
-    @PostMapping(value = "/import", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, "application/xml;charset=UTF-8"}, produces = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, "application/xml;charset=UTF-8"})
+    @PostMapping(value = "/import", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, "application/xml;charset=UTF-8","text/xml"}, produces = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, "application/xml;charset=UTF-8"})
     public ResponseEntity<ItemXmlListDto> importItems(@RequestBody ItemXmlListDto items) {
         itemService.createAll(
                 items.getItems().stream().map(i->i.getSeller().getUsername()).toList(),

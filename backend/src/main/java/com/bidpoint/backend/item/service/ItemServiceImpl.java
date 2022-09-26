@@ -218,6 +218,7 @@ public class ItemServiceImpl implements ItemService {
                 ), Arrays.asList("seller", "bidder"));
             }
             bid.setUser(bidderUser);
+            bid = bidRepository.save(bid);
             item.addBid(bidRepository.save(bid));
             activityHistoryService.addBid(bidderUser, item);
         });

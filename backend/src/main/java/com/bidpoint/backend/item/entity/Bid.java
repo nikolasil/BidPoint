@@ -2,12 +2,10 @@ package com.bidpoint.backend.item.entity;
 
 import com.bidpoint.backend.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -28,7 +26,6 @@ public class Bid {
 
     private BigDecimal amount;
 
-    @CreationTimestamp
     private ZonedDateTime dateCreated;
 
     @JsonBackReference

@@ -151,6 +151,95 @@ const adminReducer = (state = initialState, action) => {
         },
       };
     }
+    case types.ADMIN_IMPORT_ITEMS_REQUEST: {
+      console.log('adminReducer: ADMIN_IMPORT_ITEMS_REQUEST');
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          import: {
+            ...state.items.import,
+            isLoading: true,
+            isImported: false,
+          },
+        },
+      };
+    }
+    case types.ADMIN_IMPORT_ITEMS_SUCCESS: {
+      console.log('adminReducer: ADMIN_IMPORT_ITEMS_SUCCESS');
+      console.log('adminReducer: payload = ', payload);
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          import: {
+            ...state.items.import,
+            isLoading: false,
+            isImported: true,
+          },
+        },
+      };
+    }
+    case types.ADMIN_IMPORT_ITEMS_FAILURE: {
+      console.log('adminReducer: ADMIN_IMPORT_ITEMS_FAILURE');
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          import: {
+            ...state.items.import,
+            isLoading: false,
+            isImported: false,
+          },
+        },
+      };
+    }
+    case types.ADMIN_EXPORT_ITEMS_REQUEST: {
+      console.log('adminReducer: ADMIN_EXPORT_ITEMS_REQUEST');
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          export: {
+            ...state.items.export,
+            isLoading: true,
+            isExported: false,
+            list: null
+          },
+        },
+      };
+    }
+    case types.ADMIN_EXPORT_ITEMS_SUCCESS: {
+      console.log('adminReducer: ADMIN_EXPORT_ITEMS_SUCCESS');
+      console.log('adminReducer: payload = ', payload);
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          export: {
+            ...state.items.export,
+            isLoading: false,
+            isExported: true,
+            list: payload,
+          },
+        },
+      };
+    }
+    case types.ADMIN_EXPORT_ITEMS_FAILURE: {
+      console.log('adminReducer: ADMIN_EXPORT_ITEMS_FAILURE');
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          export: {
+            ...state.items.export,
+            isLoading: false,
+            isExported: false,
+            list: null
+          },
+        },
+      };
+    }
 
     default: {
       return state;
