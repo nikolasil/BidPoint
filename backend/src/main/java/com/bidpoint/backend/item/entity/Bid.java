@@ -10,7 +10,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.UUID;
+
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -20,9 +21,14 @@ import java.util.UUID;
 @Table(name = "bid")
 public class Bid {
     @Id
-    @GeneratedValue
-    @Column(nullable = false)
-    private UUID id;
+    @SequenceGenerator(
+            name = "bid_sequence",
+            sequenceName = "bid_sequence",
+            allocationSize = 1)
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "bid_sequence")
+    private Long id;
 
     private BigDecimal amount;
 

@@ -34,6 +34,7 @@ public class BidXmlToBidConverter implements Converter<ItemBidXmlDto, Bid> {
                         "",
                         null,
                         null,
+                        null,
                         null
                 )
         );

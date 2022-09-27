@@ -31,6 +31,7 @@ public class ItemXmlToItemConverter implements Converter<ItemXmlDto, Item> {
                 null,
                 new LinkedHashSet<>(),
                 new LinkedHashSet<>(),
+                new LinkedHashSet<>(),
                 new LinkedHashSet<>()
         );
     }

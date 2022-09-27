@@ -1,15 +1,15 @@
 package com.bidpoint.backend.item.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
-import static javax.persistence.GenerationType.AUTO;
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -19,8 +19,14 @@ import static javax.persistence.GenerationType.AUTO;
 @Table(name="category")
 public class Category {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @SequenceGenerator(
+            name = "category_sequence",
+            sequenceName = "category_sequence",
+            allocationSize = 1)
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "category_sequence")
+    private Long id;
 
     @Column(unique=true)
     private String name;

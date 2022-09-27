@@ -14,10 +14,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.time.ZoneOffset.UTC;
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -27,9 +31,14 @@ import static javax.persistence.FetchType.EAGER;
 @Table(name = "item")
 public class Item {
     @Id
-    @GeneratedValue
-    @Column(nullable = false)
-    private UUID id;
+    @SequenceGenerator(
+            name = "item_sequence",
+            sequenceName = "item_sequence",
+            allocationSize = 1)
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "item_sequence")
+    private Long id;
 
     private String name;
 
@@ -80,4 +89,11 @@ public class Item {
     private Set<Image> images = new LinkedHashSet<>();
     public void addImage(Image image) { this.images.add(image); }
     public void removeImage(Image image) { this.images.remove(image); }
+
+    @ManyToMany(mappedBy = "visitedItems")
+    private Set<User> visitedUsers = new LinkedHashSet<>();
+    public void addUser(User user){ this.visitedUsers.add(user);}
+    public void removeUser(User user){
+        this.visitedUsers.remove(user);
+    }
 }

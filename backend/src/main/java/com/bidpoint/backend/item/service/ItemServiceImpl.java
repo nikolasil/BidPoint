@@ -10,7 +10,7 @@ import com.bidpoint.backend.item.repository.BidRepository;
 import com.bidpoint.backend.item.repository.CategoryRepository;
 import com.bidpoint.backend.item.repository.ImageRepository;
 import com.bidpoint.backend.item.repository.ItemRepository;
-import com.bidpoint.backend.recommendation.service.ActivityHistoryService;
+import com.bidpoint.backend.recommendation.algorithm.MatrixFactorization;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.user.exception.UserNotFoundException;
 import com.bidpoint.backend.user.repository.UserRepository;
@@ -36,7 +36,6 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
-    private final ActivityHistoryService activityHistoryService;
     private final BidRepository bidRepository;
 
     @Override
@@ -121,18 +120,51 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItem(UUID itemId) {
+    public Item getItem(Long itemId) {
         return itemRepository.findItemById(itemId);
     }
 
     @Override
-    public Item getItemAndStoreVisitor(UUID itemId, String username) {
+    public Item getItemAndStoreVisitor(Long itemId, String username) {
         User user = userRepository.findByUsername(username);
         if(user== null)
             throw new UserNotFoundException(username);
         Item item = itemRepository.findItemById(itemId);
-        activityHistoryService.addVisit(user, item);
+        user.addVisitedItems(item);
         return item;
+    }
+
+    @Override
+    public void createRecommendations() {
+        log.info("createRecommendations");
+        List<User> users = userRepository.findAll();
+        List<Item> items = itemRepository.findAll();
+        Double[][] R = new Double[users.size()][items.size()];
+        for(Double[] i : R){
+            Arrays.fill(i,0.0d);
+        }
+        for (User user : users) {
+            Set<Bid> userBids = user.getBids();
+            if(userBids == null)
+                userBids = new LinkedHashSet<Bid>();
+            Set<Item> userVisitedItems = user.getVisitedItems();
+            if(userVisitedItems == null)
+                userVisitedItems = new LinkedHashSet<Item>();
+            userVisitedItems.forEach(item -> {
+                R[(int) (user.getId()- 1)][(int) (item.getId() - 1)] = 0.5d;
+            });
+            userBids.forEach(bid -> {
+                R[(int) (user.getId()- 1)][(int) (bid.getItem().getId() - 1)] = 1.0d;
+            });
+        }
+        MatrixFactorization matrixFactorization = new MatrixFactorization(R,R.length,R[0].length, 2,0.002,0.02,50);
+
+        ArrayList<Double> training_process = matrixFactorization.train();
+        Double[][] res = matrixFactorization.fullMatrix();
+        Double b = matrixFactorization.b;
+        Double[] b_u = matrixFactorization.b_u;
+        Double[] b_i = matrixFactorization.b_i;
+        log.info("createRecommendations done");
     }
 
     @Override
@@ -168,6 +200,7 @@ public class ItemServiceImpl implements ItemService {
                     "",
                     "",
                     "",
+                    new LinkedHashSet<>(),
                     new LinkedHashSet<>(),
                     new LinkedHashSet<>(),
                     new LinkedHashSet<>()
@@ -214,13 +247,14 @@ public class ItemServiceImpl implements ItemService {
                         "",
                         new LinkedHashSet<>(),
                         new LinkedHashSet<>(),
+                        new LinkedHashSet<>(),
                         new LinkedHashSet<>()
                 ), Arrays.asList("seller", "bidder"));
             }
             bid.setUser(bidderUser);
             bid = bidRepository.save(bid);
             item.addBid(bidRepository.save(bid));
-            activityHistoryService.addBid(bidderUser, item);
+            userRepository.save(bidderUser);
         });
 
         return itemRepository.save(item);

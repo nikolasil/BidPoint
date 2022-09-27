@@ -1,16 +1,16 @@
 package com.bidpoint.backend.role.entity;
 
 import com.bidpoint.backend.user.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
-import static javax.persistence.GenerationType.AUTO;
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -20,8 +20,14 @@ import static javax.persistence.GenerationType.AUTO;
 @Table(name="role")
 public class Role {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @SequenceGenerator(
+            name = "role_sequence",
+            sequenceName = "role_sequence",
+            allocationSize = 1)
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "role_sequence")
+    private Long id;
 
     @Column(unique=true)
     private String name;

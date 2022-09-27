@@ -24,6 +24,7 @@ public class ItemInputDtoConverter implements Converter<ItemInputDto, Item> {
                 null,
                 new LinkedHashSet<>(),
                 new LinkedHashSet<>(),
+                new LinkedHashSet<>(),
                 new LinkedHashSet<>()
         );
     }

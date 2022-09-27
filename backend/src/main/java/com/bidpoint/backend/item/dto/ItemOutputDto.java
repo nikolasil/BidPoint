@@ -1,20 +1,17 @@
 package com.bidpoint.backend.item.dto;
 
-import com.bidpoint.backend.item.entity.Bid;
 import com.bidpoint.backend.item.entity.Image;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 public class ItemOutputDto {
-    private UUID id;
+    private Long id;
 
     private String name;
 

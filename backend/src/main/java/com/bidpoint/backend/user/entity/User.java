@@ -12,7 +12,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
+
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -22,8 +23,14 @@ import java.util.UUID;
 @Table(name="application_user")
 public class User {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1)
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "user_sequence")
+    private Long id;
 
     private String firstname;
 
@@ -64,5 +71,14 @@ public class User {
     }
     public void removeBid(Bid bid){
         this.bids.remove(bid);
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Item> visitedItems = new LinkedHashSet<>();
+    public void addVisitedItems(Item item){
+        this.visitedItems.add(item);
+    }
+    public void removeVisitedItems(Item item){
+        this.visitedItems.remove(item);
     }
 }

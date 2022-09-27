@@ -22,6 +22,7 @@ public class UserInputDtoConverter implements Converter<UserInputDto, User> {
                 source.getAfm(),
                 new LinkedHashSet<>(),
                 new LinkedHashSet<>(),
+                new LinkedHashSet<>(),
                 new LinkedHashSet<>()
         );
     }

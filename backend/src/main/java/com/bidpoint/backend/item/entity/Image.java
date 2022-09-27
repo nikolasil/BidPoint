@@ -5,13 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
-import java.util.UUID;
-
-import static javax.persistence.GenerationType.AUTO;
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -21,8 +18,14 @@ import static javax.persistence.GenerationType.AUTO;
 @Table(name = "image")
 public class Image {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @SequenceGenerator(
+            name = "image_sequence",
+            sequenceName = "image_sequence",
+            allocationSize = 1)
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "image_sequence")
+    private Long id;
 
     private String fileName;
 

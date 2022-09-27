@@ -14,9 +14,9 @@ public class MatrixFactorization {
     Double[][] R;
     Double[][] P;
     Double[][] Q;
-    Double[] b_u;
-    Double[] b_i;
-    Double b;
+    public Double[] b_u;
+    public Double[] b_i;
+    public Double b;
     int num_users;
     int num_items;
     int K;
@@ -37,6 +37,7 @@ public class MatrixFactorization {
     }
 
     public ArrayList<Double> train () {
+        log.info("Train Started");
         this.P = new Double[this.num_users][this.K];
         for (int i=0; i< this.num_users; i++)
             for (int j=0; j< this.K; j++)

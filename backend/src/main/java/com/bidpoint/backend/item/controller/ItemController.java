@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -75,7 +74,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<ItemOutputDto> getItem(@RequestParam(name = "itemId",required = true) UUID itemId,
+    public ResponseEntity<ItemOutputDto> getItem(@RequestParam(name = "itemId",required = true) Long itemId,
                                                  HttpServletRequest request) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (!authService.hasAuthorizationHeader(authorizationHeader))
@@ -132,6 +131,7 @@ public class ItemController {
         ret.setItems(itemService.getAll().stream().map(i->conversionService.convert(i,ItemXmlDto.class)).toList());
         return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
+
     @GetMapping(value = "/export/json", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ItemXmlListDto> exportItemsJson() {
         ItemXmlListDto ret = new ItemXmlListDto();
@@ -149,5 +149,11 @@ public class ItemController {
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(items);
+    }
+
+    @GetMapping(value = "/recommend")
+    public ResponseEntity<String> recommend() {
+        itemService.createRecommendations();
+        return ResponseEntity.status(HttpStatus.OK).body("ok");
     }
 }
