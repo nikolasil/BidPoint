@@ -45,7 +45,7 @@ public class ItemController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ItemOutputDto> createItem(@RequestPart("images") MultipartFile[] images,
+    public ResponseEntity<ItemOutputDto> createItem(@RequestPart(value = "images", required = false) MultipartFile[] images,
                                                     @RequestPart("item") ItemInputDto item,
                                                     HttpServletRequest request) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
@@ -56,6 +56,7 @@ public class ItemController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     conversionService.convert(
+                            images != null ?
                             itemService.createItemWithCategoryAndImages(
                                     username,
                                     conversionService.convert(
@@ -64,6 +65,13 @@ public class ItemController {
                                     ),
                                     item.getCategories(),
                                     images
+                            ):itemService.createItemWithCategory(
+                                    username,
+                                    conversionService.convert(
+                                            item,
+                                            Item.class
+                                    ),
+                                    item.getCategories()
                             ),
                             ItemOutputDto.class
                     )

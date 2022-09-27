@@ -103,9 +103,9 @@ export default function UsersTable(props) {
             </TableRow>
           </TableBody>
         ) : (
-          <>
-            <TableBody>
-              {users.map((user) => (
+          <TableBody>
+            {users.map((user) => (
+              <Tooltip title={'Open Account: ' + user.username}>
                 <TableRow
                   onClick={() => {
                     navigate('/admin/users/' + user.username);
@@ -114,6 +114,9 @@ export default function UsersTable(props) {
                   sx={{
                     '&:last-child td, &:last-child th': { border: 0 },
                     cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: '#EBEBEB',
+                    },
                   }}
                 >
                   <TableCell component="th" scope="row">
@@ -125,7 +128,7 @@ export default function UsersTable(props) {
                   <TableCell align="right">
                     {user.approved ? (
                       <Button variant="outlined" disabled color="success">
-                        Approve
+                        Already Approved
                       </Button>
                     ) : (
                       <Button
@@ -136,14 +139,14 @@ export default function UsersTable(props) {
                           dispatch(approveUser(user.username));
                         }}
                       >
-                        Approve
+                        Approve User
                       </Button>
                     )}
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </>
+              </Tooltip>
+            ))}
+          </TableBody>
         )}
         <TableFooter>
           <TableRow>

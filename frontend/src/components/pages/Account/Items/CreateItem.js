@@ -213,8 +213,8 @@ const CreateItem = () => {
                       ...params.inputProps,
                       required: formik.values.categories.length === 0,
                     }}
-                    value={formik.values.categories}
                     onChange={formik.handleChange}
+                    value={formik.values.categories}
                     error={
                       formik.touched.categories &&
                       Boolean(formik.errors.categories)

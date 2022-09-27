@@ -11,6 +11,8 @@ import com.bidpoint.backend.item.repository.CategoryRepository;
 import com.bidpoint.backend.item.repository.ImageRepository;
 import com.bidpoint.backend.item.repository.ItemRepository;
 import com.bidpoint.backend.recommendation.algorithm.MatrixFactorization;
+import com.bidpoint.backend.recommendation.entity.Recommendation;
+import com.bidpoint.backend.recommendation.repository.RecommendationRepository;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.user.exception.UserNotFoundException;
 import com.bidpoint.backend.user.repository.UserRepository;
@@ -37,6 +39,7 @@ public class ItemServiceImpl implements ItemService {
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
     private final BidRepository bidRepository;
+    private final RecommendationRepository recommendationRepository;
 
     @Override
     public Item createItemWithCategoryAndImages(String username, Item item, Set<String> categories, MultipartFile[] images) {
@@ -157,14 +160,11 @@ public class ItemServiceImpl implements ItemService {
                 R[(int) (user.getId()- 1)][(int) (bid.getItem().getId() - 1)] = 1.0d;
             });
         }
-        MatrixFactorization matrixFactorization = new MatrixFactorization(R,R.length,R[0].length, 2,0.002,0.02,50);
+        MatrixFactorization matrixFactorization = new MatrixFactorization(R, R.length, R[0].length, 2,0.002,0.02,50);
 
         ArrayList<Double> training_process = matrixFactorization.train();
         Double[][] res = matrixFactorization.fullMatrix();
-        Double b = matrixFactorization.b;
-        Double[] b_u = matrixFactorization.b_u;
-        Double[] b_i = matrixFactorization.b_i;
-        log.info("createRecommendations done");
+        recommendationRepository.save(new Recommendation(null,res));
     }
 
     @Override

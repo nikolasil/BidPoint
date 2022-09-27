@@ -14,7 +14,8 @@ const Carousel = (props) => {
     >
       <NavigateBeforeIcon
         sx={{
-          visibility: props.images.length <= 1 ? 'hidden' : 'visible',
+          visibility:
+            props.images && props.images.length <= 1 ? 'hidden' : 'visible',
           '&:hover': { color: 'blue', cursor: 'pointer' },
         }}
         onClick={(event) => {
@@ -27,7 +28,7 @@ const Carousel = (props) => {
       >
         Back
       </NavigateBeforeIcon>
-      {props.images.length > 0 ? (
+      {props.images && props.images.length > 0 ? (
         <img
           width={props.width}
           height={props.height}
@@ -49,7 +50,8 @@ const Carousel = (props) => {
       )}
       <NavigateNextIcon
         sx={{
-          visibility: props.images.length <= 1 ? 'hidden' : 'visible',
+          visibility:
+            props.images && props.images.length <= 1 ? 'hidden' : 'visible',
           '&:hover': { color: 'blue', cursor: 'pointer' },
         }}
         onClick={(event) => {

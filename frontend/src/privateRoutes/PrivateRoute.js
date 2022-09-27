@@ -21,7 +21,7 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       console.log('You are authenticated');
-      if (auth.user.username === '') {
+      if (auth.user === null) {
         console.log('Has tokens but redux is empty (RELOAD DETECTED)');
         dispatch(loadUser());
       }
@@ -34,7 +34,11 @@ const PrivateRoute = ({ children }) => {
   return (
     !isLoading &&
     (isAuthenticated ? (
-      children
+      auth.user === null ? (
+        <></>
+      ) : (
+        children
+      )
     ) : (
       <>
         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>

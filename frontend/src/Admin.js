@@ -13,6 +13,7 @@ import PageContainer from './components/ui/PageContainer';
 import Account from './components/pages/Account/Account';
 import AdminPrivateRoute from './privateRoutes/AdminPrivateRoute';
 import Items from './components/adminPages/Items/Items';
+import PrivateRoute from './privateRoutes/PrivateRoute';
 
 const Admin = () => {
   const auth = useSelector((state) => state.auth);
@@ -58,45 +59,55 @@ const Admin = () => {
           exact
           path="/"
           element={
-            <AdminPrivateRoute>
-              <PageContainer page={<Home />} />
-            </AdminPrivateRoute>
+            <PrivateRoute>
+              <AdminPrivateRoute>
+                <PageContainer page={<Home />} />
+              </AdminPrivateRoute>
+            </PrivateRoute>
           }
         />
         <Route
           exact
           path="/account"
           element={
-            <AdminPrivateRoute>
-              <PageContainer page={<Account />} />
-            </AdminPrivateRoute>
+            <PrivateRoute>
+              <AdminPrivateRoute>
+                <PageContainer page={<Account />} />
+              </AdminPrivateRoute>
+            </PrivateRoute>
           }
         />
         <Route
           exact
           path="/users"
           element={
-            <AdminPrivateRoute>
-              <PageContainer page={<Users />} />
-            </AdminPrivateRoute>
+            <PrivateRoute>
+              <AdminPrivateRoute>
+                <PageContainer page={<Users />} />
+              </AdminPrivateRoute>
+            </PrivateRoute>
           }
         />
         <Route
           exact
           path="/users/:username"
           element={
-            <AdminPrivateRoute>
-              <PageContainer page={<User />} />
-            </AdminPrivateRoute>
+            <PrivateRoute>
+              <AdminPrivateRoute>
+                <PageContainer page={<User />} />
+              </AdminPrivateRoute>
+            </PrivateRoute>
           }
         />
         <Route
           exact
           path="/items"
           element={
-            <AdminPrivateRoute>
-              <PageContainer page={<Items />} />
-            </AdminPrivateRoute>
+            <PrivateRoute>
+              <AdminPrivateRoute>
+                <PageContainer page={<Items />} />
+              </AdminPrivateRoute>
+            </PrivateRoute>
           }
         />
       </Routes>

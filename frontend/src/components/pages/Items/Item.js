@@ -37,7 +37,10 @@ const Item = (props) => {
   const [pageNumber, setPageNumber] = React.useState(0);
   const [itemCount, setItemCount] = React.useState(5);
   const [bids, setBids] = React.useState([]);
-  const [isEnded, setIsEnded] = React.useState(false);
+  const [isEnded, setIsEnded] = React.useState({
+    value: false,
+    message: 'Item is not ended yet.',
+  });
 
   const handleFetchBids = () => {
     dispatch(getBidsOfItem(id));
@@ -66,11 +69,18 @@ const Item = (props) => {
     if (item.item.dateEnds) {
       if (moment(item.item.dateEnds).utc().isBefore(moment().utc())) {
         console.log('is ended');
-        setIsEnded(true);
+        setIsEnded({ value: true, message: "Auction's end date passed" });
         return;
       }
     }
-    setIsEnded(false);
+    if (item.item.currentPrice >= item.item.buyPrice) {
+      setIsEnded({ value: true, message: 'BuyPrice was activated' });
+      return;
+    }
+    setIsEnded({
+      value: false,
+      message: 'Item is not ended yet.',
+    });
   }, [item.item]);
 
   useEffect(() => {
@@ -179,9 +189,13 @@ const Item = (props) => {
                 milliseconds,
                 completed,
               }) => {
-                if (completed) {
+                if (completed || isEnded.value) {
                   // Render a completed state
-                  return <Typography variant="h5">Auction ended</Typography>;
+                  return (
+                    <Typography variant="h5">
+                      Auction ended({isEnded.message})
+                    </Typography>
+                  );
                 } else {
                   // Render a countdown
                   return (
@@ -248,6 +262,7 @@ const Item = (props) => {
                     label="Amount"
                     name="amount"
                     autoComplete="amount"
+                    disabled={isEnded.value}
                     value={formik.values.amount}
                     onChange={formik.handleChange}
                     error={
@@ -256,23 +271,23 @@ const Item = (props) => {
                     helperText={formik.touched.amount && formik.errors.amount}
                   />
                   <LoadingButton
-                    disabled={isEnded}
+                    disabled={isEnded.value}
                     type="submit"
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
                     loading={item.isLoading}
                     loadingIndicator="Loading…"
                   >
-                    {!isEnded ? 'Submit Bid' : 'Cannot Submit Bid'}
+                    {!isEnded.value ? 'Submit Bid' : 'Cannot Submit Bid'}
                   </LoadingButton>
                   {createBidError && createBidError.message}
                 </form>
 
-                {isEnded && (
+                {isEnded.value && (
                   <Typography variant="h4">
                     {bids.length == 0
                       ? 'No Winner'
-                      : 'Winner:' +
+                      : ' Winner:' +
                         bidsState[0].username +
                         ' -> ' +
                         bidsState[0].amount +

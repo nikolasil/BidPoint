@@ -13,6 +13,7 @@ import {
   LinearProgress,
   TablePagination,
   TableSortLabel,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -24,6 +25,7 @@ import moment from 'moment';
 import { Box } from '@mui/system';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import BlockIcon from '@mui/icons-material/Block';
+import { grey } from '@mui/material/colors';
 export default function ItemsTable(props) {
   const {
     loading,
@@ -96,6 +98,15 @@ export default function ItemsTable(props) {
             <TableCell align="right">Category</TableCell>
             <TableCell align="right">
               <TableSortLabel
+                active={sortField === 'user'}
+                direction={sortDirection}
+                onClick={() => handleChangeSort('user')}
+              >
+                Seller
+              </TableSortLabel>
+            </TableCell>
+            <TableCell align="right">
+              <TableSortLabel
                 active={sortField === 'dateCreated'}
                 direction={sortDirection}
                 onClick={() => handleChangeSort('dateCreated')}
@@ -140,7 +151,7 @@ export default function ItemsTable(props) {
               </TableCell>
             </TableRow>
           </TableBody>
-        ) : count == 0 ? (
+        ) : count === 0 ? (
           <TableBody>
             <TableRow>
               <TableCell colSpan={11} align="center">
@@ -153,75 +164,81 @@ export default function ItemsTable(props) {
           <>
             <TableBody>
               {items.map((item) => (
-                <TableRow
-                  onClick={() => {
-                    window.location.pathname === '/items'
-                      ? navigate('/items/' + item.id)
-                      : navigate('/account/items/edit/' + item.id);
-                  }}
-                  key={item.id}
-                  sx={{
-                    '&:last-child td, &:last-child th': { border: 0 },
-                    cursor: 'pointer',
-                  }}
-                >
-                  <TableCell align="right">
-                    {item.images && (
-                      <Carousel
-                        height="100px"
-                        width="100px"
-                        images={item.images}
-                        isBase64={true}
-                      />
-                    )}
-                  </TableCell>
-
-                  <TableCell align="right">{item.name}</TableCell>
-                  <TableCell align="right">{item.startingPrice}</TableCell>
-                  <TableCell align="right">{item.currentPrice}</TableCell>
-                  <TableCell align="right">{item.buyPrice}</TableCell>
-                  <TableCell align="right">{item.numberOfBids}</TableCell>
-                  <TableCell align="right">
-                    {item.categories.map((category) => (
-                      <Tooltip title={'Toggle filter: ' + category}>
-                        <Chip
-                          sx={{
-                            '&:hover': {
-                              color: 'blue',
-                              cursor: 'pointer',
-                            },
-                          }}
-                          onClick={(event) =>
-                            onClickCategoryChip(event, category)
-                          }
-                          key={category}
-                          label={category}
+                <Tooltip title={item.description}>
+                  <TableRow
+                    onClick={() => {
+                      window.location.pathname === '/items'
+                        ? navigate('/items/' + item.id)
+                        : navigate('/account/items/edit/' + item.id);
+                    }}
+                    key={item.id}
+                    sx={{
+                      '&:last-child td, &:last-child th': { border: 0 },
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: '#EBEBEB',
+                      },
+                    }}
+                  >
+                    <TableCell align="right">
+                      {item.images && (
+                        <Carousel
+                          height="100px"
+                          width="100px"
+                          images={item.images}
+                          isBase64={true}
                         />
-                      </Tooltip>
-                    ))}
-                  </TableCell>
-                  <TableCell align="right">
-                    {moment
-                      .utc(item.dateCreated)
-                      .local()
-                      .format('DD/MM/YYYY HH:mm:ss')
-                      .toString()}
-                  </TableCell>
-                  <TableCell align="right">
-                    {moment
-                      .utc(item.dateUpdated)
-                      .local()
-                      .format('DD/MM/YYYY HH:mm:ss')
-                      .toString()}
-                  </TableCell>
-                  <TableCell align="right">
-                    {moment
-                      .utc(item.dateEnds)
-                      .local()
-                      .format('DD/MM/YYYY HH:mm:ss')
-                      .toString()}
-                  </TableCell>
-                </TableRow>
+                      )}
+                    </TableCell>
+
+                    <TableCell align="right">{item.name}</TableCell>
+                    <TableCell align="right">{item.startingPrice}</TableCell>
+                    <TableCell align="right">{item.currentPrice}</TableCell>
+                    <TableCell align="right">{item.buyPrice}</TableCell>
+                    <TableCell align="right">{item.numberOfBids}</TableCell>
+                    <TableCell align="right">
+                      {item.categories.map((category) => (
+                        <Tooltip title={'Toggle filter: ' + category}>
+                          <Chip
+                            sx={{
+                              '&:hover': {
+                                color: 'blue',
+                                cursor: 'pointer',
+                              },
+                            }}
+                            onClick={(event) =>
+                              onClickCategoryChip(event, category)
+                            }
+                            key={category}
+                            label={category}
+                          />
+                        </Tooltip>
+                      ))}
+                    </TableCell>
+                    <TableCell align="right">{item.username}</TableCell>
+                    <TableCell align="right">
+                      {moment
+                        .utc(item.dateCreated)
+                        .local()
+                        .format('DD/MM/YYYY HH:mm:ss')
+                        .toString()}
+                    </TableCell>
+                    <TableCell align="right">
+                      {moment
+                        .utc(item.dateUpdated)
+                        .local()
+                        .format('DD/MM/YYYY HH:mm:ss')
+                        .toString()}
+                    </TableCell>
+                    <TableCell align="right">
+                      {moment
+                        .utc(item.dateEnds)
+                        .local()
+                        .format('DD/MM/YYYY HH:mm:ss')
+                        .toString()}
+                    </TableCell>
+                  </TableRow>
+                </Tooltip>
               ))}
             </TableBody>
           </>

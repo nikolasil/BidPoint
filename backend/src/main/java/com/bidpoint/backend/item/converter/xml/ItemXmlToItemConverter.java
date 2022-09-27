@@ -21,7 +21,7 @@ public class ItemXmlToItemConverter implements Converter<ItemXmlDto, Item> {
                 source.getName(),
                 source.getDescription(),
                 new BigDecimal(source.getStartingPrice().substring(1)),
-                new BigDecimal(source.getStartingPrice().substring(1)),
+                new BigDecimal(source.getCurrentPrice().substring(1)),
                 source.getBuyPrice() != null ? new BigDecimal(source.getBuyPrice().substring(1)) : BigDecimal.valueOf(0),
                 Integer.parseInt(source.getNumberOfBids()),
                 true,

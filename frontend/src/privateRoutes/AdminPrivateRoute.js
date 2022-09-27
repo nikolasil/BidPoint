@@ -9,17 +9,16 @@ const AdminPrivateRoute = ({ props, children }) => {
   const isLoading = useSelector((state) => state.auth.isLoading);
   useEffect(() => {
     console.log(auth);
-    if (!isLoading && isAuthenticated && auth.user?.roles?.includes('admin')) {
-      console.log('You are a authenticated admin');
+    if (auth.user.roles.includes('admin')) {
+      console.log('You are an admin');
     } else {
-      console.log('You are NOT a authenticated admin');
+      console.log('You are NOT an admin');
     }
   }, [auth]);
 
-  if (!isLoading && isAuthenticated && auth.user?.roles?.includes('admin')) {
-    return children;
-  }
-  return (
+  return auth.user.roles.includes('admin') ? (
+    children
+  ) : (
     <>
       <Typography>You are NOT a authenticated admin</Typography>
     </>

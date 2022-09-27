@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Button,
   Stack,
+  CircularProgress,
 } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,7 +18,7 @@ import { LoadingButton } from '@mui/lab';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { format, parse, parseISO } from 'date-fns';
 import { useNavigate, useParams } from 'react-router-dom';
-import { postItem } from '../../../../actions/item';
+import { getItem, postItem } from '../../../../actions/item';
 import { getAllCategories } from '../../../../actions/categories';
 import moment from 'moment';
 import Carousel from '../../../ui/Carousel';
@@ -25,22 +26,31 @@ import Carousel from '../../../ui/Carousel';
 const EditItem = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const auth = useSelector((state) => state.auth);
   const categories = useSelector((state) => state.categories);
   const item = useSelector((state) => state.item);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [wantsBuyPrice, setWantsBuyPrice] = useState(false);
 
   let { id } = useParams();
-  
-  const [pageNumber, setPageNumber] = React.useState(0);
-  const [itemCount, setItemCount] = React.useState(5);
-  const [bids, setBids] = React.useState([]);
-  const [isEnded, setIsEnded] = React.useState(false);
 
   useEffect(() => {
+    dispatch(getItem(id));
     dispatch(getAllCategories());
   }, []);
+
+  useEffect(() => {
+    if (!item.isLoading && item.isFetched) {
+      formik.setFieldValue('name', item.item.name);
+      formik.setFieldValue('description', item.item.description);
+      formik.setFieldValue('startingPrice', item.item.startingPrice);
+      formik.setFieldValue('buyPrice', item.item.buyPrice);
+      item.item.buyPrice > 0 ? setWantsBuyPrice(true) : setWantsBuyPrice(false);
+      formik.setFieldValue('categories', item.item.categories);
+      formik.setFieldValue('isActive', item.item.active);
+      formik.setFieldValue('dateEnds', item.item.dateEnds);
+      formik.setFieldValue('images', item.item.images);
+    }
+  }, [item]);
 
   const formik = useFormik({
     initialValues: {
@@ -82,13 +92,26 @@ const EditItem = () => {
       // setHasSubmitted(true);
     },
   });
-
-  useEffect(() => {
-    console.log('check created', hasSubmitted, item.isCreated, item.item.id);
-    if (hasSubmitted && item.isCreated) {
-      navigate('/items/' + item.item.id);
-    }
-  }, [hasSubmitted, item]);
+  console.log(id, item.item);
+  if (id != item.item.id) {
+    console.log('id != item.item.id');
+    return (
+      <Container component="main">
+        <Box
+          sx={{
+            marginTop: 1,
+            marginBottom: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            // paddingLeft: '16px',
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container component="main" maxWidth="md">
@@ -211,8 +234,11 @@ const EditItem = () => {
                 id="categories"
                 name="categories"
                 onChange={(event, value) => {
+                  console.log(value);
                   formik.setFieldValue('categories', value);
                 }}
+                defaultValue={item.item.categories}
+                getOptionLabel={(option) => option}
                 options={categories.list}
                 renderInput={(params) => (
                   <TextField
@@ -297,14 +323,8 @@ const EditItem = () => {
                   />
                 </Button>
                 <Carousel
-                  images={
-                    formik.values.images &&
-                    Array.from(formik.values.images).map((image) => {
-                      console.log(URL.createObjectURL(image));
-                      return URL.createObjectURL(image);
-                    })
-                  }
-                  isBase64={false}
+                  images={formik.values.images}
+                  isBase64={true}
                   height={'200px'}
                   width={'200px'}
                 />

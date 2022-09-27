@@ -96,7 +96,7 @@ const User = () => {
             <Grid item xs={12}>
               {user.user.approved ? (
                 <Button variant="outlined" disabled color="success">
-                  Approve
+                  Already Approved
                 </Button>
               ) : (
                 <Button
@@ -106,7 +106,7 @@ const User = () => {
                     dispatch(approveUser(username));
                   }}
                 >
-                  Approve
+                  Approve User
                 </Button>
               )}
             </Grid>

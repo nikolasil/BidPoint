@@ -17,6 +17,7 @@ import AccountItems from './components/pages/Account/Items/AccountItems';
 import EditItem from './components/pages/Account/Items/EditItem';
 import Items from './components/pages/Items/Items';
 import Item from './components/pages/Items/Item';
+import ManageItems from './components/pages/Account/Items/ManageItems';
 
 const Customer = () => {
   const auth = useSelector((state) => state.auth);
@@ -25,9 +26,8 @@ const Customer = () => {
       <NavBar
         title="BidPoint"
         pages={[
-          { name: 'Items', path: '/items' },
-          { name: 'My Items', path: '/account/items' },
-          { name: 'Create Item', path: '/account/items/create' },
+          { name: 'Search Items', path: '/items' },
+          { name: 'Manage Items', path: '/account/manage' },
         ]}
         settings={[
           {
@@ -92,6 +92,15 @@ const Customer = () => {
           exact
           path="/items/:id"
           element={<PageContainer page={<Item />} />}
+        />
+        <Route
+          exact
+          path="/account/manage"
+          element={
+            <PrivateRoute>
+              <PageContainer page={<ManageItems />} />
+            </PrivateRoute>
+          }
         />
         <Route
           exact

@@ -1,5 +1,6 @@
 package com.bidpoint.backend;
 
+import com.bidpoint.backend.recommendation.repository.RecommendationRepository;
 import com.bidpoint.backend.role.entity.Role;
 import com.bidpoint.backend.role.service.RoleService;
 import com.bidpoint.backend.user.dto.UserInputDto;
@@ -39,8 +40,15 @@ public class BackendApplication {
 
     @Bean
     @Transactional
-    CommandLineRunner run(UserService userService, RoleService roleService) {
+    CommandLineRunner run(UserService userService, RoleService roleService,RecommendationRepository recommendationRepository) {
         return args -> {
+//            Double[][] a = new Double[2][2];
+//            a[0][0] = 0.5d;
+//            a[0][1] = 0.0d;
+//            a[1][0] = 1.235434d;
+//            a[1][1] = 0.0d;
+//            Recommendation rec = new Recommendation(null, a);
+//            recommendationRepository.save(rec);
 
             String role_admin = "admin";
             String role_seller = "seller";
