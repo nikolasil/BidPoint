@@ -26,3 +26,6 @@ server:
   port: 8002
   error:
     include-message: always
+chat:
+  port: 8003
+  host: localhost
