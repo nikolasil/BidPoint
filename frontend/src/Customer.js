@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Account from './components/pages/Account/Account';
 import Home from './components/pages/Home/Home';
@@ -11,6 +11,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { useSelector } from 'react-redux';
+
 import PageContainer from './components/ui/PageContainer';
 import CreateItem from './components/pages/Account/Items/CreateItem';
 import AccountItems from './components/pages/Account/Items/AccountItems';
@@ -18,9 +19,12 @@ import EditItem from './components/pages/Account/Items/EditItem';
 import Items from './components/pages/Items/Items';
 import Item from './components/pages/Items/Item';
 import ManageItems from './components/pages/Account/Items/ManageItems';
+import Chat from './components/pages/Chat/Chat';
+import { useSocket } from './customHooks/useSocket';
 
 const Customer = () => {
   const auth = useSelector((state) => state.auth);
+
   return (
     <Box>
       <NavBar
@@ -28,6 +32,7 @@ const Customer = () => {
         pages={[
           { name: 'Search Items', path: '/items' },
           { name: 'Manage Items', path: '/account/manage' },
+          { name: 'Chat', path: '/chat' },
         ]}
         settings={[
           {
@@ -92,6 +97,15 @@ const Customer = () => {
           exact
           path="/items/:id"
           element={<PageContainer page={<Item />} />}
+        />
+        <Route
+          exact
+          path="/chat"
+          element={
+            <PrivateRoute>
+              <PageContainer page={<Chat />} />
+            </PrivateRoute>
+          }
         />
         <Route
           exact

@@ -34,7 +34,7 @@ const PrivateRoute = ({ children }) => {
   return (
     !isLoading &&
     (isAuthenticated ? (
-      auth.user === null ? (
+      auth.user == null ? (
         <></>
       ) : (
         children

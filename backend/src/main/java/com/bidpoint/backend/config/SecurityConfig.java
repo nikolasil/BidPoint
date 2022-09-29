@@ -46,8 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/auth/refresh-token").permitAll();;
 
         http.authorizeRequests().antMatchers(HttpMethod.POST,"/api/user").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/user", "/api/user/me").hasAnyAuthority("admin","seller","bidder");
-        http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/user/all").hasAnyAuthority("admin");
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/user", "/api/user/me", "/api/user/all").hasAnyAuthority("admin","seller","bidder");
         http.authorizeRequests().antMatchers(HttpMethod.PUT,"/api/user/approve", "/api/user/role").hasAnyAuthority("admin");
         http.authorizeRequests().antMatchers(HttpMethod.DELETE,"/api/user/role").hasAnyAuthority("admin");
 

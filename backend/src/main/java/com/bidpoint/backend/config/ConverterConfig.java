@@ -1,5 +1,6 @@
 package com.bidpoint.backend.config;
 
+import com.bidpoint.backend.chat.converter.MessageConverter;
 import com.bidpoint.backend.item.converter.*;
 import com.bidpoint.backend.item.converter.xml.ItemToItemXmlConverter;
 import com.bidpoint.backend.item.converter.xml.BidXmlToBidConverter;
@@ -29,5 +30,7 @@ public class ConverterConfig implements WebMvcConfigurer {
         registry.addConverter(new BigDecimalConverter());
 
         registry.addConverter(new BidConverter());
+
+        registry.addConverter(new MessageConverter());
     }
 }

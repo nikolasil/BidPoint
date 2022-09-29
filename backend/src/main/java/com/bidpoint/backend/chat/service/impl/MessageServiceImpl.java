@@ -18,8 +18,17 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
 
     @Override
-    public List<Message> getMessages(String room) {
-        return messageRepository.findAllByRoom(room);
+    public List<Message> getMessagesReceiver(String receiver) {
+        return messageRepository.findAllByReceiver(receiver);
+    }
+
+    @Override
+    public List<Message> getMessagesSender(String sender) {
+        return messageRepository.findAllBySender(sender);
+    }
+    @Override
+    public List<Message> getMessagesReceiverAndSender(String receiver, String sender) {
+        return messageRepository.findAllBySenderAndReceiver(sender, receiver);
     }
 
     @Override

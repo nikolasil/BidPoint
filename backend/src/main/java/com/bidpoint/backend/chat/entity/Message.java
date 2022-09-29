@@ -1,11 +1,13 @@
 package com.bidpoint.backend.chat.entity;
 
-import com.bidpoint.backend.enums.MessageType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -13,22 +15,21 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "message")
-public class Message {
+public class Message implements Comparable<Message> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
-    private Date createdDateTime;
-
-    @Enumerated(EnumType.STRING)
-    private MessageType messageType;
+    private ZonedDateTime dateCreated;
 
     private String content;
-    private String room;
+    private String sender;
+    private String receiver;
 
-    private String username;
-
-
+    @Override
+    public int compareTo(Message o) {
+        return this.getDateCreated().compareTo(o.getDateCreated());
+    }
 }
