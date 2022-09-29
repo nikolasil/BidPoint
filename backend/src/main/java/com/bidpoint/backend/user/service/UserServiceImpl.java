@@ -7,6 +7,7 @@ import com.bidpoint.backend.role.exception.RoleNotFoundException;
 import com.bidpoint.backend.role.repository.RoleRepository;
 import com.bidpoint.backend.user.dto.SearchUserQueryOutputDto;
 import com.bidpoint.backend.user.entity.User;
+import com.bidpoint.backend.user.exception.UserAlreadyExistsException;
 import com.bidpoint.backend.user.exception.UserNotFoundException;
 import com.bidpoint.backend.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -44,8 +45,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new UserNotFoundException(username);
         }
 
-        if(!user.isApproved())
-            throw new UserNotApprovedException(username);
+//        if(!user.isApproved())
+//            throw new UserNotApprovedException(username);
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {
@@ -58,6 +59,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User createUser(User user, List<String> roles) {
 
         log.info("createUser user={} roles={}", user.getUsername(), roles);
+
+        if(userRepository.findByUsername(user.getUsername()) != null)
+            throw new UserAlreadyExistsException(user.getUsername());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 //        map the List<String> to Set<Role>. The role names that are not present in the database are ignored

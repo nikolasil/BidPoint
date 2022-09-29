@@ -49,6 +49,7 @@ public class AuthController {
                         conversionService.convert(userService.getUser(username), UserOutputDto.class)
                     )
             );
+
         } catch (Exception e) {
             throw new AuthorizationException(e);
         }

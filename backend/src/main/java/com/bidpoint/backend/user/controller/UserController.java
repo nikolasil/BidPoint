@@ -65,7 +65,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserOutputDto> createNewUser(@Valid @RequestBody UserInputDto userInputDto) {
+
         User newUser = userService.createUser(conversionService.convert(userInputDto, User.class), Arrays.asList("seller", "bidder"));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(conversionService.convert(newUser,UserOutputDto.class));
     }
 

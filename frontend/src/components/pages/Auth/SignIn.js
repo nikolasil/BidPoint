@@ -48,6 +48,14 @@ const SignIn = () => {
         navigate('/');
       }
     }
+    if (
+      hasSubmitted &&
+      !auth.isLoading &&
+      auth.user == null &&
+      auth.status != ''
+    ) {
+      alert(auth.status);
+    }
   }, [auth]);
 
   return (

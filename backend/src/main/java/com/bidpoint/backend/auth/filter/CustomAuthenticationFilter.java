@@ -1,8 +1,9 @@
 package com.bidpoint.backend.auth.filter;
 
 import com.bidpoint.backend.auth.dto.AuthOutputDto;
-import com.bidpoint.backend.user.dto.UserOutputDto;
 import com.bidpoint.backend.auth.service.AuthServiceImpl;
+import com.bidpoint.backend.user.dto.UserOutputDto;
+import com.bidpoint.backend.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
-import com.bidpoint.backend.user.service.UserService;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -62,15 +62,21 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         User user = (User)authentication.getPrincipal();
 
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(
-            response.getOutputStream(),
-            new AuthOutputDto(
-                authService.createAccessToken(user,request),
-                authService.createRefreshToken(user,request),
-                conversionService.convert(userService.getUser(user.getUsername()), UserOutputDto.class)
-            )
-        );
-
+        if(userService.isApproved(user.getUsername())) {
+            new ObjectMapper().writeValue(
+                    response.getOutputStream(),
+                    new AuthOutputDto(
+                            authService.createAccessToken(user, request),
+                            authService.createRefreshToken(user, request),
+                            conversionService.convert(userService.getUser(user.getUsername()), UserOutputDto.class)
+                    )
+            );
+        }else{
+            new ObjectMapper().writeValue(
+                    response.getOutputStream(),
+                    "Not Approved"
+            );
+        }
     }
 
     @Override

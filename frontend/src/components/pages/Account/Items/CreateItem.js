@@ -15,11 +15,9 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { LoadingButton } from '@mui/lab';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
-import { format, parse, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { postItem } from '../../../../actions/item';
 import { getAllCategories } from '../../../../actions/categories';
-import moment from 'moment';
 import Carousel from '../../../ui/Carousel';
 
 const CreateItem = () => {

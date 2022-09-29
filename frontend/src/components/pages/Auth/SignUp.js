@@ -53,13 +53,17 @@ const SignUp = () => {
 
   // check for signup user
   useEffect(() => {
-    if (hasSubmitted && !auth.isLoading && auth.isAuthenticated) {
+    if (
+      hasSubmitted &&
+      !auth.isLoading &&
+      auth.user == null &&
+      auth.status != ''
+    ) {
+      alert(auth.status);
+    }
+    if (hasSubmitted && !auth.isLoading && auth.isCreated) {
       console.log('Signed up!');
-      if (auth.user.roles.includes('admin')) {
-        navigate('/admin');
-      } else {
-        navigate('/');
-      }
+      navigate('/');
     }
   }, [auth]);
 
