@@ -17,4 +17,6 @@ public interface UserService {
     Boolean isApproved(String username);
     User removeRoleFromUser(String username, String roleName);
     User addRoleToUser(String username, String roleName);
+
+    List<User> getAllOrdered();
 }

@@ -16,7 +16,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @AllArgsConstructor
 @Entity
 @Table(name = "image")
-public class Image {
+public class Image implements Comparable<Image> {
     @Id
     @SequenceGenerator(
             name = "image_sequence",
@@ -40,4 +40,9 @@ public class Image {
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
+
+    @Override
+    public int compareTo(Image o) {
+        return this.id.compareTo(o.id);
+    }
 }

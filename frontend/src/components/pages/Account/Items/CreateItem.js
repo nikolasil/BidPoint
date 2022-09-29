@@ -61,7 +61,23 @@ const CreateItem = () => {
       dateEnds: yup.string().required().nullable(),
     }),
     onSubmit: (values) => {
-      console.log('onSubmit');
+      console.log(
+        'onSubmit',
+        wantsBuyPrice,
+        values.buyPrice,
+        values.startingPrice,
+        wantsBuyPrice && values.buyPrice <= values.startingPrice
+      );
+      if (wantsBuyPrice) {
+        if (parseFloat(values.buyPrice) <= parseFloat(values.startingPrice)) {
+          console.log('buy price must be greater than starting price');
+          formik.setFieldError(
+            'buyPrice',
+            'Buy Price must be greater than Starting Price'
+          );
+          return;
+        }
+      }
       var images = [];
       Object.assign(images, values.images);
       var itemData = values;

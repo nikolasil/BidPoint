@@ -12,10 +12,11 @@ import {
   Tooltip,
   CircularProgress,
   LinearProgress,
+  Button,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getItem, bidItem, getBidsOfItem } from '../../../actions/item';
 import Carousel from '../../ui/Carousel';
 import BidsTable from '../../ui/BidsTable';
@@ -25,12 +26,14 @@ import Countdown from 'react-countdown';
 import moment from 'moment';
 import CachedIcon from '@mui/icons-material/Cached';
 import RefreshButton from '../../ui/RefreshButton';
+import authReducer from '../../../reducers/auth/auth';
 
 const Item = (props) => {
   const item = useSelector((state) => state.item);
+  const auth = useSelector((state) => state.auth);
   const createBidError = useSelector((state) => state.item.createBidError);
   const bidsState = useSelector((state) => state.item.bids);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   let { id } = useParams();
 
@@ -73,7 +76,10 @@ const Item = (props) => {
         return;
       }
     }
-    if (item.item.currentPrice >= item.item.buyPrice) {
+    if (
+      item.item.buyPrice > 0 &&
+      item.item.currentPrice >= item.item.buyPrice
+    ) {
       setIsEnded({ value: true, message: 'BuyPrice was activated' });
       return;
     }
@@ -175,7 +181,6 @@ const Item = (props) => {
             spacing={0}
             fullWidth
           >
-            <div></div>
             <Countdown
               date={moment.utc(item.item.dateEnds).toString()}
               intervalDelay={0}
@@ -237,6 +242,9 @@ const Item = (props) => {
                 spacing={2}
               >
                 <Typography variant="h5">
+                  Seller: {item.item.username}
+                </Typography>
+                <Typography variant="h5">
                   Starting Price: {item.item.startingPrice}
                 </Typography>
                 <Typography variant="h5">
@@ -254,46 +262,84 @@ const Item = (props) => {
                       <Chip key={category} label={category} />
                     ))}
                 </Typography>
-                <form onSubmit={formik.handleSubmit}>
-                  <TextField
-                    margin="normal"
-                    required
-                    id="amount"
-                    label="Amount"
-                    name="amount"
-                    autoComplete="amount"
-                    disabled={isEnded.value}
-                    value={formik.values.amount}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.amount && Boolean(formik.errors.amount)
-                    }
-                    helperText={formik.touched.amount && formik.errors.amount}
-                  />
-                  <LoadingButton
-                    disabled={isEnded.value}
-                    type="submit"
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    loading={item.isLoading}
-                    loadingIndicator="Loading…"
+                {!isEnded.value &&
+                  auth.isAuthenticated &&
+                  item.item.username != auth.user.username && (
+                    <form onSubmit={formik.handleSubmit}>
+                      <TextField
+                        margin="normal"
+                        required
+                        id="amount"
+                        label="Amount"
+                        name="amount"
+                        autoComplete="amount"
+                        disabled={isEnded.value}
+                        value={formik.values.amount}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.amount && Boolean(formik.errors.amount)
+                        }
+                        helperText={
+                          formik.touched.amount && formik.errors.amount
+                        }
+                      />
+                      <LoadingButton
+                        disabled={isEnded.value}
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                        loading={item.isLoading}
+                        loadingIndicator="Loading…"
+                      >
+                        {!isEnded.value ? 'Place Bid' : 'Cannot Place Bid'}
+                      </LoadingButton>
+                      {createBidError && createBidError.message}
+                    </form>
+                  )}
+                {!isEnded.value &&
+                  auth.isAuthenticated &&
+                  item.item.username == auth.user.username && (
+                    <Button
+                      onClick={() => {
+                        navigate('/account/items/edit/' + item.item.id);
+                      }}
+                    >
+                      Edit Item
+                    </Button>
+                  )}
+                {!isEnded.value && !auth.isAuthenticated && (
+                  <Button
+                    onClick={() => {
+                      navigate('/signin');
+                    }}
                   >
-                    {!isEnded.value ? 'Submit Bid' : 'Cannot Submit Bid'}
-                  </LoadingButton>
-                  {createBidError && createBidError.message}
-                </form>
+                    Log In to Place Bid
+                  </Button>
+                )}
 
-                {isEnded.value && (
+                {isEnded.value && bidsState.length > 0 && (
                   <Typography variant="h4">
                     {bids.length == 0
                       ? 'No Winner'
                       : ' Winner:' +
-                        bidsState[0].username +
+                        bidsState[0]?.username +
                         ' -> ' +
-                        bidsState[0].amount +
+                        bidsState[0]?.amount +
                         '$'}
                   </Typography>
                 )}
+
+                {isEnded.value &&
+                  bidsState.length > 0 &&
+                  bidsState[0]?.username == auth?.user?.username && (
+                    <Button
+                      onClick={() => {
+                        navigate('/chat/' + item.item.username);
+                      }}
+                    >
+                      Communicate with the seller
+                    </Button>
+                  )}
 
                 <RefreshButton
                   tooltip={'Refresh Bids'}

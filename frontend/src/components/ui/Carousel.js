@@ -4,7 +4,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 const Carousel = (props) => {
   const [index, setIndex] = useState(0);
-
+  console.log(index);
   return (
     <Stack
       direction="row"
@@ -22,7 +22,9 @@ const Carousel = (props) => {
           event.stopPropagation();
           if (index != 0) {
             setIndex(index - 1);
-          } else setIndex(props.images.length - 1);
+          } else {
+            setIndex(props.images.length - 1);
+          }
           console.log(index);
         }}
       >
@@ -58,7 +60,9 @@ const Carousel = (props) => {
           event.stopPropagation();
           if (index < props.images.length - 1) {
             setIndex(index + 1);
-          } else setIndex(0);
+          } else {
+            setIndex(0);
+          }
           console.log(index);
         }}
       >

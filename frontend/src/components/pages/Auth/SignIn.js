@@ -54,7 +54,8 @@ const SignIn = () => {
       auth.user == null &&
       auth.status != ''
     ) {
-      alert(auth.status);
+      formik.setFieldError('username', ' ');
+      formik.setFieldError('password', auth.status);
     }
   }, [auth]);
 

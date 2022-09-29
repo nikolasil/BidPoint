@@ -12,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,6 +24,7 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 @AllArgsConstructor
+@EnableScheduling
 public class BackendApplication {
     private final ConversionService conversionService;
     public static void main(String[] args) {
@@ -66,6 +68,7 @@ public class BackendApplication {
                     "",
                     "",
                     "",
+                    "",
                     ""),User.class),Arrays.asList("admin", "seller", "bidder"));
 
             User nassosanagn = userService.createUser(conversionService.convert(new UserInputDto(
@@ -73,6 +76,7 @@ public class BackendApplication {
                     "Anagnostopoulos",
                     "nassosanagn",
                     "1234",
+                    "",
                     "",
                     "",
                     "",

@@ -10,9 +10,6 @@ import com.bidpoint.backend.item.repository.BidRepository;
 import com.bidpoint.backend.item.repository.CategoryRepository;
 import com.bidpoint.backend.item.repository.ImageRepository;
 import com.bidpoint.backend.item.repository.ItemRepository;
-import com.bidpoint.backend.recommendation.algorithm.MatrixFactorization;
-import com.bidpoint.backend.recommendation.entity.Recommendation;
-import com.bidpoint.backend.recommendation.repository.RecommendationRepository;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.user.exception.UserNotFoundException;
 import com.bidpoint.backend.user.repository.UserRepository;
@@ -39,7 +36,6 @@ public class ItemServiceImpl implements ItemService {
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
     private final BidRepository bidRepository;
-    private final RecommendationRepository recommendationRepository;
 
     @Override
     public Item createItemWithCategoryAndImages(String username, Item item, Set<String> categories, MultipartFile[] images) {
@@ -138,38 +134,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void createRecommendations() {
-        log.info("createRecommendations");
-        List<User> users = userRepository.findAll();
-        List<Item> items = itemRepository.findAll();
-        Double[][] R = new Double[users.size()][items.size()];
-        for(Double[] i : R){
-            Arrays.fill(i,0.0d);
-        }
-        for (User user : users) {
-            Set<Bid> userBids = user.getBids();
-            if(userBids == null)
-                userBids = new LinkedHashSet<Bid>();
-            Set<Item> userVisitedItems = user.getVisitedItems();
-            if(userVisitedItems == null)
-                userVisitedItems = new LinkedHashSet<Item>();
-            userVisitedItems.forEach(item -> {
-                R[(int) (user.getId()- 1)][(int) (item.getId() - 1)] = 0.5d;
-            });
-            userBids.forEach(bid -> {
-                R[(int) (user.getId()- 1)][(int) (bid.getItem().getId() - 1)] = 1.0d;
-            });
-        }
-        MatrixFactorization matrixFactorization = new MatrixFactorization(R, R.length, R[0].length, 2,0.002,0.02,50);
-
-        ArrayList<Double> training_process = matrixFactorization.train();
-        Double[][] res = matrixFactorization.fullMatrix();
-        recommendationRepository.save(new Recommendation(null,res));
+    public List<Item> getAll() {
+        return itemRepository.findAll();
     }
 
     @Override
-    public List<Item> getAll() {
-        return itemRepository.findAll();
+    public Long countAll() {
+        return itemRepository.count();
     }
 
     @Override
@@ -268,5 +239,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public SearchItemQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection) {
         return itemRepository.getItemsSearchPageableSortingFiltering(categories, searchTerm, active, username, isEnded, PageRequest.of(pageNumber, itemCount).withSort(Sort.by(sortDirection, sortField)));
+    }
+
+    @Override
+    public List<Item> getAllOrdered() {
+        return itemRepository.findAllByOrderByIdAsc();
     }
 }

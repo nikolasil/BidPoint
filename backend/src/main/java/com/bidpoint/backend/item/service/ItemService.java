@@ -15,11 +15,13 @@ public interface ItemService {
     Item createItemWithCategory(String username, Item item, Set<String> categories);
     Item getItem(Long itemId);
     Item getItemAndStoreVisitor(Long itemId, String username);
-    void createRecommendations();
     List<Item> getAll();
+    Long countAll();
     List<Item> createAll(List<String> usernames, List<Item> items, List<List<String>> categories, List<List<Bid>> bids);
     Item importItemWithCategoriesAndBids(String username, Item item, List<String> categories, List<Bid> bids);
     Item importItemWithCategoryAndBidsAndImages(Item item, List<String> categories, List<Bid> bids, MultipartFile[] images);
 
     SearchItemQueryOutputDto getItemsSearchPageableSortingFiltering(List<String> categories, String searchTerm, FilterMode active, String username, FilterMode isEnded, int pageNumber, int itemCount, String sortField, Sort.Direction sortDirection);
+
+    List<Item> getAllOrdered();
 }

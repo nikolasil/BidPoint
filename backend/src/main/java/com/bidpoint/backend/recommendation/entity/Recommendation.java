@@ -5,10 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
+
+import java.time.ZonedDateTime;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -45,4 +48,7 @@ public class Recommendation {
             columnDefinition = "float8[][]"
     )
     private Double[][] predictions;
+
+    @CreationTimestamp
+    private ZonedDateTime dateCreated;
 }

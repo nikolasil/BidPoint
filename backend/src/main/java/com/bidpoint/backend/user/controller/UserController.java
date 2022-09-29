@@ -71,6 +71,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(conversionService.convert(newUser,UserOutputDto.class));
     }
 
+    @GetMapping("/recommendations")
+    public ResponseEntity<UserOutputDto> getRecommendations(HttpServletRequest request) {
+        String username = authService.decodeAuthorizationHeader(request.getHeader(AUTHORIZATION)).getSubject();
+        User user = userService.getUser(username);
+        return ResponseEntity.status(HttpStatus.OK).body(conversionService.convert(user,UserOutputDto.class));
+    }
+
     @GetMapping("/me")
     public ResponseEntity<UserOutputDto> getUser(HttpServletRequest request) {
         String username = authService.decodeAuthorizationHeader(request.getHeader(AUTHORIZATION)).getSubject();

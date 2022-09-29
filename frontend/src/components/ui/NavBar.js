@@ -51,7 +51,7 @@ const NavBar = (props) => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
-            variant="h6"
+            variant="h5"
             noWrap
             component="a"
             onClick={() => navigate(homePagePath)}
@@ -100,16 +100,14 @@ const NavBar = (props) => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Typography
-                    textAlign="center"
-                    onClick={() => {
-                      navigate(page.path);
-                      handleCloseUserMenu();
-                    }}
-                  >
-                    {page.name}
-                  </Typography>
+                <MenuItem
+                  key={page.name}
+                  onClick={() => {
+                    navigate(page.path);
+                    handleCloseNavMenu();
+                  }}
+                >
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>

@@ -19,6 +19,9 @@ const itemsReducer = (state = initialState, action) => {
       console.log(
         'itemsReducer: GET_ALL_ITEMS_SUCCESS | GET_ITEMS_SEARCH_SUCCESS'
       );
+      payload.items.forEach((item) => {
+        item?.images?.sort((a, b) => a.id - b.id);
+      });
       return {
         ...state,
         isLoading: false,

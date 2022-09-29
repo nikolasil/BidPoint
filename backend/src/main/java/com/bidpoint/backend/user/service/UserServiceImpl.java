@@ -114,6 +114,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public List<User> getAllOrdered() {
+        return userRepository.findAllByOrderByIdAsc();
+    }
+
+    @Override
     public User removeRoleFromUser(String username, String roleName) {
         log.info("removeRoleFromUser username={} roleName={}", username, roleName);
 

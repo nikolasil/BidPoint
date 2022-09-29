@@ -5,6 +5,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class UserAlreadyExistsException extends ResponseStatusException {
     public UserAlreadyExistsException(String str) {
-        super(HttpStatus.ALREADY_REPORTED, "User with username=" + str + "  already exists");
+        super(HttpStatus.FORBIDDEN, "User with username=" + str + "  already exists");
     }
 }

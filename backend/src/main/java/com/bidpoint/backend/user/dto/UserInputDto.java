@@ -20,6 +20,9 @@ public class UserInputDto {
     @NotEmpty(message = "password cannot be empty")
     private String password;
 
+    @NotEmpty(message = "confirmPassword cannot be empty")
+    private String confirmPassword;
+
     @NotEmpty(message = "address cannot be empty")
     private String address;
 

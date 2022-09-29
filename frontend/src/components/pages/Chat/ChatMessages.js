@@ -64,76 +64,77 @@ const ChatMessages = (props) => {
           overflow: 'auto',
         }}
       >
-        {messages.map((message) => (
-          <>
-            {message.sender == auth.user.username ? (
-              <ListItem
-                key={message.id}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  textAlign: 'right',
-                }}
-              >
-                <ListItemText
-                  primary={moment
-                    .utc(
-                      message.dateCreated.substring(
-                        0,
-                        message.dateCreated.length - 5
+        {user &&
+          messages.map((message) => (
+            <>
+              {message.sender == auth.user.username ? (
+                <ListItem
+                  key={message.id}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    textAlign: 'right',
+                  }}
+                >
+                  <ListItemText
+                    primary={moment
+                      .utc(
+                        message.dateCreated.substring(
+                          0,
+                          message.dateCreated.length - 5
+                        )
                       )
-                    )
-                    .local()
-                    .format('DD/MM/YYYY HH:mm:ss')
-                    .toString()}
-                  secondary={
-                    <Typography
+                      .local()
+                      .format('DD/MM/YYYY HH:mm:ss')
+                      .toString()}
+                    secondary={
+                      <Typography
+                        variant="h7"
+                        color="green"
+                        sx={{ display: 'inline' }}
+                      >
+                        {message.content}
+                      </Typography>
+                    }
+                  />
+                  <ListItemAvatar>
+                    <Avatar>
+                      {auth.user.firstname.substring(0, 1) +
+                        auth.user.lastname.substring(0, 1)}
+                    </Avatar>
+                  </ListItemAvatar>
+                </ListItem>
+              ) : (
+                <ListItem alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar>
+                      {user.firstname.substring(0, 1) +
+                        user.lastname.substring(0, 1)}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={moment
+                      .utc(
+                        message.dateCreated.substring(
+                          0,
+                          message.dateCreated.length - 5
+                        )
+                      )
+                      .local()
+                      .format('DD/MM/YYYY HH:mm:ss')
+                      .toString()}
+                    secondary=<Typography
                       variant="h7"
-                      color="green"
+                      color="blue"
                       sx={{ display: 'inline' }}
                     >
                       {message.content}
                     </Typography>
-                  }
-                />
-                <ListItemAvatar>
-                  <Avatar>
-                    {auth.user.firstname.substring(0, 1) +
-                      auth.user.lastname.substring(0, 1)}
-                  </Avatar>
-                </ListItemAvatar>
-              </ListItem>
-            ) : (
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar>
-                    {user.firstname.substring(0, 1) +
-                      user.lastname.substring(0, 1)}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={moment
-                    .utc(
-                      message.dateCreated.substring(
-                        0,
-                        message.dateCreated.length - 5
-                      )
-                    )
-                    .local()
-                    .format('DD/MM/YYYY HH:mm:ss')
-                    .toString()}
-                  secondary=<Typography
-                    variant="h7"
-                    color="blue"
-                    sx={{ display: 'inline' }}
-                  >
-                    {message.content}
-                  </Typography>
-                />
-              </ListItem>
-            )}
-          </>
-        ))}
+                  />
+                </ListItem>
+              )}
+            </>
+          ))}
         <div ref={bottomRef} />
       </List>
       <form onSubmit={formik.handleSubmit}>

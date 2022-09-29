@@ -84,7 +84,7 @@ const Items = () => {
                 }}
                 component="label"
               >
-                Uplaod Items XML
+                Upload Items XML
                 <input type="file" accept=".xml" hidden />
               </LoadingButton>
             </form>
@@ -125,7 +125,7 @@ const Items = () => {
                 }}
                 component="label"
               >
-                Uplaod Items JSON
+                Upload Items JSON
                 <input type="file" accept=".json" hidden />
               </LoadingButton>
             </form>

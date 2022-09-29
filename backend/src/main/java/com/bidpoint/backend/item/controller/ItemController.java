@@ -158,10 +158,4 @@ public class ItemController {
 
         return ResponseEntity.status(HttpStatus.OK).body(items);
     }
-
-    @GetMapping(value = "/recommend")
-    public ResponseEntity<String> recommend() {
-        itemService.createRecommendations();
-        return ResponseEntity.status(HttpStatus.OK).body("ok");
-    }
 }

@@ -109,6 +109,15 @@ const Customer = () => {
         />
         <Route
           exact
+          path="/chat/:selectUser"
+          element={
+            <PrivateRoute>
+              <PageContainer page={<Chat />} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          exact
           path="/account/manage"
           element={
             <PrivateRoute>

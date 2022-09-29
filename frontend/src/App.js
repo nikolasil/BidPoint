@@ -23,15 +23,12 @@ function App() {
       if (
         localStorage.getItem('accessToken') &&
         request.url != 'auth/refresh-token'
-      )
+      ) {
         if (localStorage.getItem('accessToken'))
           request.headers = {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           };
-        else
-          request.headers = {
-            Authorization: '',
-          };
+      } else request.headers['Authorization'] = '';
       return request;
     },
     (error) => {

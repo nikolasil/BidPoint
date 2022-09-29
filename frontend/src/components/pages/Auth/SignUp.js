@@ -7,6 +7,8 @@ import {
   Grid,
   Link,
   TextField,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -21,6 +23,15 @@ const SignUp = () => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleCloseAlert = () => {
+    setOpen(false);
+    if (hasSubmitted && !auth.isLoading && auth.isCreated) {
+      console.log('Signed up!');
+      navigate('/');
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -28,6 +39,7 @@ const SignUp = () => {
       lastname: '',
       username: '',
       password: '',
+      confirmPassword: '',
       address: '',
       phone: '',
       mail: '',
@@ -38,32 +50,36 @@ const SignUp = () => {
       lastname: yup.string().required(),
       username: yup.string().required(),
       password: yup.string().required(),
+      confirmPassword: yup.string().required(),
       address: yup.string().required(),
       phone: yup.string().required(),
       mail: yup.string().required(),
       afm: yup.string().required(),
     }),
     onSubmit: (values) => {
-      setHasSubmitted(true);
-      console.log('onSubmit');
-      console.log(JSON.stringify(values));
-      dispatch(singUpUser(JSON.stringify(values)));
+      if (values.password === values.confirmPassword) {
+        setHasSubmitted(true);
+        console.log('onSubmit');
+        console.log(JSON.stringify(values));
+        dispatch(singUpUser(JSON.stringify(values)));
+      } else {
+        formik.setFieldError('confirmPassword', 'Passwords do not match!');
+        formik.setFieldError('password', 'Passwords do not match!');
+      }
     },
   });
 
   // check for signup user
   useEffect(() => {
-    if (
-      hasSubmitted &&
-      !auth.isLoading &&
-      auth.user == null &&
-      auth.status != ''
-    ) {
-      alert(auth.status);
-    }
-    if (hasSubmitted && !auth.isLoading && auth.isCreated) {
-      console.log('Signed up!');
-      navigate('/');
+    if (hasSubmitted && !auth.isLoading && auth.user == null) {
+      if (auth.status == 'Failed to signup.') {
+        formik.setFieldError('username', 'This username is already taken!');
+      } else if (
+        auth.status ==
+        'User created successfully. You can login to your account when an admin approves your profile.'
+      ) {
+        setOpen(true);
+      }
     }
   }, [auth]);
 
@@ -85,6 +101,19 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
+        <Snackbar
+          open={open}
+          autoHideDuration={5000}
+          onClose={handleCloseAlert}
+        >
+          <Alert
+            onClose={handleCloseAlert}
+            severity="success"
+            sx={{ width: '100%' }}
+          >
+            {auth.status}
+          </Alert>
+        </Snackbar>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -157,6 +186,28 @@ const SignUp = () => {
                 helperText={formik.touched.password && formik.errors.password}
               />
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="confirmPassword"
+                label="ConfirmPassword"
+                type="password"
+                id="confirmPassword"
+                autoComplete="confirmPassword"
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.confirmPassword &&
+                  Boolean(formik.errors.confirmPassword)
+                }
+                helperText={
+                  formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword
+                }
+              />
+            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 margin="normal"
@@ -226,10 +277,10 @@ const SignUp = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              loading={auth.isLoading}
+              loading={auth.isLoading || open}
               loadingIndicator="Loading…"
             >
-              Sign In
+              Sign Up
             </LoadingButton>
             <Grid container>
               <Grid item xs />

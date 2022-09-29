@@ -41,13 +41,13 @@ public class MatrixFactorization {
         this.P = new Double[this.num_users][this.K];
         for (int i=0; i< this.num_users; i++)
             for (int j=0; j< this.K; j++)
-                this.P[i][j] = ThreadLocalRandom.current().nextDouble(0.0d, 1.0d);
+                this.P[i][j] = ThreadLocalRandom.current().nextDouble(0.0d, 5.0d);
 
 
         this.Q = new Double[this.num_items][this.K];
         for (int i=0; i< this.num_items; i++)
             for (int j=0; j< this.K; j++)
-                this.Q[i][j] =  ThreadLocalRandom.current().nextDouble(0.0d, 1.0d);
+                this.Q[i][j] =  ThreadLocalRandom.current().nextDouble(0.0d, 5.0d);
 
 
         this.b_u = new Double[this.num_users];
@@ -57,8 +57,8 @@ public class MatrixFactorization {
 
         this.b = mean(R);
 
-        for (int i=0; i< this.num_users; i++)
-            for (int j=0; j< this.num_items; j++)
+        for (int i = 0; i< this.num_users; i++)
+            for (int j = 0; j < this.num_items; j++)
                 if(R[i][j] > 0)
                     samples.add(new Double[]{(double) i, (double) j, R[i][j]});
 
@@ -91,15 +91,15 @@ public class MatrixFactorization {
         this.samples.forEach(sample ->{
             int i = sample[0].intValue();
             int j = sample[1].intValue();
-            int r = sample[2].intValue();
+            Double r = sample[2];
 
-            Double prediction = this.getRating(i, j);
+            Double prediction = this.getPrediction(i, j);
             double error = (r - prediction);
 
             this.b_u[i] += this.alpha * (error - this.beta * this.b_u[i]);
             this.b_i[j] += this.alpha * (error - this.beta * this.b_i[j]);
 
-            Double[] P_i = this.P[i];
+            Double[] P_i = this.P[i].clone();
 
             this.P[i] = addition(multiplication(subtract(multiplication(Q[j], error), multiplication(P[i],beta)),alpha), P[i]);
             this.Q[j] = addition(multiplication(subtract(multiplication(P_i, error), multiplication(Q[j], beta)),alpha), Q[j]);
@@ -107,13 +107,12 @@ public class MatrixFactorization {
 
     }
 
-    private Double getRating(int i, int j){
+    private Double getPrediction(int i, int j){
         return b + b_u[i] + b_i[j] + dotProduct(P[i], Q[j]);
-
     }
 
     public Double[][] fullMatrix(){
-        return additionWithTransposeQ(b , b_u , b_i , P, Q);
+        return addition(addition(addition(newAxis(b_u), b), b_i), dotProduct(P,transpose(Q)));
     }
 
     private double mean(Double[][] array) {
@@ -133,50 +132,44 @@ public class MatrixFactorization {
         return res;
     }
 
+    private Double[][] addition(Double[][] x, Double y){
+        Double[][] res = new Double[x.length][x[0].length];
+        for(int i = 0; i < x.length; i++)
+            for(int j = 0; j < x[0].length; j++)
+                res[i][j] = x[i][j] + y;
+        return res;
+    }
+
     private Double[] addition(Double[] x, Double[] y){
         Double[] res = new Double[x.length];
         for(int i = 0; i < x.length; i++)
-            res[i] = x[i] + y[i];
+            for(int j = 0; j < y.length; j++)
+                res[i] = x[i] + y[i];
         return res;
     }
 
-    public Double[][] addition(Double number , Double [] b_u , Double [] b_i , Double[][] array){
-        Double[][] res = new Double[array.length][array[0].length];
-        for(int user = 0; user < array.length; user++){
-            for(int item = 0; item < array[user].length; item++){
-                res[user][item] = array[user][item] + b_u[user] + b_i[item] + number;
-            }
-        }
+    public Double[][] addition(Double[][] x, Double[] y){
+        Double[][] res = new Double[x.length][y.length];
+        for(int i = 0; i < x.length; i++)
+            for(int j = 0; j < y.length; j++)
+                res[i][j] = x[i][0] + y[j];
         return res;
     }
 
-    public Double[][] addition(Double number , Double [] b_u , Double [] b_i , Double[][] P, Double[][] Q){
-        Q = transpose(Q);
-        Double[][] res = new Double[P.length][Q[0].length];
-        for (Double[] row: res)
-            Arrays.fill(row, 0.0d);
-        for(int user = 0; user < P.length; user++){
-            for(int item = 0; item < Q[0].length; item++){
-                for(int k = 0; k < Q.length; k++)
-                    res[user][item] = res[user][item] + P[user][k] * Q[k][item];
-                res[user][item] += b_u[user] + b_i[item] + number;
-            }
-        }
+    private Double[][] addition(Double[][] x, Double[][] y){
+        Double[][] res = new Double[x.length][y[0].length];
+        for(int i = 0; i < x.length; i++)
+            for(int j = 0; j < y[0].length; j++)
+                res[i][j] = x[i][j] + y[i][j];
         return res;
     }
 
-    public Double[][] additionWithTransposeQ(Double number , Double [] b_u , Double [] b_i , Double[][] P, Double[][] Q){
-        Double[][] res = new Double[P.length][Q.length];
-        for (Double[] row: res)
-            Arrays.fill(row, 0.0d);
-        for(int user = 0; user < P.length; user++){
-            for(int item = 0; item < Q.length; item++){
-                for(int k = 0; k < Q[0].length; k++)
-                    res[user][item] = res[user][item] + P[user][k] * Q[item][k];
-                res[user][item] += b_u[user] + b_i[item] + number;
-            }
+    private Double[][] newAxis(Double[] array) {
+        Double[][] transposedArray = new Double[array.length][1];
+        for(int i = 0;i < array.length;i++){
+            transposedArray[i][0] = array[i];
         }
-        return res;
+        return transposedArray;
     }
 
     private Double[][] transpose(Double[][] array) {

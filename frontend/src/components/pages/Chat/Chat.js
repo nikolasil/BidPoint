@@ -1,6 +1,7 @@
 import { Container, Typography, Box } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
   getAllUsers,
   getMessagesOfSenderAndReceiver,
@@ -13,6 +14,8 @@ const Chat = () => {
   const dispatch = useDispatch();
   const chat = useSelector((state) => state.chat);
   const { isConnected, sendData, receivedMessage, usersOnline } = useSocket();
+
+  let { selectUser } = useParams();
   const [selectedUser, setSelectedUser] = React.useState('');
 
   useEffect(() => {
@@ -27,6 +30,7 @@ const Chat = () => {
   useEffect(() => {
     if (isConnected) {
       console.log('connected');
+      setSelectedUser(selectUser);
     }
   }, [isConnected]);
 
@@ -43,6 +47,7 @@ const Chat = () => {
         }}
       >
         <ChatUsersList
+          usersOnline={usersOnline}
           selectedUser={selectedUser}
           setSelectedUser={setSelectedUser}
           users={chat.users.list}

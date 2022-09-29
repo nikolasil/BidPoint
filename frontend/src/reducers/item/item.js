@@ -13,6 +13,7 @@ const itemReducer = (state = initialState, action) => {
       };
     case types.GET_ITEM_SUCCESS:
       console.log('itemReducer: GET_ITEM_SUCCESS');
+      payload?.images?.sort((a, b) => a.id - b.id);
       return {
         ...state,
         isLoading: false,
