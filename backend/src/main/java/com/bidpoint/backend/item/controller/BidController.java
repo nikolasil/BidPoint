@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@RestController @CrossOrigin(origins = "https://localhost:3000")
+@RestController @CrossOrigin(origins = {"https://localhost:3000", "http://localhost:3000"})
 @RequestMapping("/api/bid")
 @AllArgsConstructor
 public class BidController {

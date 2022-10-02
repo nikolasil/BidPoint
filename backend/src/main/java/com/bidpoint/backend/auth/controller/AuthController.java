@@ -24,7 +24,7 @@ import java.util.Collection;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
-@CrossOrigin(origins = "https://localhost:3000")
+@CrossOrigin(origins = {"https://localhost:3000", "http://localhost:3000"})
 @RequestMapping("/api/auth")
 @AllArgsConstructor
 public class AuthController {

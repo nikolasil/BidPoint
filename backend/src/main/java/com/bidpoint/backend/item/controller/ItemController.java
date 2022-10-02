@@ -29,7 +29,7 @@ import java.util.Objects;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@RestController @CrossOrigin(origins = "https://localhost:3000")
+@RestController @CrossOrigin(origins = {"https://localhost:3000", "http://localhost:3000"})
 @RequestMapping("/api/item")
 @AllArgsConstructor
 @Slf4j
