@@ -81,4 +81,7 @@ public class User {
     public void removeVisitedItems(Item item){
         this.visitedItems.remove(item);
     }
+
+    private Long sellerRating;
+    private Long bidderRating;
 }

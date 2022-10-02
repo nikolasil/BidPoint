@@ -33,7 +33,7 @@ public class BidServiceImpl implements BidService {
         Item item = itemRepository.findItemById(itemId);
         if(item == null)
             throw new ItemNotFoundException(itemId.toString());
-        if(item.isEnded() || (item.getBuyPrice().compareTo(BigDecimal.valueOf(0)) > 0 && item.getCurrentPrice().compareTo(item.getBuyPrice()) >= 0))
+        if(item.isEnded())
             throw new ItemHasEndedException(itemId.toString());
         if(!item.isActive())
             throw new ItemNotActiveException(itemId.toString());

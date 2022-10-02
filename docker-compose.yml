@@ -1,27 +1,29 @@
 version: '3.8'
 
 services:
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #   container_name: frontend
-  #   ports:
-  #     - "3000:80"
-  #   restart: unless-stopped
-  #   networks:
-  #     - bidpoint_net
+  frontend:
+    container_name: frontend
+    image: frontend
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    networks:
+      - bidpoint_net
 
-  # backend:
-  #   build:
-  #     context: ./backend
-  #   container_name: backend
-  #   ports:
-  #     - 8002:8002
-  #   depends_on:
-  #     - db
-  #   restart: unless-stopped
-  #   networks:
-  #     - bidpoint_net
+  backend:
+    container_name: backend
+    image: backend
+    build:
+      context: ./backend
+    restart: unless-stopped
+    ports:
+      - 8002:8002
+    depends_on:
+      - db
+    networks:
+      - bidpoint_net
 
   db:
     image: 'postgres:14.3-alpine'
@@ -37,3 +39,4 @@ services:
 
 networks:
   bidpoint_net:
+    driver: bridge

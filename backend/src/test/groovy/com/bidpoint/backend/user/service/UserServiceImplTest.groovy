@@ -25,15 +25,6 @@ class UserServiceImplTest extends Specification {
         )
     }
 
-    def "test loadUserByUsername"() {
-//        given:
-//
-//        when:
-//        // TODO implement stimulus
-//        then:
-//        // TODO implement assertions
-    }
-
     def "test createUser"() {
         given:
         Role adminRole = new Role(null,"admin",new LinkedHashSet<>())

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@RestController
+@RestController @CrossOrigin(origins = "https://localhost:3000")
 @RequestMapping("/api/user")
 @AllArgsConstructor
 @Slf4j
@@ -69,13 +69,6 @@ public class UserController {
         User newUser = userService.createUser(conversionService.convert(userInputDto, User.class), Arrays.asList("seller", "bidder"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(conversionService.convert(newUser,UserOutputDto.class));
-    }
-
-    @GetMapping("/recommendations")
-    public ResponseEntity<UserOutputDto> getRecommendations(HttpServletRequest request) {
-        String username = authService.decodeAuthorizationHeader(request.getHeader(AUTHORIZATION)).getSubject();
-        User user = userService.getUser(username);
-        return ResponseEntity.status(HttpStatus.OK).body(conversionService.convert(user,UserOutputDto.class));
     }
 
     @GetMapping("/me")

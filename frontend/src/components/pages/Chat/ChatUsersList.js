@@ -5,7 +5,6 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  Avatar,
   Divider,
   ListItemText,
   TablePagination,
@@ -13,6 +12,7 @@ import {
 import React, { useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
+import MyAvatar from '../../ui/MyAvatar';
 
 const StyledBadgeGreen = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -97,10 +97,13 @@ const ChatUsersList = (props) => {
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   variant="dot"
                 >
-                  <Avatar>
-                    {user.firstname.substring(0, 1) +
-                      user.lastname.substring(0, 1)}
-                  </Avatar>
+                  <MyAvatar
+                    name={
+                      user.firstname.substring(0, 1) +
+                      user.lastname.substring(0, 1)
+                    }
+                    username={user.username}
+                  />
                 </StyledBadgeGreen>
               ) : (
                 <StyledBadgeGrey
@@ -108,10 +111,13 @@ const ChatUsersList = (props) => {
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   variant="dot"
                 >
-                  <Avatar>
-                    {user.firstname.substring(0, 1) +
-                      user.lastname.substring(0, 1)}
-                  </Avatar>
+                  <MyAvatar
+                    name={
+                      user.firstname.substring(0, 1) +
+                      user.lastname.substring(0, 1)
+                    }
+                    username={user.username}
+                  />
                 </StyledBadgeGrey>
               )}
             </ListItemAvatar>

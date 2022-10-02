@@ -57,7 +57,7 @@ public class Item {
     private boolean active;
 
     private ZonedDateTime dateEnds;
-    public boolean isEnded() { return ZonedDateTime.now(UTC).isAfter(this.dateEnds);}
+    public boolean isEnded() { return ZonedDateTime.now(UTC).isAfter(this.dateEnds) || (this.buyPrice.compareTo(BigDecimal.valueOf(0)) > 0 && this.currentPrice.compareTo(this.buyPrice) >= 0);}
 
     @CreationTimestamp
     @Column(updatable = false)

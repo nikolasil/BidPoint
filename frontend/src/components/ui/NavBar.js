@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
+import MyAvatar from './MyAvatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
@@ -150,10 +150,13 @@ const NavBar = (props) => {
             <>
               <Tooltip title={auth.user.firstname + ' ' + auth.user.lastname}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar>
-                    {auth.user.firstname.substring(0, 1) +
-                      auth.user.lastname.substring(0, 1)}
-                  </Avatar>
+                  <MyAvatar
+                    name={
+                      auth.user.firstname.substring(0, 1) +
+                      auth.user.lastname.substring(0, 1)
+                    }
+                    username={auth.user.username}
+                  />
                 </IconButton>
               </Tooltip>
               <Menu

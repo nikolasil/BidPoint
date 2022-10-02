@@ -29,40 +29,43 @@ public class RecommendationServiceImpl implements  RecommendationService{
         log.info("createRecommendations");
         List<User> users = userService.getAllOrdered();
         List<Item> items = itemService.getAllOrdered();
-        Double[][] R = new Double[users.size()][items.size()];
-        for(Double[] i : R){
-            Arrays.fill(i,0.0d);
-        }
-        for (User user : users) {
-            Set<Bid> userBids = user.getBids();
-            if(userBids == null)
-                userBids = new LinkedHashSet<Bid>();
-            Set<Item> userVisitedItems = user.getVisitedItems();
-            if(userVisitedItems == null)
-                userVisitedItems = new LinkedHashSet<Item>();
-            userVisitedItems.forEach(item -> {
-                R[(int) (user.getId()- 1)][(int) (item.getId() - 1)] = 2.5d;
-            });
-            userBids.forEach(bid -> {
-                R[(int) (user.getId() - 1)][(int) (bid.getItem().getId() - 1)] = 5.0d;
-            });
-        }
-        MatrixFactorization matrixFactorization = new MatrixFactorization(R, R.length, R[0].length, 2,0.002,0.02,50);
+        if(items.size() > 0 && users.size() > 0)  {
+            Double[][] R = new Double[users.size()][items.size()];
+            for(Double[] i : R){
+                Arrays.fill(i,0.0d);
+            }
+            for (User user : users) {
+                Set<Bid> userBids = user.getBids();
+                if(userBids == null)
+                    userBids = new LinkedHashSet<Bid>();
+                Set<Item> userVisitedItems = user.getVisitedItems();
+                if(userVisitedItems == null)
+                    userVisitedItems = new LinkedHashSet<Item>();
+                userVisitedItems.forEach(item -> {
+                    R[(int) (user.getId()- 1)][(int) (item.getId() - 1)] = 2.5d;
+                });
+                userBids.forEach(bid -> {
+                    R[(int) (user.getId() - 1)][(int) (bid.getItem().getId() - 1)] = 5.0d;
+                });
+            }
+            MatrixFactorization matrixFactorization = new MatrixFactorization(R, R.length, R[0].length, 2,0.002,0.02,50);
 
-        ArrayList<Double> training_process = matrixFactorization.train();
-        Double[][] res = matrixFactorization.fullMatrix();
-        recommendationRepository.save(new Recommendation(null,res,null));
+            ArrayList<Double> training_process = matrixFactorization.train();
+            Double[][] res = matrixFactorization.fullMatrix();
+            recommendationRepository.save(new Recommendation(null,res,null));
+        }
     }
 
     @Override
     public List<Item> recommend(String username) {
         Recommendation recommendation = recommendationRepository.findFirstByOrderByIdDesc();
+        int maxNumberOfRecommendations = 3;
         Set<Item> items = new LinkedHashSet<>();
         if(recommendation != null) {
             User user = userService.getUser(username);
             if(recommendation.getPredictions().length > user.getId() - 1) {
                 Double[] itemsPredictions = recommendation.getPredictions()[(int) (user.getId() - 1)];
-                int numberOfRecommends = Math.min(recommendation.getPredictions().length, 5);
+                int numberOfRecommends = Math.min(recommendation.getPredictions().length, maxNumberOfRecommendations);
 
                 for(int j = 0; j < numberOfRecommends; j++) {
                     int i;
@@ -75,11 +78,11 @@ public class RecommendationServiceImpl implements  RecommendationService{
                         }
                     }
                     Item item = itemService.getItem(Long.valueOf(maxIndex + 1));
-                    if(!user.getBids().contains(item)) {
+                    if(item != null && !user.getBids().contains(item) && item.isActive())
                         items.add(item);
-                    } else {
+                    else
                         j--;
-                    }
+
                     itemsPredictions[maxIndex] = 0.0d;
                 }
             }
@@ -87,12 +90,12 @@ public class RecommendationServiceImpl implements  RecommendationService{
         if(items.size() != 0)  return items.stream().toList();
 
         Long count = itemService.countAll();
-        int numberOfRecommends = (int) Math.min(count, 5);
+        int numberOfRecommends = (int) Math.min(count, maxNumberOfRecommendations);
         User user = userService.getUser(username);
         while(items.size() < numberOfRecommends) {
             Long number = new Random().nextLong(count);
             Item item = itemService.getItem(number);
-            if(!user.getBids().contains(item))
+            if(item != null && !user.getBids().contains(item))
                 items.add(item);
         }
 

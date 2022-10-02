@@ -1,7 +1,12 @@
 import React from 'react';
-import { Container, Box, Typography } from '@mui/material';
+import { Container, Box, Typography, Button, Tooltip } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { createRecommendations } from '../../../actions/auth';
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+
   return (
     <Container component="main" maxWidth="sm">
       <Box
@@ -15,8 +20,17 @@ const Home = () => {
         }}
       >
         <Typography component="h1" variant="h5">
-          Admin Home
+          Admin Panel
         </Typography>
+        <Tooltip title={'Force create new reccmmendation table'}>
+          <Button
+            onClick={() => {
+              dispatch(createRecommendations());
+            }}
+          >
+            Create Recommendations
+          </Button>
+        </Tooltip>
       </Box>
     </Container>
   );

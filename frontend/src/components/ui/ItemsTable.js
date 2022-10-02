@@ -192,9 +192,9 @@ export default function ItemsTable(props) {
                     </TableCell>
 
                     <TableCell align="right">{item.name}</TableCell>
-                    <TableCell align="right">{item.startingPrice}</TableCell>
-                    <TableCell align="right">{item.currentPrice}</TableCell>
-                    <TableCell align="right">{item.buyPrice}</TableCell>
+                    <TableCell align="right">{item.startingPrice}$</TableCell>
+                    <TableCell align="right">{item.currentPrice}$</TableCell>
+                    <TableCell align="right">{item.buyPrice}$</TableCell>
                     <TableCell align="right">{item.numberOfBids}</TableCell>
                     <TableCell align="right">
                       {item.categories.map((category) => (

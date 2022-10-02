@@ -11,24 +11,25 @@ import {
 } from 'react-router-dom';
 import Admin from './Admin';
 import Customer from './Customer';
+import NotFound from './components/NotFound/NotFound';
 import { loadUser, logoutUser } from './actions/auth';
 
 function App() {
   const dispatch = useDispatch();
 
-  axios.defaults.baseURL = 'http://localhost:8002/api/';
+  axios.defaults.baseURL = 'https://localhost:8002/api/';
   // Request interceptor for API calls
   axios.interceptors.request.use(
     async (request) => {
-      if (
-        localStorage.getItem('accessToken') &&
-        request.url != 'auth/refresh-token'
-      ) {
-        if (localStorage.getItem('accessToken'))
+      if (request.url != 'auth/refresh-token') {
+        if (localStorage.getItem('accessToken')) {
           request.headers = {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           };
-      } else request.headers['Authorization'] = '';
+        } else {
+          delete request.headers.Authorization;
+        }
+      }
       return request;
     },
     (error) => {
@@ -89,6 +90,7 @@ function App() {
               // </AdminPrivateRoute>
             }
           />
+          <Route path="*" exact element={<NotFound />} />
         </Routes>
       </Router>
     </div>

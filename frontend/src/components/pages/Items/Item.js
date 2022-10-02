@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Container,
   Box,
@@ -13,6 +13,11 @@ import {
   CircularProgress,
   LinearProgress,
   Button,
+  DialogActions,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,6 +32,8 @@ import moment from 'moment';
 import CachedIcon from '@mui/icons-material/Cached';
 import RefreshButton from '../../ui/RefreshButton';
 import authReducer from '../../../reducers/auth/auth';
+import { MapContainer, TileLayer } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const Item = (props) => {
   const item = useSelector((state) => state.item);
@@ -36,6 +43,7 @@ const Item = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let { id } = useParams();
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const [pageNumber, setPageNumber] = React.useState(0);
   const [itemCount, setItemCount] = React.useState(5);
@@ -129,10 +137,10 @@ const Item = (props) => {
     }),
     onSubmit: (values) => {
       console.log('onSubmit');
-
-      dispatch(bidItem(id, values.amount));
+      setDialogOpen(true);
     },
   });
+  const mapRef = useRef();
 
   if (id != item.item.id) {
     console.log('id != item.item.id');
@@ -228,12 +236,40 @@ const Item = (props) => {
           </Stack>
           <Grid container>
             <Grid item xs={12} md={4}>
-              <Carousel
-                height={'320px'}
-                width={'320px'}
-                images={item.item.images}
-                isBase64={true}
-              />
+              <Stack
+                direction="column"
+                // divider={<Divider orientation="horizontal" flexItem />}
+                spacing={2}
+              >
+                <Carousel
+                  height={'320px'}
+                  width={'320px'}
+                  images={item.item.images}
+                  isBase64={true}
+                />
+                <div>
+                  <MapContainer
+                    className="map"
+                    center={[37.9838, 23.7275]}
+                    zoom={4}
+                    maxZoom={18}
+                    minZoom={2}
+                    style={{
+                      marginLeft: '24px',
+                      width: '320px',
+                      height: '320px',
+                    }}
+                    // ref={mapRef}
+                  >
+                    <TileLayer
+                      url={'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
+                      attribution={
+                        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                      }
+                    ></TileLayer>
+                  </MapContainer>
+                </div>
+              </Stack>
             </Grid>
             <Grid item xs={12} md={8}>
               <Stack
@@ -245,14 +281,14 @@ const Item = (props) => {
                   Seller: {item.item.username}
                 </Typography>
                 <Typography variant="h5">
-                  Starting Price: {item.item.startingPrice}
+                  Starting Price: {item.item.startingPrice}$
                 </Typography>
                 <Typography variant="h5">
-                  Current Price: {item.item.currentPrice}
+                  Current Price: {item.item.currentPrice}$
                 </Typography>
                 <Typography variant="h5">
                   {item.item.buyPrice != 0
-                    ? 'Buy Price: ' + item.item.buyPrice
+                    ? 'Buy Price: ' + item.item.buyPrice + '$'
                     : 'Buy Price is not available for this item'}
                 </Typography>
                 <Typography variant="h5">
@@ -283,6 +319,40 @@ const Item = (props) => {
                           formik.touched.amount && formik.errors.amount
                         }
                       />
+
+                      <Dialog
+                        open={dialogOpen}
+                        onClose={() => setDialogOpen(false)}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">
+                          {"Once you place the bid, you can't undo it."}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            Do you agree to place the bid?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              dispatch(bidItem(id, formik.values.amount));
+                              setDialogOpen(false);
+                            }}
+                          >
+                            Place Bid
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setDialogOpen(false);
+                            }}
+                            autoFocus
+                          >
+                            Don't place the Bid
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
                       <LoadingButton
                         disabled={isEnded.value}
                         type="submit"

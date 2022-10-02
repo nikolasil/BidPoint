@@ -13,7 +13,6 @@ import javax.persistence.Lob;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemLocationXmlDto {
     @JacksonXmlProperty(localName = "Latitude", isAttribute = true)
     private String latitude;

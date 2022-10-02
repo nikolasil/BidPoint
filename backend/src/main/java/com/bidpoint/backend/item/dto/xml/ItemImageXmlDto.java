@@ -11,7 +11,6 @@ import javax.persistence.Lob;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemImageXmlDto {
     @JacksonXmlProperty(localName = "FileName")
     private String fileName;

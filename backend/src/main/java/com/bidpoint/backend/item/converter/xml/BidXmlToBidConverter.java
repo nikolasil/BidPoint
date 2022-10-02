@@ -18,7 +18,7 @@ public class BidXmlToBidConverter implements Converter<ItemBidXmlDto, Bid> {
     public Bid convert(ItemBidXmlDto source) {
         return new Bid(
                 null,
-                new BigDecimal(source.getAmount().substring(1)),
+                source.getAmount().contains("$") ? new BigDecimal(source.getAmount().substring(1)) : new BigDecimal(source.getAmount()),
                 LocalDateTime.parse( source.getTime()+".000", DateTimeFormatter.ofPattern("MMM-dd-yy' 'HH:mm:ss.SSS").localizedBy(Locale.ENGLISH)).atZone(UTC),
                 null,
                 new User(
@@ -35,7 +35,9 @@ public class BidXmlToBidConverter implements Converter<ItemBidXmlDto, Bid> {
                         null,
                         null,
                         null,
-                        null
+                        null,
+                        Long.valueOf(0),
+                        Long.valueOf(0)
                 )
         );
     }

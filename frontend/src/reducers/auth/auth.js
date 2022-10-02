@@ -120,6 +120,25 @@ const authReducer = (state = initialState, action) => {
         user: payload,
       };
     }
+    case types.GET_RECOMMENDATIONS_SUCCESS: {
+      console.log('authReducer: GET_RECOMMENDATIONS_SUCCESS');
+      console.log('authReducer: payload = ', payload);
+
+      return {
+        ...state,
+        recommendations: payload,
+      };
+    }
+    case types.GET_RECOMMENDATIONS_FAILURE: {
+      console.log('authReducer: GET_RECOMMENDATIONS_FAILURE');
+      console.log('authReducer: payload = ', payload);
+
+      return {
+        ...state,
+        recommendations: [],
+      };
+    }
+
     default: {
       return state;
     }

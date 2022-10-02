@@ -48,7 +48,7 @@ export default function BidsTable(props) {
                 }}
               >
                 <TableCell component="th" scope="row">
-                  {bid.amount}
+                  {bid.amount}$
                 </TableCell>
                 <TableCell align="right">{bid.username}</TableCell>
                 <TableCell align="right">

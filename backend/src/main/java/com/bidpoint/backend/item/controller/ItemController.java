@@ -29,7 +29,7 @@ import java.util.Objects;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@RestController
+@RestController @CrossOrigin(origins = "https://localhost:3000")
 @RequestMapping("/api/item")
 @AllArgsConstructor
 @Slf4j
@@ -149,11 +149,12 @@ public class ItemController {
 
     @PostMapping(value = "/import", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, "application/xml;charset=UTF-8","text/xml"}, produces = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, "application/xml;charset=UTF-8"})
     public ResponseEntity<ItemXmlListDto> importItems(@RequestBody ItemXmlListDto items) {
+
         itemService.createAll(
-                items.getItems().stream().map(i->i.getSeller().getUsername()).toList(),
+                items.getItems().stream().map(i->i.getSeller().getUserID()).toList(),
                 items.getItems().stream().map(i->conversionService.convert(i, Item.class)).toList(),
                 items.getItems().stream().map(ItemXmlDto::getCategories).toList(),
-                items.getItems().stream().map(i -> i.getBids().stream().map(b-> conversionService.convert(b, Bid.class)).toList()).toList()
+                items.getItems().stream().map(i -> i.getBids().getBids().stream().map(b-> conversionService.convert(b, Bid.class)).toList()).toList()
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(items);

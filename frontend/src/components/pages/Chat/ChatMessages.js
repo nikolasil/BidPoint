@@ -5,7 +5,6 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  Avatar,
   Divider,
   ListItemText,
   TextField,
@@ -15,6 +14,7 @@ import { useSelector } from 'react-redux';
 import SendIcon from '@mui/icons-material/Send';
 import { Preview } from '@mui/icons-material';
 import { useFormik } from 'formik';
+import MyAvatar from '../../ui/MyAvatar';
 import moment from 'moment';
 
 const ChatMessages = (props) => {
@@ -98,19 +98,25 @@ const ChatMessages = (props) => {
                     }
                   />
                   <ListItemAvatar>
-                    <Avatar>
-                      {auth.user.firstname.substring(0, 1) +
-                        auth.user.lastname.substring(0, 1)}
-                    </Avatar>
+                    <MyAvatar
+                      name={
+                        auth.user.firstname.substring(0, 1) +
+                        auth.user.lastname.substring(0, 1)
+                      }
+                      username={auth.user.username}
+                    />
                   </ListItemAvatar>
                 </ListItem>
               ) : (
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
-                    <Avatar>
-                      {user.firstname.substring(0, 1) +
-                        user.lastname.substring(0, 1)}
-                    </Avatar>
+                    <MyAvatar
+                      name={
+                        user.firstname.substring(0, 1) +
+                        user.lastname.substring(0, 1)
+                      }
+                      username={user.username}
+                    />
                   </ListItemAvatar>
                   <ListItemText
                     primary={moment

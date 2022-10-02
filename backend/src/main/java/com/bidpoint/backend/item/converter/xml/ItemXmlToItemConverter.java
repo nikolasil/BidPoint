@@ -14,15 +14,16 @@ import java.util.Locale;
 import static java.time.ZoneOffset.UTC;
 @Slf4j
 public class ItemXmlToItemConverter implements Converter<ItemXmlDto, Item> {
+
     @Override
     public Item convert(ItemXmlDto source) {
-        return new Item(
+        Item i = new Item(
                 null,
                 source.getName(),
                 source.getDescription(),
-                new BigDecimal(source.getStartingPrice().substring(1)),
-                new BigDecimal(source.getCurrentPrice().substring(1)),
-                source.getBuyPrice() != null ? new BigDecimal(source.getBuyPrice().substring(1)) : BigDecimal.valueOf(0),
+                source.getStartingPrice().contains("$") ? new BigDecimal(source.getStartingPrice().substring(1)) : new BigDecimal(source.getStartingPrice()) ,
+                source.getCurrentPrice().contains("$") ? new BigDecimal(source.getCurrentPrice().substring(1)) : new BigDecimal(source.getCurrentPrice()) ,
+                source.getBuyPrice() != null ? (source.getCurrentPrice().contains("$") ? new BigDecimal(source.getBuyPrice().substring(1)) :  new BigDecimal(source.getBuyPrice()))  : BigDecimal.valueOf(0),
                 Integer.parseInt(source.getNumberOfBids()),
                 true,
                 LocalDateTime.parse( source.getDateEnds()+".000", DateTimeFormatter.ofPattern("MMM-dd-yy' 'HH:mm:ss.SSS").localizedBy(Locale.ENGLISH)).atZone(UTC),
@@ -34,5 +35,6 @@ public class ItemXmlToItemConverter implements Converter<ItemXmlDto, Item> {
                 new LinkedHashSet<>(),
                 new LinkedHashSet<>()
         );
+        return i;
     }
 }

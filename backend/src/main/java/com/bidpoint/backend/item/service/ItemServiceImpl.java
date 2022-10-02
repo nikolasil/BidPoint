@@ -174,7 +174,9 @@ public class ItemServiceImpl implements ItemService {
                     new LinkedHashSet<>(),
                     new LinkedHashSet<>(),
                     new LinkedHashSet<>(),
-                    new LinkedHashSet<>()
+                    new LinkedHashSet<>(),
+                    Long.valueOf(0),
+                    Long.valueOf(0)
             ), Arrays.asList("seller", "bidder"));
         }
         User finalUser = user;
@@ -219,7 +221,9 @@ public class ItemServiceImpl implements ItemService {
                         new LinkedHashSet<>(),
                         new LinkedHashSet<>(),
                         new LinkedHashSet<>(),
-                        new LinkedHashSet<>()
+                        new LinkedHashSet<>(),
+                        Long.valueOf(0),
+                        Long.valueOf(0)
                 ), Arrays.asList("seller", "bidder"));
             }
             bid.setUser(bidderUser);

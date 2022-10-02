@@ -7,6 +7,7 @@ import com.bidpoint.backend.user.dto.UserInputDto;
 import com.bidpoint.backend.user.entity.User;
 import com.bidpoint.backend.user.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,6 +26,7 @@ import java.util.TimeZone;
 @SpringBootApplication
 @AllArgsConstructor
 @EnableScheduling
+@Slf4j
 public class BackendApplication {
     private final ConversionService conversionService;
     public static void main(String[] args) {
@@ -65,20 +67,20 @@ public class BackendApplication {
                     "Iliopoulos",
                     "nikolasil",
                     "1234",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""),User.class),Arrays.asList("admin", "seller", "bidder"));
+                    "1234",
+                    "Athens",
+                    "6942948851",
+                    "nikolasil2000@gmail.com",
+                    "123456789"),User.class),Arrays.asList("admin", "seller", "bidder"));
 
             User nassosanagn = userService.createUser(conversionService.convert(new UserInputDto(
                     "Nassos",
                     "Anagnostopoulos",
                     "nassosanagn",
                     "1234",
-                    "",
-                    "",
-                    "",
+                    "1234",
+                    "test",
+                    "test",
                     "",
                     ""),User.class),Arrays.asList("seller", "bidder"));
         };

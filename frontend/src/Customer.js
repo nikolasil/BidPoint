@@ -63,7 +63,7 @@ const Customer = () => {
         homePagePath={'/'}
       />
       <Routes>
-        <Route exact path="/" element={<PageContainer page={<Home />} />} />
+        <Route exact path="/" element={<Home />} />
         <Route
           exact
           path="/signin"

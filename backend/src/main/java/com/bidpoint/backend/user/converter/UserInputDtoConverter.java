@@ -10,7 +10,7 @@ public class UserInputDtoConverter implements Converter<UserInputDto, User> {
     @Override
     public User convert(UserInputDto source) {
         return new User(
-                null,
+                 null,
                 source.getFirstname(),
                 source.getLastname(),
                 source.getUsername(),
@@ -23,7 +23,9 @@ public class UserInputDtoConverter implements Converter<UserInputDto, User> {
                 new LinkedHashSet<>(),
                 new LinkedHashSet<>(),
                 new LinkedHashSet<>(),
-                new LinkedHashSet<>()
+                new LinkedHashSet<>(),
+                Long.valueOf(0),
+                Long.valueOf(0)
         );
     }
 

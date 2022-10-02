@@ -1,8 +1,5 @@
 package com.bidpoint.backend.item.dto.xml;
 
-import com.bidpoint.backend.item.entity.Bid;
-import com.bidpoint.backend.item.entity.Image;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
@@ -15,7 +12,6 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemXmlDto {
     @JacksonXmlProperty(localName = "ItemID", isAttribute = true)
     private String id;
@@ -33,7 +29,7 @@ public class ItemXmlDto {
     @JacksonXmlProperty(localName = "Number_of_Bids")
     private String numberOfBids;
     @JacksonXmlProperty(localName = "Bids")
-    private List<ItemBidXmlDto> bids = new ArrayList<>();
+    private ItemBidXmlListDto bids;
     @JacksonXmlProperty(localName = "Location")
     private ItemLocationXmlDto location;
     @JacksonXmlProperty(localName = "Country")
