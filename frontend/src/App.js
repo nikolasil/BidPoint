@@ -17,7 +17,7 @@ import { loadUser, logoutUser } from './actions/auth';
 function App() {
   const dispatch = useDispatch();
 
-  axios.defaults.baseURL = 'https://localhost:8002/api/';
+  axios.defaults.baseURL = 'http://localhost:8002/api/';
   // Request interceptor for API calls
   axios.interceptors.request.use(
     async (request) => {
